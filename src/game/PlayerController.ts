@@ -1,12 +1,12 @@
-import * as THREE from 'three';
-import RAPIER from '@dimforge/rapier3d-compat';
-import { Physics } from '../engine/Physics';
-import { InputState } from '../engine/Input';
-import { PHYSICS, COLORS, MATERIALS } from '../config/constants';
-import { eventBus, GameEvents } from '../utils/EventBus';
-import { platformVelocityRegistry } from './PlatformVelocityRegistry';
-import { PowerUpManager } from './PowerUpManager';
-import { teleporterRegistry } from './TeleporterRegistry';
+import * as THREE from "three";
+import RAPIER from "@dimforge/rapier3d-compat";
+import { Physics } from "../engine/Physics";
+import { InputState } from "../engine/Input";
+import { PHYSICS, COLORS, MATERIALS } from "../config/constants";
+import { eventBus, GameEvents } from "../utils/EventBus";
+import { platformVelocityRegistry } from "./PlatformVelocityRegistry";
+import { PowerUpManager } from "./PowerUpManager";
+import { teleporterRegistry } from "./TeleporterRegistry";
 
 /**
  * Player marble controller with physics-based movement
@@ -19,7 +19,9 @@ export class PlayerController {
   private collider!: RAPIER.Collider;
 
   // Rendering
-  private mesh!: THREE.Mesh;
+  private mesh!: THREE.Group;
+  private mainSphere!: THREE.Mesh;
+  private equatorRing!: THREE.Mesh;
   private scene: THREE.Scene;
 
   // Ground detection
@@ -63,7 +65,7 @@ export class PlayerController {
     physics: Physics,
     scene: THREE.Scene,
     camera: THREE.Camera,
-    spawnPosition: THREE.Vector3
+    spawnPosition: THREE.Vector3,
   ) {
     this.physics = physics;
     this.scene = scene;
@@ -95,9 +97,12 @@ export class PlayerController {
       }),
 
       // Handle teleporter activation
-      eventBus.on(GameEvents.TELEPORT, (data: { toPosition: THREE.Vector3 }) => {
-        this.teleportTo(data.toPosition);
-      })
+      eventBus.on(
+        GameEvents.TELEPORT,
+        (data: { toPosition: THREE.Vector3 }) => {
+          this.teleportTo(data.toPosition);
+        },
+      ),
     );
   }
 
@@ -121,7 +126,7 @@ export class PlayerController {
 
     this.rigidBody.setTranslation(
       { x: position.x, y: position.y + 1.5, z: position.z },
-      true
+      true,
     );
     // Preserve horizontal velocity, reset vertical
     const vel = this.rigidBody.linvel();
@@ -143,7 +148,7 @@ export class PlayerController {
         angularDamping: PHYSICS.ANGULAR_DAMPING,
         gravityScale: PHYSICS.GRAVITY_SCALE,
         ccdEnabled: true,
-      }
+      },
     );
 
     // Create sphere collider
@@ -154,21 +159,52 @@ export class PlayerController {
         friction: PHYSICS.MARBLE_FRICTION,
         restitution: PHYSICS.MARBLE_RESTITUTION,
         density: PHYSICS.MARBLE_DENSITY,
-      }
+      },
     );
   }
 
   private createVisualMesh(): void {
-    const geometry = new THREE.SphereGeometry(PHYSICS.MARBLE_RADIUS, 32, 32);
-    const material = new THREE.MeshStandardMaterial({
+    const RADIUS = PHYSICS.MARBLE_RADIUS;
+
+    // Create group to hold all visual elements
+    this.mesh = new THREE.Group();
+
+    // Main sphere (existing)
+    const sphereGeo = new THREE.SphereGeometry(RADIUS, 32, 32);
+    const sphereMat = new THREE.MeshStandardMaterial({
       color: COLORS.MARBLE,
       metalness: MATERIALS.MARBLE_METALNESS,
       roughness: MATERIALS.MARBLE_ROUGHNESS,
     });
+    this.mainSphere = new THREE.Mesh(sphereGeo, sphereMat);
+    this.mainSphere.castShadow = true;
+    this.mainSphere.receiveShadow = true;
+    this.mesh.add(this.mainSphere);
 
-    this.mesh = new THREE.Mesh(geometry, material);
-    this.mesh.castShadow = true;
-    this.mesh.receiveShadow = true;
+    // Inner glow core
+    const coreGeo = new THREE.SphereGeometry(RADIUS * 0.6, 16, 16);
+    const coreMat = new THREE.MeshBasicMaterial({
+      color: 0x88ccff,
+      transparent: true,
+      opacity: 0.4,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+    this.mesh.add(new THREE.Mesh(coreGeo, coreMat));
+
+    // Equator ring
+    const ringGeo = new THREE.TorusGeometry(RADIUS * 1.1, 0.03, 8, 32);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0x00ffaa,
+      transparent: true,
+      opacity: 0.7,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+    this.equatorRing = new THREE.Mesh(ringGeo, ringMat);
+    this.equatorRing.rotation.x = Math.PI / 2;
+    this.mesh.add(this.equatorRing);
+
     this.scene.add(this.mesh);
   }
 
@@ -203,7 +239,7 @@ export class PlayerController {
       this.rigidBody.resetForces(true);
       this.rigidBody.resetTorques(true);
       this.rigidBody.sleep();
-      this.syncMeshToBody();
+      this.syncMeshToBody(dt);
 
       // Wake up on last cooldown frame so player can move
       if (this.respawnCooldown === 0) {
@@ -228,7 +264,7 @@ export class PlayerController {
     this.clampHorizontalSpeed();
 
     // Sync visual mesh to physics body
-    this.syncMeshToBody();
+    this.syncMeshToBody(dt);
   }
 
   private updateGroundDetection(): void {
@@ -240,7 +276,7 @@ export class PlayerController {
       { x: position.x, y: position.y, z: position.z },
       { x: 0, y: -1, z: 0 },
       maxToi,
-      this.collider
+      this.collider,
     );
 
     const wasGrounded = this.isGrounded;
@@ -267,7 +303,7 @@ export class PlayerController {
       this.timeSinceGrounded = 0;
 
       if (!wasGrounded) {
-        this.hasJumped = false;  // Only reset on LANDING, not every substep
+        this.hasJumped = false; // Only reset on LANDING, not every substep
         this.hasUsedDoubleJump = false; // Reset double jump on landing
         this.powerUpManager?.resetDoubleJump();
         eventBus.emit(GameEvents.PLAYER_LAND);
@@ -309,7 +345,8 @@ export class PlayerController {
     const canJump = (this.isGrounded || canCoyoteJump) && !this.hasJumped;
 
     // Check for double jump ability
-    const canDoubleJump = !this.isGrounded &&
+    const canDoubleJump =
+      !this.isGrounded &&
       !canCoyoteJump &&
       this.hasJumped &&
       !this.hasUsedDoubleJump &&
@@ -333,7 +370,10 @@ export class PlayerController {
     const vel = this.rigidBody.linvel();
     // Reset Y velocity and apply jump
     this.rigidBody.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
-    this.rigidBody.applyImpulse({ x: 0, y: PHYSICS.JUMP_IMPULSE * 0.9, z: 0 }, true);
+    this.rigidBody.applyImpulse(
+      { x: 0, y: PHYSICS.JUMP_IMPULSE * 0.9, z: 0 },
+      true,
+    );
 
     this.hasUsedDoubleJump = true;
 
@@ -387,7 +427,9 @@ export class PlayerController {
     let platformVelY = 0;
     let platformVelZ = 0;
     if (this.isGrounded && this.groundColliderHandle !== null) {
-      const platformVel = platformVelocityRegistry.get(this.groundColliderHandle);
+      const platformVel = platformVelocityRegistry.get(
+        this.groundColliderHandle,
+      );
       if (platformVel) {
         platformVelX = platformVel.x;
         platformVelY = platformVel.y;
@@ -408,7 +450,7 @@ export class PlayerController {
             y: targetVelY,
             z: this.moveDirection.z * speed + platformVelZ,
           },
-          true
+          true,
         );
       } else {
         // No input on ground = gradual deceleration towards platform velocity
@@ -418,12 +460,20 @@ export class PlayerController {
         const newVelZ = vel.z * decay + platformVelZ * (1 - decay);
 
         // Only clear angular velocity when nearly stopped
-        const horizontalSpeed = Math.sqrt(newVelX * newVelX + newVelZ * newVelZ);
+        const horizontalSpeed = Math.sqrt(
+          newVelX * newVelX + newVelZ * newVelZ,
+        );
         if (horizontalSpeed < 0.1) {
-          this.rigidBody.setLinvel({ x: platformVelX, y: targetVelY, z: platformVelZ }, true);
+          this.rigidBody.setLinvel(
+            { x: platformVelX, y: targetVelY, z: platformVelZ },
+            true,
+          );
           this.rigidBody.setAngvel({ x: 0, y: 0, z: 0 }, true);
         } else {
-          this.rigidBody.setLinvel({ x: newVelX, y: targetVelY, z: newVelZ }, true);
+          this.rigidBody.setLinvel(
+            { x: newVelX, y: targetVelY, z: newVelZ },
+            true,
+          );
         }
       }
     } else {
@@ -436,7 +486,7 @@ export class PlayerController {
             y: vel.y,
             z: this.moveDirection.z * speed,
           },
-          true
+          true,
         );
       }
       // NO INPUT IN AIR = keep current horizontal velocity (momentum preserved)
@@ -453,7 +503,7 @@ export class PlayerController {
     // Get camera's right direction
     this.cameraRight.crossVectors(
       this.cameraForward,
-      new THREE.Vector3(0, 1, 0)
+      new THREE.Vector3(0, 1, 0),
     );
     this.cameraRight.normalize();
   }
@@ -470,17 +520,27 @@ export class PlayerController {
       const scale = maxSpeed / horizontalSpeed;
       this.rigidBody.setLinvel(
         { x: vel.x * scale, y: vel.y, z: vel.z * scale },
-        true
+        true,
       );
     }
   }
 
-  private syncMeshToBody(): void {
+  private syncMeshToBody(dt: number): void {
     const position = this.rigidBody.translation();
     const rotation = this.rigidBody.rotation();
 
     this.mesh.position.set(position.x, position.y, position.z);
-    this.mesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+
+    // Apply physics rotation to main sphere only
+    this.mainSphere.quaternion.set(
+      rotation.x,
+      rotation.y,
+      rotation.z,
+      rotation.w,
+    );
+
+    // Animate equator ring rotation (spins independently, frame-rate independent)
+    this.equatorRing.rotation.z += 3.0 * dt; // 3 radians per second
   }
 
   /**
@@ -494,7 +554,7 @@ export class PlayerController {
         y: this.checkpointPosition.y + 0.5,
         z: this.checkpointPosition.z,
       },
-      true
+      true,
     );
 
     // Clear ALL momentum - velocity, angular velocity, and accumulated forces
@@ -516,8 +576,8 @@ export class PlayerController {
     // Skip physics forces for several frames to ensure clean respawn
     this.respawnCooldown = 5;
 
-    // Sync mesh immediately
-    this.syncMeshToBody();
+    // Sync mesh immediately (use 0 dt since we're just syncing position, not animating)
+    this.syncMeshToBody(0);
 
     eventBus.emit(GameEvents.PLAYER_RESPAWN);
   }
@@ -561,20 +621,30 @@ export class PlayerController {
   }
 
   /**
-   * Get the visual mesh
+   * Get the visual mesh group
    */
-  getMesh(): THREE.Mesh {
+  getMesh(): THREE.Group {
     return this.mesh;
   }
 
   dispose(): void {
     // Unsubscribe from all events to prevent memory leaks
-    this.unsubscribers.forEach(unsub => unsub());
+    this.unsubscribers.forEach((unsub) => unsub());
     this.unsubscribers = [];
 
     this.physics.removeBody(this.rigidBody);
     this.scene.remove(this.mesh);
-    this.mesh.geometry.dispose();
-    (this.mesh.material as THREE.Material).dispose();
+
+    // Dispose all meshes in the group
+    this.mesh.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.geometry.dispose();
+        if (Array.isArray(child.material)) {
+          child.material.forEach((m) => m.dispose());
+        } else {
+          child.material.dispose();
+        }
+      }
+    });
   }
 }

@@ -3,6 +3,7 @@ import { Trail } from './Trail';
 import { ParticlePool } from './ParticlePool';
 import { GemCaptureEffect } from './effects/GemCaptureEffect';
 import { LevelCompleteEffect } from './effects/LevelCompleteEffect';
+import { Starfield } from './Starfield';
 import { eventBus, GameEvents } from '../utils/EventBus';
 
 /**
@@ -14,6 +15,7 @@ export class VFXManager {
   // Systems
   private particlePool: ParticlePool;
   private trail: Trail;
+  private starfield: Starfield;
 
   // Effects
   private gemCaptureEffect: GemCaptureEffect;
@@ -27,6 +29,9 @@ export class VFXManager {
 
     // Create trail
     this.trail = new Trail(scene);
+
+    // Create starfield background
+    this.starfield = new Starfield(scene);
 
     // Create effects
     this.gemCaptureEffect = new GemCaptureEffect(scene, this.particlePool);
@@ -47,8 +52,13 @@ export class VFXManager {
   /**
    * Update all VFX systems
    */
-  update(dt: number): void {
+  update(dt: number, cameraPosition?: THREE.Vector3): void {
     this.particlePool.update(dt);
+
+    // Update starfield to follow camera
+    if (cameraPosition) {
+      this.starfield.update(cameraPosition);
+    }
   }
 
   /**
@@ -95,6 +105,7 @@ export class VFXManager {
   dispose(): void {
     this.trail.dispose();
     this.particlePool.dispose();
+    this.starfield.dispose();
     this.gemCaptureEffect.dispose();
     this.levelCompleteEffect.dispose();
   }

@@ -1,7 +1,7 @@
-import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance } from '../types';
-import { COLORS } from '../../../config/constants';
-import { TriggerType } from '../../CollisionHandler';
+import * as THREE from "three";
+import { PieceData, PieceContext, PieceInstance } from "../types";
+import { COLORS } from "../../../config/constants";
+import { TriggerType } from "../../CollisionHandler";
 
 const GATE_WIDTH = 2.5;
 const GATE_HEIGHT = 3;
@@ -13,7 +13,7 @@ const PILLAR_WIDTH = 0.3;
  */
 export function createGoalGate(
   data: PieceData,
-  context: PieceContext
+  context: PieceContext,
 ): PieceInstance {
   const scale = data.scale ?? [1, 1, 1];
   const rotation = data.rotation ?? [0, 0, 0];
@@ -29,7 +29,7 @@ export function createGoalGate(
   group.rotation.set(
     THREE.MathUtils.degToRad(rotation[0]),
     THREE.MathUtils.degToRad(rotation[1]),
-    THREE.MathUtils.degToRad(rotation[2])
+    THREE.MathUtils.degToRad(rotation[2]),
   );
 
   // Material
@@ -63,7 +63,10 @@ export function createGoalGate(
   group.add(topBar);
 
   // Glowing center (trigger area visualization)
-  const centerGeo = new THREE.PlaneGeometry(width - pillarWidth * 2, height - pillarWidth);
+  const centerGeo = new THREE.PlaneGeometry(
+    width - pillarWidth * 2,
+    height - pillarWidth,
+  );
   const centerMat = new THREE.MeshBasicMaterial({
     color: COLORS.GOAL,
     transparent: true,
@@ -73,6 +76,30 @@ export function createGoalGate(
   const centerPlane = new THREE.Mesh(centerGeo, centerMat);
   centerPlane.position.set(0, height / 2, 0);
   group.add(centerPlane);
+
+  // Portal rings - 3 rotating torus rings in center
+  const portalRings: THREE.Mesh[] = [];
+  const ringColors = [0xffdd44, 0xffaa00, 0xff8800];
+  const ringGeometries: THREE.TorusGeometry[] = [];
+  const ringMaterials: THREE.MeshBasicMaterial[] = [];
+
+  for (let i = 0; i < 3; i++) {
+    const ringRadius = (width - pillarWidth * 2) * 0.25 * (1 + i * 0.3);
+    const ringGeo = new THREE.TorusGeometry(ringRadius, 0.04, 8, 32);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: ringColors[i],
+      transparent: true,
+      opacity: 0.6 - i * 0.15,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.position.set(0, height / 2, 0);
+    group.add(ring);
+    portalRings.push(ring);
+    ringGeometries.push(ringGeo);
+    ringMaterials.push(ringMat);
+  }
 
   context.scene.add(group);
 
@@ -86,12 +113,13 @@ export function createGoalGate(
   const collider = context.physics.createBoxCollider(
     rigidBody,
     { x: width / 2, y: height / 2, z: depth * 2 },
-    { isSensor: true }
+    { isSensor: true },
   );
 
   // Track if goal reached
   let reached = false;
   let pulseTime = 0;
+  let victoryStartTime = 0;
 
   // Goal reached callback
   const onReached = () => {
@@ -105,17 +133,38 @@ export function createGoalGate(
     collider.handle,
     TriggerType.GOAL,
     data.id,
-    onReached
+    onReached,
   );
 
-  // Update function - pulsing glow
+  // Update function - pulsing glow and ring animation
   const update = (dt: number, elapsed: number): void => {
+    // Animate portal rings with counter-rotation
+    portalRings.forEach((ring, i) => {
+      const direction = i % 2 === 0 ? 1 : -1;
+      const speed = 1 + i * 0.5;
+      ring.rotation.x = elapsed * speed * direction;
+      ring.rotation.y = elapsed * speed * 0.7 * direction;
+    });
+
     if (reached) {
+      // Record victory start time on first frame
+      if (victoryStartTime === 0) {
+        victoryStartTime = elapsed;
+      }
+
       // Victory animation
       pulseTime += dt * 10;
       const scale = 1 + Math.sin(pulseTime) * 0.1;
       group.scale.setScalar(scale);
       material.emissiveIntensity = 0.5 + Math.sin(pulseTime * 2) * 0.3;
+
+      // Speed up ring rotation on victory (frame-rate independent)
+      const victoryElapsed = elapsed - victoryStartTime;
+      portalRings.forEach((ring, i) => {
+        const direction = i % 2 === 0 ? 1 : -1;
+        const victorySpeed = 5 + i * 2;
+        ring.rotation.z = victoryElapsed * victorySpeed * direction;
+      });
     } else {
       // Idle pulsing
       material.emissiveIntensity = 0.3 + Math.sin(elapsed * 3) * 0.1;
@@ -139,6 +188,8 @@ export function createGoalGate(
       centerGeo.dispose();
       material.dispose();
       centerMat.dispose();
+      ringGeometries.forEach((geo) => geo.dispose());
+      ringMaterials.forEach((mat) => mat.dispose());
     },
   };
 }

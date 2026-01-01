@@ -118,6 +118,16 @@ export class Renderer {
       0.3
     );
     this.scene.add(hemisphereLight);
+
+    // Fill light (cool blue, opposite side) - for depth
+    const fillLight = new THREE.DirectionalLight(0x4466aa, 0.3);
+    fillLight.position.set(-8, 10, -5);
+    this.scene.add(fillLight);
+
+    // Rim light (neon cyan, behind player) - for dramatic edge lighting
+    const rimLight = new THREE.DirectionalLight(0x00ffaa, 0.4);
+    rimLight.position.set(0, 5, -15);
+    this.scene.add(rimLight);
   }
 
   private setupFpsCounter(): void {

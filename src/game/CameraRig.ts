@@ -1,7 +1,7 @@
-import * as THREE from 'three';
-import { Physics } from '../engine/Physics';
-import { CAMERA } from '../config/constants';
-import { smoothDampVec3 } from '../utils/math';
+import * as THREE from "three";
+import { Physics } from "../engine/Physics";
+import { CAMERA, VFX } from "../config/constants";
+import { smoothDampVec3 } from "../utils/math";
 
 /**
  * Third-person follow camera with smooth following and collision avoidance
@@ -24,10 +24,16 @@ export class CameraRig {
   // Collision
   private collisionDistance: number = CAMERA.MAX_DISTANCE;
 
+  // Screen shake
+  private shakeIntensity = 0;
+  private shakeDuration = 0;
+  private shakeTimer = 0;
+
   // Temp vectors
   private readonly tempVec3 = new THREE.Vector3();
   private readonly rayOrigin = new THREE.Vector3();
   private readonly rayDir = new THREE.Vector3();
+  private readonly shakeOffset = new THREE.Vector3();
 
   constructor(camera: THREE.PerspectiveCamera, physics: Physics) {
     this.camera = camera;
@@ -36,7 +42,7 @@ export class CameraRig {
     this.offset = new THREE.Vector3(
       CAMERA.OFFSET.x,
       CAMERA.OFFSET.y,
-      CAMERA.OFFSET.z
+      CAMERA.OFFSET.z,
     );
 
     this.lookOffset = new THREE.Vector3(0, CAMERA.LOOK_OFFSET_Y, 0);
@@ -67,11 +73,24 @@ export class CameraRig {
       adjustedPosition,
       CAMERA.FOLLOW_SMOOTHNESS,
       dt,
-      this.currentPosition
+      this.currentPosition,
     );
 
     // Apply to camera
     this.camera.position.copy(this.currentPosition);
+
+    // Apply screen shake (using reusable vector to avoid GC)
+    if (this.shakeTimer < this.shakeDuration) {
+      this.shakeTimer += dt;
+      const t = Math.max(0, 1 - this.shakeTimer / this.shakeDuration);
+      const intensity = this.shakeIntensity * t * t; // Quadratic ease-out
+      this.shakeOffset.set(
+        (Math.random() - 0.5) * 2 * intensity,
+        (Math.random() - 0.5) * intensity,
+        (Math.random() - 0.5) * 2 * intensity,
+      );
+      this.camera.position.add(this.shakeOffset);
+    }
 
     // Look at target (with offset)
     this.tempVec3.copy(this.target).add(this.lookOffset);
@@ -88,14 +107,17 @@ export class CameraRig {
     const hit = this.physics.castRay(
       { x: this.rayOrigin.x, y: this.rayOrigin.y, z: this.rayOrigin.z },
       { x: this.rayDir.x, y: this.rayDir.y, z: this.rayDir.z },
-      maxDistance
+      maxDistance,
     );
 
     if (hit) {
       const hitDistance = hit.timeOfImpact;
       if (hitDistance < maxDistance) {
         // Collision detected - clamp distance with small buffer
-        this.collisionDistance = Math.max(CAMERA.MIN_DISTANCE, hitDistance - 0.3);
+        this.collisionDistance = Math.max(
+          CAMERA.MIN_DISTANCE,
+          hitDistance - 0.3,
+        );
       } else {
         this.collisionDistance = maxDistance;
       }
@@ -114,6 +136,18 @@ export class CameraRig {
     return new THREE.Vector3()
       .copy(this.target)
       .addScaledVector(direction, this.collisionDistance);
+  }
+
+  /**
+   * Trigger screen shake effect
+   */
+  shake(
+    intensity: number = VFX.SCREEN_SHAKE_INTENSITY,
+    duration: number = VFX.SCREEN_SHAKE_DURATION,
+  ): void {
+    this.shakeIntensity = intensity;
+    this.shakeDuration = duration;
+    this.shakeTimer = 0;
   }
 
   /**

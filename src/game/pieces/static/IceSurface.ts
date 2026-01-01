@@ -1,7 +1,12 @@
-import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance, IceSurfaceParams } from '../types';
-import { COLORS, PHYSICS } from '../../../config/constants';
-import { rapierRotationFromEulerDegrees } from '../../../utils/math';
+import * as THREE from "three";
+import {
+  PieceData,
+  PieceContext,
+  PieceInstance,
+  IceSurfaceParams,
+} from "../types";
+import { COLORS, PHYSICS, VFX } from "../../../config/constants";
+import { rapierRotationFromEulerDegrees } from "../../../utils/math";
 
 const DEFAULT_WIDTH = 4;
 const DEFAULT_DEPTH = 4;
@@ -12,7 +17,7 @@ const DEFAULT_THICKNESS = 0.2;
  */
 export function createIceSurface(
   data: PieceData,
-  context: PieceContext
+  context: PieceContext,
 ): PieceInstance {
   const params = data.params as IceSurfaceParams | undefined;
   const scale = data.scale ?? [1, 1, 1];
@@ -40,10 +45,20 @@ export function createIceSurface(
   mesh.rotation.set(
     THREE.MathUtils.degToRad(rotation[0]),
     THREE.MathUtils.degToRad(rotation[1]),
-    THREE.MathUtils.degToRad(rotation[2])
+    THREE.MathUtils.degToRad(rotation[2]),
   );
   mesh.castShadow = true;
   mesh.receiveShadow = true;
+
+  // Add neon edge wireframe (icy cyan color)
+  const edgeGeometry = new THREE.EdgesGeometry(geometry, 15);
+  const edgeMaterial = new THREE.LineBasicMaterial({
+    color: VFX.EDGE_COLOR_ICE,
+    transparent: true,
+    opacity: VFX.EDGE_OPACITY,
+  });
+  const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+  mesh.add(edges);
 
   // Add subtle surface detail
   const detailGeometry = new THREE.PlaneGeometry(width * 0.9, depth * 0.9);
@@ -65,18 +80,18 @@ export function createIceSurface(
   const quatRotation = rapierRotationFromEulerDegrees(
     rotation[0],
     rotation[1],
-    rotation[2]
+    rotation[2],
   );
 
   const rigidBody = context.physics.createFixedBody(
     { x: data.position[0], y: data.position[1], z: data.position[2] },
-    quatRotation
+    quatRotation,
   );
 
   const collider = context.physics.createBoxCollider(
     rigidBody,
     { x: width / 2, y: thickness / 2, z: depth / 2 },
-    { friction: PHYSICS.ICE_FRICTION, restitution: 0.1 }
+    { friction: PHYSICS.ICE_FRICTION, restitution: 0.1 },
   );
 
   // Subtle shimmer animation
@@ -101,6 +116,8 @@ export function createIceSurface(
       context.scene.remove(mesh);
       geometry.dispose();
       material.dispose();
+      edgeGeometry.dispose();
+      edgeMaterial.dispose();
       detailGeometry.dispose();
       detailMaterial.dispose();
     },

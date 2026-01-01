@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { PieceData, PieceContext, PieceInstance, TrackParams } from '../types';
-import { COLORS, MATERIALS } from '../../../config/constants';
+import { COLORS, MATERIALS, VFX } from '../../../config/constants';
 import { rapierRotationFromEulerDegrees } from '../../../utils/math';
 
 const DEFAULT_LENGTH = 4;
@@ -40,6 +40,16 @@ export function createTrackStraight(
   mesh.castShadow = true;
   mesh.receiveShadow = true;
 
+  // Add neon edge wireframe
+  const edgeGeometry = new THREE.EdgesGeometry(geometry, 15);
+  const edgeMaterial = new THREE.LineBasicMaterial({
+    color: VFX.EDGE_COLOR,
+    transparent: true,
+    opacity: VFX.EDGE_OPACITY,
+  });
+  const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+  mesh.add(edges);
+
   context.scene.add(mesh);
 
   // Create physics body
@@ -71,6 +81,8 @@ export function createTrackStraight(
       context.scene.remove(mesh);
       geometry.dispose();
       material.dispose();
+      edgeGeometry.dispose();
+      edgeMaterial.dispose();
     },
   };
 }

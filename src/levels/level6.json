@@ -1,6 +1,6 @@
 {
   "id": "level6",
-  "name": "Final Challenge",
+  "name": "Crossroads",
   "requireAllGems": true,
   "spawnPoint": [0, 2, 0],
   "pieces": [
@@ -28,7 +28,10 @@
       "params": {
         "width": 4,
         "depth": 4,
-        "waypoints": [[0, 0, -14], [10, 0, -14]],
+        "waypoints": [
+          [0, 0, -14],
+          [10, 0, -14]
+        ],
         "speed": 3,
         "pauseDuration": 0.3
       }
@@ -45,7 +48,10 @@
       "params": {
         "width": 4,
         "depth": 4,
-        "waypoints": [[24, 0, -14], [14, 0, -14]],
+        "waypoints": [
+          [24, 0, -14],
+          [14, 0, -14]
+        ],
         "speed": 3,
         "pauseDuration": 0.3
       }
@@ -91,7 +97,10 @@
       "params": {
         "width": 4,
         "depth": 4,
-        "waypoints": [[28, 0, -38], [28, 8, -38]],
+        "waypoints": [
+          [28, 0, -38],
+          [28, 8, -38]
+        ],
         "speed": 3,
         "pauseDuration": 0.5
       }
@@ -114,7 +123,10 @@
       "params": {
         "width": 4,
         "depth": 4,
-        "waypoints": [[20, 8, -46], [20, 16, -46]],
+        "waypoints": [
+          [20, 8, -46],
+          [20, 16, -46]
+        ],
         "speed": 2.5,
         "pauseDuration": 0.5
       }
@@ -137,7 +149,10 @@
       "params": {
         "width": 4,
         "depth": 4,
-        "waypoints": [[28, 16, -54], [28, 22, -54]],
+        "waypoints": [
+          [28, 16, -54],
+          [28, 22, -54]
+        ],
         "speed": 2,
         "pauseDuration": 0.8
       }
@@ -263,7 +278,10 @@
       "params": {
         "width": 4,
         "depth": 4,
-        "waypoints": [[12, 6, -114], [4, 6, -114]],
+        "waypoints": [
+          [12, 6, -114],
+          [4, 6, -114]
+        ],
         "speed": 2.5,
         "pauseDuration": 0.5
       }
@@ -275,7 +293,10 @@
       "params": {
         "width": 4,
         "depth": 4,
-        "waypoints": [[4, 6, -118], [12, 6, -118]],
+        "waypoints": [
+          [4, 6, -118],
+          [12, 6, -118]
+        ],
         "speed": 2.5,
         "pauseDuration": 0.5
       }
@@ -292,7 +313,10 @@
       "params": {
         "width": 4,
         "depth": 4,
-        "waypoints": [[16, 6, -118], [16, 6, -130]],
+        "waypoints": [
+          [16, 6, -118],
+          [16, 6, -130]
+        ],
         "speed": 2.5,
         "pauseDuration": 0.5
       }
@@ -304,7 +328,10 @@
       "params": {
         "width": 4,
         "depth": 4,
-        "waypoints": [[16, 6, -134], [8, 6, -134]],
+        "waypoints": [
+          [16, 6, -134],
+          [8, 6, -134]
+        ],
         "speed": 2.5,
         "pauseDuration": 0.5
       }
