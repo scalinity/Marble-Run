@@ -1,0 +1,232 @@
+{
+  "id": "level5",
+  "name": "Sky Tower",
+  "requireAllGems": true,
+  "spawnPoint": [0, 2, 0],
+  "pieces": [
+    {
+      "id": "start-platform",
+      "type": "platform",
+      "position": [0, 0, 0],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "gem1",
+      "type": "gem",
+      "position": [0, 1.5, 0]
+    },
+    {
+      "id": "elevator1",
+      "type": "movingPlatform",
+      "position": [0, 0, -8],
+      "params": {
+        "width": 4,
+        "depth": 4,
+        "waypoints": [[0, 0, -8], [0, 6, -8]],
+        "speed": 2,
+        "pauseDuration": 1
+      }
+    },
+    {
+      "id": "tower1-platform",
+      "type": "platform",
+      "position": [0, 6, -16],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint1",
+      "type": "checkpoint",
+      "position": [0, 6, -16]
+    },
+    {
+      "id": "gem2",
+      "type": "gem",
+      "position": [0, 7.5, -16]
+    },
+    {
+      "id": "bridge1",
+      "type": "narrowBridge",
+      "position": [6, 6, -16],
+      "rotation": [0, 90, 0],
+      "params": { "length": 10, "width": 1.3 }
+    },
+    {
+      "id": "gem3",
+      "type": "gem",
+      "position": [11, 7.5, -16]
+    },
+    {
+      "id": "tower2-platform",
+      "type": "platform",
+      "position": [18, 6, -16],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "elevator2",
+      "type": "movingPlatform",
+      "position": [18, 6, -24],
+      "params": {
+        "width": 4,
+        "depth": 4,
+        "waypoints": [[18, 6, -24], [18, 12, -24]],
+        "speed": 2.5,
+        "pauseDuration": 0.8
+      }
+    },
+    {
+      "id": "tower3-platform",
+      "type": "platform",
+      "position": [18, 12, -32],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint2",
+      "type": "checkpoint",
+      "position": [18, 12, -32]
+    },
+    {
+      "id": "gem4",
+      "type": "gem",
+      "position": [18, 13.5, -32]
+    },
+    {
+      "id": "spinner1",
+      "type": "spinnerHazard",
+      "position": [18, 12.5, -32],
+      "params": { "width": 6, "height": 0.4, "depth": 0.8, "speed": 1.5 }
+    },
+    {
+      "id": "jump-platform",
+      "type": "platform",
+      "position": [10, 12, -32],
+      "params": { "width": 3, "depth": 3 }
+    },
+    {
+      "id": "gem5",
+      "type": "gem",
+      "position": [10, 13.5, -32]
+    },
+    {
+      "id": "elevator3",
+      "type": "movingPlatform",
+      "position": [10, 12, -40],
+      "params": {
+        "width": 3,
+        "depth": 3,
+        "waypoints": [[10, 12, -40], [10, 18, -40]],
+        "speed": 2,
+        "pauseDuration": 1
+      }
+    },
+    {
+      "id": "tower4-platform",
+      "type": "platform",
+      "position": [10, 18, -48],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "checkpoint3",
+      "type": "checkpoint",
+      "position": [10, 18, -48]
+    },
+    {
+      "id": "bridge2",
+      "type": "narrowBridge",
+      "position": [10, 18, -56],
+      "params": { "length": 10, "width": 1.2 }
+    },
+    {
+      "id": "gem6",
+      "type": "gem",
+      "position": [10, 19.5, -56]
+    },
+    {
+      "id": "mini-platform1",
+      "type": "platform",
+      "position": [10, 18, -64],
+      "params": { "width": 3, "depth": 3 }
+    },
+    {
+      "id": "bridge3",
+      "type": "narrowBridge",
+      "position": [10, 18, -72],
+      "params": { "length": 10, "width": 1.1 }
+    },
+    {
+      "id": "gem7",
+      "type": "gem",
+      "position": [10, 19.5, -72]
+    },
+    {
+      "id": "mini-platform2",
+      "type": "platform",
+      "position": [10, 18, -80],
+      "params": { "width": 3, "depth": 3 }
+    },
+    {
+      "id": "bridge4",
+      "type": "narrowBridge",
+      "position": [10, 18, -88],
+      "params": { "length": 10, "width": 1.0 }
+    },
+    {
+      "id": "gem8",
+      "type": "gem",
+      "position": [10, 19.5, -88]
+    },
+    {
+      "id": "tower5-platform",
+      "type": "platform",
+      "position": [10, 18, -96],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "checkpoint4",
+      "type": "checkpoint",
+      "position": [10, 18, -96]
+    },
+    {
+      "id": "gem9",
+      "type": "gem",
+      "position": [8, 19.5, -96]
+    },
+    {
+      "id": "gem10",
+      "type": "gem",
+      "position": [12, 19.5, -96]
+    },
+    {
+      "id": "gem11",
+      "type": "gem",
+      "position": [10, 19.5, -94]
+    },
+    {
+      "id": "gem12",
+      "type": "gem",
+      "position": [10, 19.5, -98]
+    },
+    {
+      "id": "elevator-final",
+      "type": "movingPlatform",
+      "position": [10, 18, -104],
+      "params": {
+        "width": 4,
+        "depth": 4,
+        "waypoints": [[10, 18, -104], [10, 22, -104]],
+        "speed": 2,
+        "pauseDuration": 1.5
+      }
+    },
+    {
+      "id": "goal-platform",
+      "type": "platform",
+      "position": [10, 22, -112],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "goal",
+      "type": "goalGate",
+      "position": [10, 22, -116]
+    }
+  ]
+}

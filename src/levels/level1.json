@@ -1,0 +1,112 @@
+{
+  "id": "level1",
+  "name": "Getting Started",
+  "requireAllGems": false,
+  "spawnPoint": [0, 2, 0],
+  "pieces": [
+    {
+      "id": "start-platform",
+      "type": "platform",
+      "position": [0, 0, 0],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "track1",
+      "type": "trackStraight",
+      "position": [0, 0, -6],
+      "params": { "length": 8 }
+    },
+    {
+      "id": "gem1",
+      "type": "gem",
+      "position": [0, 1.5, -6]
+    },
+    {
+      "id": "ramp1",
+      "type": "ramp",
+      "position": [0, 0, -14],
+      "params": { "length": 6, "height": 2 }
+    },
+    {
+      "id": "platform2",
+      "type": "platform",
+      "position": [0, 2, -22],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "gem2",
+      "type": "gem",
+      "position": [0, 3.5, -22]
+    },
+    {
+      "id": "track2",
+      "type": "trackStraight",
+      "position": [0, 2, -28],
+      "params": { "length": 6 }
+    },
+    {
+      "id": "turn1",
+      "type": "trackTurn",
+      "position": [0, 2, -34],
+      "rotation": [0, 0, 0],
+      "params": { "radius": 3 }
+    },
+    {
+      "id": "track3",
+      "type": "trackStraight",
+      "position": [6, 2, -34],
+      "rotation": [0, 90, 0],
+      "params": { "length": 8 }
+    },
+    {
+      "id": "gem3",
+      "type": "gem",
+      "position": [10, 3.5, -34]
+    },
+    {
+      "id": "platform3",
+      "type": "platform",
+      "position": [18, 2, -34],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "ramp2",
+      "type": "ramp",
+      "position": [18, 2, -40],
+      "params": { "length": 6, "height": 2 }
+    },
+    {
+      "id": "platform4",
+      "type": "platform",
+      "position": [18, 4, -48],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "gem4",
+      "type": "gem",
+      "position": [16, 5.5, -48]
+    },
+    {
+      "id": "gem5",
+      "type": "gem",
+      "position": [20, 5.5, -48]
+    },
+    {
+      "id": "goal",
+      "type": "goalGate",
+      "position": [18, 4, -52]
+    },
+    {
+      "id": "wall-left",
+      "type": "wall",
+      "position": [-4, 1, -6],
+      "params": { "width": 0.5, "height": 2, "depth": 8 }
+    },
+    {
+      "id": "wall-right",
+      "type": "wall",
+      "position": [4, 1, -6],
+      "params": { "width": 0.5, "height": 2, "depth": 8 }
+    }
+  ]
+}
