@@ -86,6 +86,17 @@ export const GameEvents = {
   CHECKPOINT_ACTIVATED: 'checkpoint:activated',
   GOAL_REACHED: 'goal:reached',
 
+  // New mechanics
+  BOUNCE_PAD_HIT: 'bounce:hit',
+  TELEPORT: 'teleport:activate',
+  PLATFORM_COLLAPSING: 'platform:collapsing',
+  PLATFORM_FELL: 'platform:fell',
+  HAZARD_HIT: 'hazard:hit',
+
+  // Power-ups
+  POWERUP_COLLECTED: 'powerup:collected',
+  POWERUP_EXPIRED: 'powerup:expired',
+
   // UI
   UI_SHOW_MENU: 'ui:showMenu',
   UI_SHOW_LEVEL_SELECT: 'ui:showLevelSelect',

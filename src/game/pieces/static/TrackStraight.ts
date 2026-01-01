@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance } from '../types';
+import { PieceData, PieceContext, PieceInstance, TrackParams } from '../types';
 import { COLORS, MATERIALS } from '../../../config/constants';
 import { rapierRotationFromEulerDegrees } from '../../../utils/math';
 
@@ -14,11 +14,12 @@ export function createTrackStraight(
   data: PieceData,
   context: PieceContext
 ): PieceInstance {
+  const params = data.params as TrackParams | undefined;
   const scale = data.scale ?? [1, 1, 1];
   const rotation = data.rotation ?? [0, 0, 0];
 
-  const length = DEFAULT_LENGTH * scale[2];
-  const width = DEFAULT_WIDTH * scale[0];
+  const length = (params?.length ?? DEFAULT_LENGTH) * scale[2];
+  const width = (params?.width ?? DEFAULT_WIDTH) * scale[0];
   const thickness = DEFAULT_THICKNESS * scale[1];
 
   // Create mesh

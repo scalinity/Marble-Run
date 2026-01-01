@@ -66,6 +66,9 @@ export class Renderer {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.0;
 
+    // Make canvas focusable for keyboard input
+    renderer.domElement.tabIndex = 0;
+    renderer.domElement.style.outline = 'none';
     this.container.appendChild(renderer.domElement);
 
     // Check WebGPU availability and log status
@@ -94,9 +97,9 @@ export class Renderer {
     directionalLight.position.set(10, 20, 10);
     directionalLight.castShadow = true;
 
-    // Shadow settings
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
+    // Shadow settings - high resolution for smooth shadows
+    directionalLight.shadow.mapSize.width = 4096;
+    directionalLight.shadow.mapSize.height = 4096;
     directionalLight.shadow.camera.near = 0.5;
     directionalLight.shadow.camera.far = 100;
     directionalLight.shadow.camera.left = -30;
@@ -104,6 +107,7 @@ export class Renderer {
     directionalLight.shadow.camera.top = 30;
     directionalLight.shadow.camera.bottom = -30;
     directionalLight.shadow.bias = -0.0001;
+    directionalLight.shadow.radius = 2; // Soft shadow blur
 
     this.scene.add(directionalLight);
 

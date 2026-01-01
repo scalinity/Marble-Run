@@ -64,22 +64,22 @@
     {
       "id": "gem3",
       "type": "gem",
-      "position": [12, 1.5, -28]
+      "position": [12, 1.5, -26]
     },
     {
       "id": "platform3",
       "type": "platform",
-      "position": [12, 0, -32],
+      "position": [12, 0, -28],
       "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "moving2",
       "type": "movingPlatform",
-      "position": [12, 0, -40],
+      "position": [12, 0, -33],
       "params": {
         "width": 4,
         "depth": 4,
-        "waypoints": [[12, 0, -40], [12, 4, -40], [12, 4, -48]],
+        "waypoints": [[12, 0, -33], [12, 4, -33], [12, 4, -48]],
         "speed": 2.5,
         "pauseDuration": 0.3
       }

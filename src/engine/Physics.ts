@@ -11,6 +11,7 @@ export class Physics {
 
   private accumulator = 0;
   private initialized = false;
+  private tickCount = 0; // Physics tick counter for deterministic replay
 
   /**
    * Initialize Rapier physics - must be called before use
@@ -48,9 +49,24 @@ export class Physics {
 
       // Step physics
       this.world.step(this.eventQueue);
+      this.tickCount++;
 
       this.accumulator -= PHYSICS.TIMESTEP;
     }
+  }
+
+  /**
+   * Get current physics tick count (for deterministic replay)
+   */
+  getTick(): number {
+    return this.tickCount;
+  }
+
+  /**
+   * Reset tick counter (for replay synchronization)
+   */
+  resetTick(): void {
+    this.tickCount = 0;
   }
 
   /**
@@ -209,7 +225,7 @@ export class Physics {
       ray,
       maxToi,
       true, // solid
-      undefined, // filter flags
+      RAPIER.QueryFilterFlags.EXCLUDE_SENSORS, // Exclude sensor colliders
       undefined, // filter groups
       excludeCollider,
       excludeCollider?.parent() ?? undefined
@@ -231,7 +247,7 @@ export class Physics {
       ray,
       maxToi,
       true,
-      undefined,
+      RAPIER.QueryFilterFlags.EXCLUDE_SENSORS, // Exclude sensor colliders from raycast
       undefined,
       excludeCollider,
       excludeCollider?.parent() ?? undefined

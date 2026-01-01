@@ -12,13 +12,22 @@ export type PieceType =
   | 'platform'
   | 'wall'
   | 'narrowBridge'
+  | 'bouncePad'
+  | 'iceSurface'
   // Kinematic pieces
   | 'movingPlatform'
   | 'spinnerHazard'
+  | 'conveyorBelt'
+  | 'collapsingPlatform'
+  | 'rotatingPlatform'
   // Trigger pieces
   | 'gem'
   | 'goalGate'
-  | 'checkpoint';
+  | 'checkpoint'
+  | 'teleporter'
+  | 'speedBoost'
+  | 'doubleJump'
+  | 'shield';
 
 /**
  * Piece data from level JSON
@@ -116,6 +125,9 @@ export interface MovingPlatformParams {
 export interface SpinnerHazardParams {
   axis?: 'x' | 'y' | 'z';
   speed?: number;
+  width?: number;
+  height?: number;
+  depth?: number;
 }
 
 export interface GemParams {
@@ -128,6 +140,16 @@ export interface RampParams {
   angle?: number; // degrees
 }
 
+export interface TrackParams {
+  length?: number;
+  width?: number;
+}
+
+export interface TrackTurnParams {
+  radius?: number;
+  width?: number;
+}
+
 export interface WallParams {
   width?: number;
   height?: number;
@@ -137,4 +159,46 @@ export interface WallParams {
 export interface NarrowBridgeParams {
   length?: number;
   width?: number;
+}
+
+export interface BouncePadParams {
+  radius?: number;
+  bounceForce?: number;
+}
+
+export interface IceSurfaceParams {
+  width?: number;
+  depth?: number;
+}
+
+export interface ConveyorBeltParams {
+  length?: number;
+  width?: number;
+  speed?: number;
+  direction?: 'forward' | 'backward' | 'left' | 'right';
+}
+
+export interface CollapsingPlatformParams {
+  width?: number;
+  depth?: number;
+  delay?: number;
+  respawnTime?: number;
+}
+
+export interface RotatingPlatformParams {
+  size?: number;
+  width?: number;
+  depth?: number;
+  speed?: number;
+  axis?: 'x' | 'y' | 'z';
+}
+
+export interface TeleporterParams {
+  linkedId: string;
+  color?: number;
+  radius?: number;
+}
+
+export interface PowerUpParams {
+  duration?: number;
 }

@@ -4,6 +4,9 @@ import { Physics } from '../engine/Physics';
 import { InputState } from '../engine/Input';
 import { PHYSICS, COLORS, MATERIALS } from '../config/constants';
 import { eventBus, GameEvents } from '../utils/EventBus';
+import { platformVelocityRegistry } from './PlatformVelocityRegistry';
+import { PowerUpManager } from './PowerUpManager';
+import { teleporterRegistry } from './TeleporterRegistry';
 
 /**
  * Player marble controller with physics-based movement
@@ -23,14 +26,25 @@ export class PlayerController {
   private isGrounded = false;
   private groundNormal = new THREE.Vector3(0, 1, 0);
   private timeSinceGrounded = 0;
+  private groundColliderHandle: number | null = null;
 
   // Jump state
   private jumpBufferTimer = 0;
   private hasJumped = false;
   private jumpQueued = false;
+  private hasUsedDoubleJump = false;
 
   // Respawn cooldown (skip physics for a few frames after respawn)
   private respawnCooldown = 0;
+
+  // Power-ups
+  private powerUpManager: PowerUpManager | null = null;
+
+  // Teleport cooldown
+  private teleportCooldown = 0;
+
+  // Event unsubscribe functions to prevent memory leaks
+  private unsubscribers: (() => void)[] = [];
 
   // Checkpoint
   private checkpointPosition = new THREE.Vector3(0, 2, 0);
@@ -59,6 +73,61 @@ export class PlayerController {
 
     this.createPhysicsBody();
     this.createVisualMesh();
+    this.setupEventListeners();
+  }
+
+  /**
+   * Set power-up manager reference
+   */
+  setPowerUpManager(manager: PowerUpManager): void {
+    this.powerUpManager = manager;
+  }
+
+  /**
+   * Setup event listeners for game events
+   */
+  private setupEventListeners(): void {
+    // Store unsubscribe functions to prevent memory leaks
+    this.unsubscribers.push(
+      // Handle bounce pad hits
+      eventBus.on(GameEvents.BOUNCE_PAD_HIT, (data: { force: number }) => {
+        this.applyBounce(data.force);
+      }),
+
+      // Handle teleporter activation
+      eventBus.on(GameEvents.TELEPORT, (data: { toPosition: THREE.Vector3 }) => {
+        this.teleportTo(data.toPosition);
+      })
+    );
+  }
+
+  /**
+   * Apply bounce force (from bounce pads)
+   */
+  private applyBounce(force: number): void {
+    const vel = this.rigidBody.linvel();
+    // Reset Y velocity and apply bounce
+    this.rigidBody.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
+    this.rigidBody.applyImpulse({ x: 0, y: force, z: 0 }, true);
+    this.hasJumped = false; // Allow jumping after bounce
+    this.hasUsedDoubleJump = false;
+  }
+
+  /**
+   * Teleport to position
+   */
+  private teleportTo(position: THREE.Vector3): void {
+    if (this.teleportCooldown > 0) return;
+
+    this.rigidBody.setTranslation(
+      { x: position.x, y: position.y + 1.5, z: position.z },
+      true
+    );
+    // Preserve horizontal velocity, reset vertical
+    const vel = this.rigidBody.linvel();
+    this.rigidBody.setLinvel({ x: vel.x * 0.5, y: 0, z: vel.z * 0.5 }, true);
+
+    this.teleportCooldown = PHYSICS.TELEPORT_COOLDOWN;
   }
 
   private createPhysicsBody(): void {
@@ -107,6 +176,11 @@ export class PlayerController {
    * Update player - call once per physics step
    */
   update(dt: number, input: InputState): void {
+    // Update teleport cooldown
+    if (this.teleportCooldown > 0) {
+      this.teleportCooldown -= dt;
+    }
+
     // Check for respawn input
     if (input.reset) {
       this.respawn();
@@ -123,10 +197,18 @@ export class PlayerController {
     // Handle respawn cooldown - skip physics forces to ensure velocity reset takes effect
     if (this.respawnCooldown > 0) {
       this.respawnCooldown--;
-      // Force velocity to zero again (in case physics accumulated forces)
+      // Keep body asleep and stationary during cooldown
       this.rigidBody.setLinvel({ x: 0, y: 0, z: 0 }, true);
       this.rigidBody.setAngvel({ x: 0, y: 0, z: 0 }, true);
+      this.rigidBody.resetForces(true);
+      this.rigidBody.resetTorques(true);
+      this.rigidBody.sleep();
       this.syncMeshToBody();
+
+      // Wake up on last cooldown frame so player can move
+      if (this.respawnCooldown === 0) {
+        this.rigidBody.wakeUp();
+      }
       return;
     }
 
@@ -136,11 +218,11 @@ export class PlayerController {
     // Update jump timers
     this.updateJumpTimers(dt, input);
 
-    // Handle jump
-    this.handleJump(input);
-
-    // Apply movement forces
+    // Apply movement forces (before jump so platform velocity is applied)
     this.applyMovement(dt, input);
+
+    // Handle jump (after movement so we inherit platform velocity)
+    this.handleJump(input);
 
     // Clamp horizontal speed
     this.clampHorizontalSpeed();
@@ -172,19 +254,25 @@ export class PlayerController {
         Math.acos(Math.min(1, Math.max(-1, this.groundNormal.y))) *
         (180 / Math.PI);
       this.isGrounded = slopeAngle <= PHYSICS.MAX_SLOPE_ANGLE;
+
+      // Store collider handle for platform velocity lookup
+      this.groundColliderHandle = this.isGrounded ? hit.collider.handle : null;
     } else {
       this.isGrounded = false;
+      this.groundColliderHandle = null;
     }
 
-    // Handle landing
+    // Handle grounded state
     if (this.isGrounded) {
       this.timeSinceGrounded = 0;
 
       if (!wasGrounded) {
-        this.hasJumped = false;
+        this.hasJumped = false;  // Only reset on LANDING, not every substep
+        this.hasUsedDoubleJump = false; // Reset double jump on landing
+        this.powerUpManager?.resetDoubleJump();
         eventBus.emit(GameEvents.PLAYER_LAND);
 
-        // Execute buffered jump
+        // Execute buffered jump immediately on landing
         if (this.jumpQueued) {
           this.executeJump();
           this.jumpQueued = false;
@@ -199,11 +287,16 @@ export class PlayerController {
       this.timeSinceGrounded += dt;
     }
 
-    // Update jump buffer
+    // Update jump buffer - keep alive while key is held
     if (input.jump) {
-      this.jumpBufferTimer = 0;
+      // Fresh press - queue jump
       this.jumpQueued = true;
-    } else {
+      this.jumpBufferTimer = 0;
+    } else if (input.jumpHeld && this.jumpQueued) {
+      // Still holding after press - keep buffer alive indefinitely
+      this.jumpBufferTimer = 0;
+    } else if (this.jumpQueued) {
+      // Key released - start buffer countdown
       this.jumpBufferTimer += dt;
       if (this.jumpBufferTimer > PHYSICS.JUMP_BUFFER_TIME) {
         this.jumpQueued = false;
@@ -215,18 +308,42 @@ export class PlayerController {
     const canCoyoteJump = this.timeSinceGrounded <= PHYSICS.COYOTE_TIME;
     const canJump = (this.isGrounded || canCoyoteJump) && !this.hasJumped;
 
-    if (canJump && (input.jump || this.jumpQueued)) {
+    // Check for double jump ability
+    const canDoubleJump = !this.isGrounded &&
+      !canCoyoteJump &&
+      this.hasJumped &&
+      !this.hasUsedDoubleJump &&
+      this.powerUpManager?.canDoubleJump();
+
+    // Jump if: can jump AND (key held OR buffered jump queued)
+    if (canJump && (input.jumpHeld || this.jumpQueued)) {
       this.executeJump();
+      this.jumpQueued = false;
+    } else if (canDoubleJump && input.jump) {
+      // Double jump on fresh press only
+      this.executeDoubleJump();
       this.jumpQueued = false;
     }
   }
 
-  private executeJump(): void {
-    // Cancel downward velocity first
+  private executeDoubleJump(): void {
+    // Use the double jump from power-up manager
+    if (!this.powerUpManager?.useDoubleJump()) return;
+
     const vel = this.rigidBody.linvel();
-    if (vel.y < 0) {
-      this.rigidBody.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
-    }
+    // Reset Y velocity and apply jump
+    this.rigidBody.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
+    this.rigidBody.applyImpulse({ x: 0, y: PHYSICS.JUMP_IMPULSE * 0.9, z: 0 }, true);
+
+    this.hasUsedDoubleJump = true;
+
+    eventBus.emit(GameEvents.PLAYER_JUMP);
+  }
+
+  private executeJump(): void {
+    // Reset Y velocity to prevent stacking with external forces (spinner, etc.)
+    const vel = this.rigidBody.linvel();
+    this.rigidBody.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
 
     // Apply jump impulse
     this.rigidBody.applyImpulse({ x: 0, y: PHYSICS.JUMP_IMPULSE, z: 0 }, true);
@@ -254,31 +371,77 @@ export class PlayerController {
       this.moveDirection.addScaledVector(this.cameraRight, input.moveX);
     }
 
-    // Normalize to prevent diagonal speed boost
-    if (this.moveDirection.lengthSq() > 0) {
+    const vel = this.rigidBody.linvel();
+    const hasInput = this.moveDirection.lengthSq() > 0;
+
+    if (hasInput) {
       this.moveDirection.normalize();
-    } else {
-      return; // No input, let damping handle deceleration
     }
 
-    // Select acceleration based on ground state
-    const acceleration = this.isGrounded
-      ? PHYSICS.GROUND_ACCELERATION
-      : PHYSICS.AIR_ACCELERATION;
+    // Apply speed multiplier from power-ups
+    const speedMultiplier = this.powerUpManager?.getSpeedMultiplier() ?? 1.0;
+    const speed = PHYSICS.GROUND_SPEED * speedMultiplier;
 
-    // Calculate force magnitude (F = m * a)
-    const mass = this.rigidBody.mass();
-    const forceMagnitude = acceleration * mass;
+    // Get platform velocity if on moving platform
+    let platformVelX = 0;
+    let platformVelY = 0;
+    let platformVelZ = 0;
+    if (this.isGrounded && this.groundColliderHandle !== null) {
+      const platformVel = platformVelocityRegistry.get(this.groundColliderHandle);
+      if (platformVel) {
+        platformVelX = platformVel.x;
+        platformVelY = platformVel.y;
+        platformVelZ = platformVel.z;
+      }
+    }
 
-    // Apply force in XZ plane only
-    this.rigidBody.addForce(
-      {
-        x: this.moveDirection.x * forceMagnitude,
-        y: 0,
-        z: this.moveDirection.z * forceMagnitude,
-      },
-      true
-    );
+    if (this.isGrounded) {
+      // GROUND: Direct velocity control + platform velocity
+      // Match platform's Y velocity so marble moves with vertically-moving platforms
+      // But skip Y sync if we just jumped (hasJumped prevents cancelling jump velocity)
+      const targetVelY = this.hasJumped ? vel.y : platformVelY;
+
+      if (hasInput) {
+        this.rigidBody.setLinvel(
+          {
+            x: this.moveDirection.x * speed + platformVelX,
+            y: targetVelY,
+            z: this.moveDirection.z * speed + platformVelZ,
+          },
+          true
+        );
+      } else {
+        // No input on ground = gradual deceleration towards platform velocity
+        // Decay factor: higher = faster stop (0.85 gives nice momentum feel)
+        const decay = 0.85;
+        const newVelX = vel.x * decay + platformVelX * (1 - decay);
+        const newVelZ = vel.z * decay + platformVelZ * (1 - decay);
+
+        // Only clear angular velocity when nearly stopped
+        const horizontalSpeed = Math.sqrt(newVelX * newVelX + newVelZ * newVelZ);
+        if (horizontalSpeed < 0.1) {
+          this.rigidBody.setLinvel({ x: platformVelX, y: targetVelY, z: platformVelZ }, true);
+          this.rigidBody.setAngvel({ x: 0, y: 0, z: 0 }, true);
+        } else {
+          this.rigidBody.setLinvel({ x: newVelX, y: targetVelY, z: newVelZ }, true);
+        }
+      }
+    } else {
+      // AIR: Momentum preservation - only change velocity if input is pressed
+      if (hasInput) {
+        // Player pressed a direction key - change to that direction
+        this.rigidBody.setLinvel(
+          {
+            x: this.moveDirection.x * speed,
+            y: vel.y,
+            z: this.moveDirection.z * speed,
+          },
+          true
+        );
+      }
+      // NO INPUT IN AIR = keep current horizontal velocity (momentum preserved)
+      // Don't touch vel.x or vel.z - let the marble drift
+    }
   }
 
   private getCameraRelativeDirections(): void {
@@ -299,8 +462,12 @@ export class PlayerController {
     const vel = this.rigidBody.linvel();
     const horizontalSpeed = Math.sqrt(vel.x * vel.x + vel.z * vel.z);
 
-    if (horizontalSpeed > PHYSICS.MAX_SPEED) {
-      const scale = PHYSICS.MAX_SPEED / horizontalSpeed;
+    // Allow higher max speed when speed boosted
+    const speedMultiplier = this.powerUpManager?.getSpeedMultiplier() ?? 1.0;
+    const maxSpeed = PHYSICS.MAX_SPEED * speedMultiplier;
+
+    if (horizontalSpeed > maxSpeed) {
+      const scale = maxSpeed / horizontalSpeed;
       this.rigidBody.setLinvel(
         { x: vel.x * scale, y: vel.y, z: vel.z * scale },
         true
@@ -320,25 +487,37 @@ export class PlayerController {
    * Respawn at last checkpoint
    */
   respawn(): void {
+    // Reset position (spawn slightly higher to avoid collision resolution issues)
     this.rigidBody.setTranslation(
       {
         x: this.checkpointPosition.x,
-        y: this.checkpointPosition.y,
+        y: this.checkpointPosition.y + 0.5,
         z: this.checkpointPosition.z,
       },
       true
     );
+
+    // Clear ALL momentum - velocity, angular velocity, and accumulated forces
     this.rigidBody.setLinvel({ x: 0, y: 0, z: 0 }, true);
     this.rigidBody.setAngvel({ x: 0, y: 0, z: 0 }, true);
-    this.rigidBody.wakeUp();
+    this.rigidBody.resetForces(true);
+    this.rigidBody.resetTorques(true);
+
+    // Put body to sleep to prevent any physics processing
+    this.rigidBody.sleep();
 
     this.hasJumped = false;
     this.jumpQueued = false;
+    this.hasUsedDoubleJump = false;
     this.timeSinceGrounded = 0;
     this.isGrounded = false;
+    this.teleportCooldown = 0;
 
-    // Skip physics forces for a few frames to ensure velocity reset takes effect
-    this.respawnCooldown = 3;
+    // Skip physics forces for several frames to ensure clean respawn
+    this.respawnCooldown = 5;
+
+    // Sync mesh immediately
+    this.syncMeshToBody();
 
     eventBus.emit(GameEvents.PLAYER_RESPAWN);
   }
@@ -389,6 +568,10 @@ export class PlayerController {
   }
 
   dispose(): void {
+    // Unsubscribe from all events to prevent memory leaks
+    this.unsubscribers.forEach(unsub => unsub());
+    this.unsubscribers = [];
+
     this.physics.removeBody(this.rigidBody);
     this.scene.remove(this.mesh);
     this.mesh.geometry.dispose();

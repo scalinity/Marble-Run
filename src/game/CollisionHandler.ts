@@ -8,6 +8,11 @@ export enum TriggerType {
   GEM = 'gem',
   CHECKPOINT = 'checkpoint',
   GOAL = 'goal',
+  BOUNCE_PAD = 'bouncePad',
+  TELEPORTER = 'teleporter',
+  POWERUP = 'powerup',
+  HAZARD = 'hazard',
+  COLLAPSING_PLATFORM = 'collapsingPlatform',
 }
 
 /**
@@ -95,6 +100,14 @@ export class CollisionHandler {
       case TriggerType.GOAL:
         this.handleGoalCollision(data);
         break;
+      case TriggerType.BOUNCE_PAD:
+      case TriggerType.TELEPORTER:
+      case TriggerType.POWERUP:
+      case TriggerType.HAZARD:
+      case TriggerType.COLLAPSING_PLATFORM:
+        // These triggers handle their own logic via callback
+        data.callback?.();
+        break;
     }
   }
 
@@ -132,12 +145,21 @@ export class CollisionHandler {
   }
 
   /**
-   * Reset collision state for new level
+   * Reset collision state for new level (clears everything including triggers)
    */
   reset(): void {
     this.collectedGems.clear();
     this.activeCheckpointId = null;
     this.triggers.clear();
+  }
+
+  /**
+   * Reset just the collectible state (for replay testing)
+   * Keeps triggers registered so gems/goals still work
+   */
+  resetState(): void {
+    this.collectedGems.clear();
+    this.activeCheckpointId = null;
   }
 
   /**

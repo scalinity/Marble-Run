@@ -6,6 +6,7 @@ import {
   MovingPlatformParams,
 } from '../types';
 import { COLORS, MATERIALS } from '../../../config/constants';
+import { platformVelocityRegistry } from '../../PlatformVelocityRegistry';
 
 const DEFAULT_SIZE = 2.5;
 const DEFAULT_THICKNESS = 0.25;
@@ -85,11 +86,16 @@ export function createMovingPlatform(
   let isPaused = false;
 
   const currentPos = new THREE.Vector3();
+  const prevPos = new THREE.Vector3().copy(waypoints[0]);
   const startPos = new THREE.Vector3();
   const endPos = new THREE.Vector3();
+  const velocity = { x: 0, y: 0, z: 0 };
 
   // Update function
   const update = (dt: number, _elapsed: number): void => {
+    // Store previous position for velocity calculation
+    prevPos.copy(currentPos.lengthSq() > 0 ? currentPos : waypoints[0]);
+
     if (isPaused) {
       pauseTimer -= dt;
       if (pauseTimer <= 0) {
@@ -99,6 +105,11 @@ export function createMovingPlatform(
         nextWaypointIndex = (nextWaypointIndex + 1) % waypoints.length;
         progress = 0;
       }
+      // Platform not moving while paused
+      velocity.x = 0;
+      velocity.y = 0;
+      velocity.z = 0;
+      platformVelocityRegistry.set(collider.handle, velocity);
       return;
     }
 
@@ -120,6 +131,16 @@ export function createMovingPlatform(
     const t = smoothstep(progress);
     currentPos.lerpVectors(startPos, endPos, t);
 
+    // Calculate velocity from position change
+    if (dt > 0) {
+      velocity.x = (currentPos.x - prevPos.x) / dt;
+      velocity.y = (currentPos.y - prevPos.y) / dt;
+      velocity.z = (currentPos.z - prevPos.z) / dt;
+    }
+
+    // Register velocity for PlayerController
+    platformVelocityRegistry.set(collider.handle, velocity);
+
     // Update physics body using setNextKinematicTranslation
     rigidBody.setNextKinematicTranslation({
       x: currentPos.x,
@@ -139,6 +160,7 @@ export function createMovingPlatform(
     collider,
     update,
     dispose: () => {
+      platformVelocityRegistry.remove(collider.handle);
       context.physics.removeBody(rigidBody);
       context.scene.remove(mesh);
       geometry.dispose();
