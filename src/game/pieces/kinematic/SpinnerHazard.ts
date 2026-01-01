@@ -22,9 +22,10 @@ export function createSpinnerHazard(
   const params = data.params as SpinnerHazardParams | undefined;
   const scale = data.scale ?? [1, 1, 1];
 
-  const length = DEFAULT_LENGTH * scale[0];
-  const width = DEFAULT_WIDTH * scale[2];
-  const height = DEFAULT_HEIGHT * scale[1];
+  // Support both params and scale for dimensions
+  const length = (params?.width ?? DEFAULT_LENGTH) * scale[0];
+  const width = (params?.depth ?? DEFAULT_WIDTH) * scale[2];
+  const height = (params?.height ?? DEFAULT_HEIGHT) * scale[1];
   const speed = params?.speed ?? DEFAULT_SPEED;
   const axis = params?.axis ?? 'y';
 
@@ -54,7 +55,7 @@ export function createSpinnerHazard(
   const collider = context.physics.createBoxCollider(
     rigidBody,
     { x: length / 2, y: height / 2, z: width / 2 },
-    { friction: 0.3, restitution: 0.6 }
+    { friction: 0.3, restitution: 0.0 }  // No bounce - prevents stacking with jump
   );
 
   // Rotation state

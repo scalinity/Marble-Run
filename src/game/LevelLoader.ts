@@ -153,6 +153,19 @@ export class LevelLoader {
   }
 
   /**
+   * Reset triggers (gems, checkpoints) for replay testing
+   * Re-enables collected gems without reloading the level
+   */
+  resetTriggers(): void {
+    // Reset gem visibility - they have a reset method via their mesh visibility
+    for (const piece of this.triggerPieces) {
+      if (piece.type === 'gem' && piece.mesh) {
+        piece.mesh.visible = true;
+      }
+    }
+  }
+
+  /**
    * Create context for piece factories
    */
   private createContext(): PieceContext {

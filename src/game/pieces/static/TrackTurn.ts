@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance } from '../types';
+import { PieceData, PieceContext, PieceInstance, TrackTurnParams } from '../types';
 import { COLORS, MATERIALS } from '../../../config/constants';
 import { rapierRotationFromEulerDegrees } from '../../../utils/math';
 
@@ -15,11 +15,12 @@ export function createTrackTurn(
   data: PieceData,
   context: PieceContext
 ): PieceInstance {
+  const params = data.params as TrackTurnParams | undefined;
   const scale = data.scale ?? [1, 1, 1];
   const rotation = data.rotation ?? [0, 0, 0];
 
-  const radius = DEFAULT_RADIUS * scale[0];
-  const width = DEFAULT_WIDTH * scale[0];
+  const radius = (params?.radius ?? DEFAULT_RADIUS) * scale[0];
+  const width = (params?.width ?? DEFAULT_WIDTH) * scale[0];
   const thickness = DEFAULT_THICKNESS * scale[1];
 
   // Create group to hold all segments

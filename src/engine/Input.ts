@@ -22,10 +22,21 @@ export class Input {
   private enabled = true;
 
   constructor() {
+    // Use capture phase for F-keys to prevent browser defaults (F5 = refresh)
+    window.addEventListener('keydown', this.onKeyDownCapture, true);
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
     window.addEventListener('blur', this.onBlur);
   }
+
+  private onKeyDownCapture = (e: KeyboardEvent): void => {
+    const key = e.key.toLowerCase();
+    // Prevent browser default for F5/F6/F7 (replay controls)
+    // Only preventDefault - stopPropagation would block our own handler
+    if (key === 'f5' || key === 'f6' || key === 'f7') {
+      e.preventDefault();
+    }
+  };
 
   private onKeyDown = (e: KeyboardEvent): void => {
     if (!this.enabled) return;
@@ -60,8 +71,21 @@ export class Input {
     return [
       'w', 'a', 's', 'd',
       'arrowup', 'arrowdown', 'arrowleft', 'arrowright',
-      ' ', 'r', 'escape'
+      ' ', 'r', 'escape', 'f5', 'f6', 'f7'
     ].includes(key);
+  }
+
+  /**
+   * Get recording-friendly key state for replay system
+   */
+  getRecordingState(): { forward: boolean; backward: boolean; left: boolean; right: boolean; jump: boolean } {
+    return {
+      forward: this.keys.has('w') || this.keys.has('arrowup'),
+      backward: this.keys.has('s') || this.keys.has('arrowdown'),
+      left: this.keys.has('a') || this.keys.has('arrowleft'),
+      right: this.keys.has('d') || this.keys.has('arrowright'),
+      jump: this.keys.has(' '),
+    };
   }
 
   /**
@@ -135,6 +159,7 @@ export class Input {
   }
 
   dispose(): void {
+    window.removeEventListener('keydown', this.onKeyDownCapture, true);
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('keyup', this.onKeyUp);
     window.removeEventListener('blur', this.onBlur);

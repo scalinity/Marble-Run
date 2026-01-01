@@ -11,21 +11,21 @@ export const PHYSICS = {
   // Marble properties
   MARBLE_RADIUS: 0.5,
   MARBLE_DENSITY: 2.5,
-  MARBLE_FRICTION: 0.8,
-  MARBLE_RESTITUTION: 0.3,
+  MARBLE_FRICTION: 0.3,           // Low friction - we control velocity directly
+  MARBLE_RESTITUTION: 0.0,        // No bounce = no momentum from collisions
 
-  // Movement
-  MAX_SPEED: 8,
-  GROUND_ACCELERATION: 25,
-  AIR_ACCELERATION: 8,
-  LINEAR_DAMPING: 3,
-  ANGULAR_DAMPING: 2,
+  // Movement (velocity-based, no momentum)
+  MAX_SPEED: 5,
+  GROUND_SPEED: 5,
+  AIR_CONTROL: 1.0,          // Full air control (same as ground)
+  LINEAR_DAMPING: 0,         // No damping - we control velocity directly
+  ANGULAR_DAMPING: 2,        // Some spin damping for visual
   GRAVITY_SCALE: 1.5,
 
   // Jump
-  JUMP_IMPULSE: 8,
-  COYOTE_TIME: 0.12, // seconds
-  JUMP_BUFFER_TIME: 0.1,
+  JUMP_IMPULSE: 10,
+  COYOTE_TIME: 0.15, // seconds - time after leaving ground you can still jump
+  JUMP_BUFFER_TIME: 0.2,     // seconds - time before landing that jump input is remembered
   GROUND_CHECK_DISTANCE: 0.15,
   MAX_SLOPE_ANGLE: 45, // degrees
 
@@ -36,6 +36,28 @@ export const PHYSICS = {
 
   // Respawn
   FALL_THRESHOLD: -20, // Y position below which marble respawns
+
+  // Bounce Pads
+  BOUNCE_PAD_FORCE: 15,
+  BOUNCE_PAD_RESTITUTION: 1.8,
+
+  // Ice Surfaces
+  ICE_FRICTION: 0.02,
+
+  // Conveyor Belts
+  CONVEYOR_SPEED: 3,
+
+  // Collapsing Platforms
+  COLLAPSE_DELAY: 1.5, // seconds before collapse
+  COLLAPSE_RESPAWN_TIME: 3.0, // seconds before platform respawns
+  COLLAPSE_SHAKE_INTENSITY: 0.05,
+  COLLAPSE_FALL_SPEED: 8,
+
+  // Teleporters
+  TELEPORT_COOLDOWN: 1.0, // seconds
+
+  // Rotating Platforms
+  ROTATING_SPEED: 1.0, // rad/sec
 } as const;
 
 // ============================================
@@ -66,11 +88,11 @@ export const VFX = {
 // ============================================
 
 export const CAMERA = {
-  OFFSET: { x: 0, y: 8, z: 12 },
-  LOOK_OFFSET_Y: 1,
+  OFFSET: { x: 0, y: 12, z: 20 },  // Zoomed out for better visibility
+  LOOK_OFFSET_Y: 0,
   FOLLOW_SMOOTHNESS: 8,
-  MIN_DISTANCE: 3,
-  MAX_DISTANCE: 20,
+  MIN_DISTANCE: 5,
+  MAX_DISTANCE: 30,
   FOV: 60,
   NEAR: 0.1,
   FAR: 1000,
@@ -96,6 +118,22 @@ export const COLORS = {
   AMBIENT_LIGHT: 0x404060,
   DIRECTIONAL_LIGHT: 0xffffff,
   TRAIL: 0x88ccff,
+
+  // New pieces
+  BOUNCE_PAD: 0xff8844,
+  BOUNCE_PAD_GLOW: 0xffaa66,
+  ICE: 0xaaeeff,
+  CONVEYOR: 0x666688,
+  CONVEYOR_ARROWS: 0xffff44,
+  COLLAPSING: 0xaa6644,
+  COLLAPSING_WARNING: 0xff4444,
+  TELEPORTER: 0x8844ff,
+  ROTATING: 0x6688aa,
+
+  // Power-ups
+  POWERUP_SPEED: 0xff8800,
+  POWERUP_DOUBLE_JUMP: 0x00ffff,
+  POWERUP_SHIELD: 0x4488ff,
 } as const;
 
 export const MATERIALS = {
@@ -105,6 +143,19 @@ export const MATERIALS = {
   GEM_METALNESS: 0.8,
   MARBLE_ROUGHNESS: 0.4,
   MARBLE_METALNESS: 0.3,
+} as const;
+
+// ============================================
+// POWER-UP CONSTANTS
+// ============================================
+
+export const POWERUPS = {
+  SPEED_BOOST_DURATION: 5, // seconds
+  SPEED_BOOST_MULTIPLIER: 1.8,
+
+  DOUBLE_JUMP_DURATION: 10, // seconds (time to use it)
+
+  SHIELD_DURATION: 8, // seconds
 } as const;
 
 // ============================================

@@ -13,11 +13,20 @@ import { createRamp } from './static/Ramp';
 import { createPlatform } from './static/Platform';
 import { createWall } from './static/Wall';
 import { createNarrowBridge } from './static/NarrowBridge';
+import { createBouncePad } from './static/BouncePad';
+import { createIceSurface } from './static/IceSurface';
 import { createMovingPlatform } from './kinematic/MovingPlatform';
 import { createSpinnerHazard } from './kinematic/SpinnerHazard';
+import { createConveyorBelt } from './kinematic/ConveyorBelt';
+import { createCollapsingPlatform } from './kinematic/CollapsingPlatform';
+import { createRotatingPlatform } from './kinematic/RotatingPlatform';
 import { createGem } from './triggers/Gem';
 import { createGoalGate } from './triggers/GoalGate';
 import { createCheckpoint } from './triggers/Checkpoint';
+import { createTeleporter } from './triggers/Teleporter';
+import { createSpeedBoost } from './triggers/SpeedBoost';
+import { createDoubleJump } from './triggers/DoubleJump';
+import { createShield } from './triggers/Shield';
 
 /**
  * Registry of piece factories
@@ -38,15 +47,24 @@ class PieceRegistryClass {
     this.register('platform', { create: createPlatform });
     this.register('wall', { create: createWall });
     this.register('narrowBridge', { create: createNarrowBridge });
+    this.register('bouncePad', { create: createBouncePad });
+    this.register('iceSurface', { create: createIceSurface });
 
     // Kinematic pieces
     this.register('movingPlatform', { create: createMovingPlatform });
     this.register('spinnerHazard', { create: createSpinnerHazard });
+    this.register('conveyorBelt', { create: createConveyorBelt });
+    this.register('collapsingPlatform', { create: createCollapsingPlatform });
+    this.register('rotatingPlatform', { create: createRotatingPlatform });
 
     // Trigger pieces
     this.register('gem', { create: createGem });
     this.register('goalGate', { create: createGoalGate });
     this.register('checkpoint', { create: createCheckpoint });
+    this.register('teleporter', { create: createTeleporter });
+    this.register('speedBoost', { create: createSpeedBoost });
+    this.register('doubleJump', { create: createDoubleJump });
+    this.register('shield', { create: createShield });
   }
 
   /**

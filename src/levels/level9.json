@@ -1,0 +1,358 @@
+{
+  "id": "level9",
+  "name": "Portal Maze",
+  "requireAllGems": false,
+  "spawnPoint": [0, 2, 0],
+  "pieces": [
+    {
+      "id": "start-platform",
+      "type": "platform",
+      "position": [0, 0, 0],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "gem1",
+      "type": "gem",
+      "position": [0, 1.5, 0]
+    },
+    {
+      "id": "intro-track",
+      "type": "trackStraight",
+      "position": [0, 0, -6],
+      "params": { "length": 6 }
+    },
+    {
+      "id": "teleport-intro-platform",
+      "type": "platform",
+      "position": [0, 0, -16],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "teleporter-1a",
+      "type": "teleporter",
+      "position": [0, 0.1, -16],
+      "params": { "linkedId": "teleporter-1b", "color": 8912639 }
+    },
+    {
+      "id": "teleport-dest1-platform",
+      "type": "platform",
+      "position": [12, 0, -30],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "teleporter-1b",
+      "type": "teleporter",
+      "position": [12, 0.1, -30],
+      "params": { "linkedId": "teleporter-1a", "color": 8912639 }
+    },
+    {
+      "id": "gem2",
+      "type": "gem",
+      "position": [12, 1.5, -30]
+    },
+    {
+      "id": "track-to-vertical",
+      "type": "trackStraight",
+      "position": [12, 0, -38],
+      "params": { "length": 8 }
+    },
+    {
+      "id": "vertical-teleport-platform",
+      "type": "platform",
+      "position": [12, 0, -48],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "teleporter-2a",
+      "type": "teleporter",
+      "position": [12, 0.1, -48],
+      "params": { "linkedId": "teleporter-2b", "color": 16744192 }
+    },
+    {
+      "id": "high-platform-dest",
+      "type": "platform",
+      "position": [0, 10, -48],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "teleporter-2b",
+      "type": "teleporter",
+      "position": [0, 10.1, -48],
+      "params": { "linkedId": "teleporter-2a", "color": 16744192 }
+    },
+    {
+      "id": "gem3",
+      "type": "gem",
+      "position": [0, 11.5, -48]
+    },
+    {
+      "id": "bridge-to-collapse",
+      "type": "narrowBridge",
+      "position": [0, 10, -58],
+      "params": { "length": 10, "width": 2 }
+    },
+    {
+      "id": "collapse-section-platform",
+      "type": "platform",
+      "position": [0, 10, -68],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint1",
+      "type": "checkpoint",
+      "position": [0, 10, -68]
+    },
+    {
+      "id": "gem4",
+      "type": "gem",
+      "position": [0, 11.5, -68]
+    },
+    {
+      "id": "collapse1",
+      "type": "collapsingPlatform",
+      "position": [0, 10, -78],
+      "params": { "width": 3.5, "depth": 3.5, "delay": 2.0, "respawnTime": 4 }
+    },
+    {
+      "id": "gem5",
+      "type": "gem",
+      "position": [0, 11.5, -78]
+    },
+    {
+      "id": "collapse2",
+      "type": "collapsingPlatform",
+      "position": [0, 10, -86],
+      "params": { "width": 3, "depth": 3, "delay": 1.5, "respawnTime": 4 }
+    },
+    {
+      "id": "gem6",
+      "type": "gem",
+      "position": [0, 11.5, -86]
+    },
+    {
+      "id": "collapse3",
+      "type": "collapsingPlatform",
+      "position": [0, 10, -94],
+      "params": { "width": 2.5, "depth": 2.5, "delay": 1.0, "respawnTime": 4 }
+    },
+    {
+      "id": "gem7",
+      "type": "gem",
+      "position": [0, 11.5, -94]
+    },
+    {
+      "id": "safe-platform1",
+      "type": "platform",
+      "position": [0, 10, -104],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "maze-entry",
+      "type": "platform",
+      "position": [0, 10, -116],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "track-entry",
+      "type": "trackStraight",
+      "position": [0, 10, -110],
+      "params": { "length": 6 }
+    },
+    {
+      "id": "teleporter-wrong",
+      "type": "teleporter",
+      "position": [-3, 10.1, -116],
+      "params": { "linkedId": "teleporter-wrong-dest", "color": 16711680 }
+    },
+    {
+      "id": "teleporter-correct",
+      "type": "teleporter",
+      "position": [3, 10.1, -116],
+      "params": { "linkedId": "teleporter-correct-dest", "color": 65280 }
+    },
+    {
+      "id": "wrong-dest-platform",
+      "type": "platform",
+      "position": [-10, 6, -90],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "teleporter-wrong-dest",
+      "type": "teleporter",
+      "position": [-10, 6.1, -90],
+      "params": { "linkedId": "teleporter-wrong", "color": 16711680 }
+    },
+    {
+      "id": "correct-dest-platform",
+      "type": "platform",
+      "position": [10, 10, -130],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "teleporter-correct-dest",
+      "type": "teleporter",
+      "position": [10, 10.1, -130],
+      "params": { "linkedId": "teleporter-correct", "color": 65280 }
+    },
+    {
+      "id": "checkpoint2",
+      "type": "checkpoint",
+      "position": [10, 10, -130]
+    },
+    {
+      "id": "gem8",
+      "type": "gem",
+      "position": [10, 11.5, -130]
+    },
+    {
+      "id": "maze-bridge1",
+      "type": "narrowBridge",
+      "position": [4, 10, -130],
+      "rotation": [0, 90, 0],
+      "params": { "length": 8, "width": 1.5 }
+    },
+    {
+      "id": "maze-choice2",
+      "type": "platform",
+      "position": [-4, 10, -130],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "gem9",
+      "type": "gem",
+      "position": [-4, 11.5, -130]
+    },
+    {
+      "id": "teleporter-3a",
+      "type": "teleporter",
+      "position": [-4, 10.1, -132],
+      "params": { "linkedId": "teleporter-3b", "color": 16776960 }
+    },
+    {
+      "id": "teleporter-3b-platform",
+      "type": "platform",
+      "position": [-4, 14, -150],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "teleporter-3b",
+      "type": "teleporter",
+      "position": [-4, 14.1, -150],
+      "params": { "linkedId": "teleporter-3a", "color": 16776960 }
+    },
+    {
+      "id": "gem10",
+      "type": "gem",
+      "position": [-4, 15.5, -150]
+    },
+    {
+      "id": "upper-bridge",
+      "type": "narrowBridge",
+      "position": [2, 14, -150],
+      "rotation": [0, 90, 0],
+      "params": { "length": 8, "width": 1.2 }
+    },
+    {
+      "id": "gauntlet-entry",
+      "type": "platform",
+      "position": [8, 14, -150],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "gem11",
+      "type": "gem",
+      "position": [8, 15.5, -150]
+    },
+    {
+      "id": "teleporter-spinner",
+      "type": "teleporter",
+      "position": [8, 14.1, -152],
+      "params": { "linkedId": "teleporter-spinner-dest", "color": 16711935 }
+    },
+    {
+      "id": "spinner-platform",
+      "type": "platform",
+      "position": [0, 8, -170],
+      "params": { "width": 7, "depth": 7 }
+    },
+    {
+      "id": "teleporter-spinner-dest",
+      "type": "teleporter",
+      "position": [0, 8.1, -168],
+      "params": { "linkedId": "teleporter-spinner", "color": 16711935 }
+    },
+    {
+      "id": "gauntlet-spinner1",
+      "type": "spinnerHazard",
+      "position": [0, 8.5, -170],
+      "params": { "width": 5.5, "height": 0.4, "depth": 0.7, "speed": 2.0 }
+    },
+    {
+      "id": "gauntlet-spinner2",
+      "type": "spinnerHazard",
+      "position": [0, 8.5, -170],
+      "params": { "width": 5.5, "height": 0.4, "depth": 0.7, "speed": -2.5 }
+    },
+    {
+      "id": "gem12",
+      "type": "gem",
+      "position": [0, 10.5, -170]
+    },
+    {
+      "id": "collapse-gauntlet1",
+      "type": "collapsingPlatform",
+      "position": [0, 8, -180],
+      "params": { "width": 3, "depth": 3, "delay": 1.2, "respawnTime": 3 }
+    },
+    {
+      "id": "gem13",
+      "type": "gem",
+      "position": [0, 9.5, -180]
+    },
+    {
+      "id": "collapse-gauntlet2",
+      "type": "collapsingPlatform",
+      "position": [0, 8, -188],
+      "params": { "width": 2.5, "depth": 2.5, "delay": 1.0, "respawnTime": 3 }
+    },
+    {
+      "id": "speedboost-platform",
+      "type": "platform",
+      "position": [0, 8, -198],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "speedboost",
+      "type": "speedBoost",
+      "position": [0, 8.5, -198],
+      "params": { "duration": 6 }
+    },
+    {
+      "id": "gem14",
+      "type": "gem",
+      "position": [0, 9.5, -198]
+    },
+    {
+      "id": "final-bridge",
+      "type": "narrowBridge",
+      "position": [0, 8, -210],
+      "params": { "length": 16, "width": 1.0 }
+    },
+    {
+      "id": "gem15",
+      "type": "gem",
+      "position": [0, 9.5, -210]
+    },
+    {
+      "id": "goal-platform",
+      "type": "platform",
+      "position": [0, 8, -224],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "goal",
+      "type": "goalGate",
+      "position": [0, 8, -224]
+    }
+  ]
+}

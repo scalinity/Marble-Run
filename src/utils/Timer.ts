@@ -7,6 +7,7 @@ export class Timer {
   private pauseStart = 0;
   private running = false;
   private paused = false;
+  private finalTime = 0;  // Captured when stopped
 
   /**
    * Start or restart the timer
@@ -16,12 +17,16 @@ export class Timer {
     this.pausedTime = 0;
     this.running = true;
     this.paused = false;
+    this.finalTime = 0;
   }
 
   /**
    * Stop the timer
    */
   stop(): void {
+    if (this.running) {
+      this.finalTime = this.getElapsed();  // Capture final time before stopping
+    }
     this.running = false;
     this.paused = false;
   }
@@ -50,7 +55,7 @@ export class Timer {
    * Get elapsed time in seconds
    */
   getElapsed(): number {
-    if (!this.running) return 0;
+    if (!this.running) return this.finalTime;
 
     const now = performance.now();
     let elapsed = now - this.startTime - this.pausedTime;
