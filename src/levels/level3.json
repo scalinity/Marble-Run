@@ -1,0 +1,194 @@
+{
+  "id": "level3",
+  "name": "Narrow Escape",
+  "requireAllGems": true,
+  "spawnPoint": [0, 2, 0],
+  "pieces": [
+    {
+      "id": "start-platform",
+      "type": "platform",
+      "position": [0, 0, 0],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "bridge1",
+      "type": "narrowBridge",
+      "position": [0, 0, -8],
+      "params": { "length": 12, "width": 1.5 }
+    },
+    {
+      "id": "gem1",
+      "type": "gem",
+      "position": [0, 1.5, -8]
+    },
+    {
+      "id": "platform2",
+      "type": "platform",
+      "position": [0, 0, -18],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint1",
+      "type": "checkpoint",
+      "position": [0, 0, -18]
+    },
+    {
+      "id": "gem2",
+      "type": "gem",
+      "position": [0, 1.5, -18]
+    },
+    {
+      "id": "ramp1",
+      "type": "ramp",
+      "position": [0, 0, -24],
+      "params": { "length": 6, "height": 3 }
+    },
+    {
+      "id": "bridge2",
+      "type": "narrowBridge",
+      "position": [0, 3, -34],
+      "params": { "length": 10, "width": 1.2 }
+    },
+    {
+      "id": "gem3",
+      "type": "gem",
+      "position": [0, 4.5, -34]
+    },
+    {
+      "id": "platform3",
+      "type": "platform",
+      "position": [0, 3, -42],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "spinner1",
+      "type": "spinnerHazard",
+      "position": [0, 3.5, -42],
+      "params": { "width": 6, "height": 0.4, "depth": 0.8, "speed": 1.5 }
+    },
+    {
+      "id": "bridge3",
+      "type": "narrowBridge",
+      "position": [6, 3, -42],
+      "rotation": [0, 90, 0],
+      "params": { "length": 8, "width": 1.5 }
+    },
+    {
+      "id": "gem4",
+      "type": "gem",
+      "position": [10, 4.5, -42]
+    },
+    {
+      "id": "platform4",
+      "type": "platform",
+      "position": [16, 3, -42],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint2",
+      "type": "checkpoint",
+      "position": [16, 3, -42]
+    },
+    {
+      "id": "moving1",
+      "type": "movingPlatform",
+      "position": [16, 3, -50],
+      "params": {
+        "width": 3,
+        "depth": 3,
+        "waypoints": [[16, 3, -50], [16, 6, -50]],
+        "speed": 2,
+        "pauseDuration": 1
+      }
+    },
+    {
+      "id": "platform5",
+      "type": "platform",
+      "position": [16, 6, -58],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "gem5",
+      "type": "gem",
+      "position": [16, 7.5, -58]
+    },
+    {
+      "id": "bridge4",
+      "type": "narrowBridge",
+      "position": [16, 6, -66],
+      "params": { "length": 12, "width": 1 }
+    },
+    {
+      "id": "gem6",
+      "type": "gem",
+      "position": [16, 7.5, -66]
+    },
+    {
+      "id": "platform6",
+      "type": "platform",
+      "position": [16, 6, -76],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint3",
+      "type": "checkpoint",
+      "position": [16, 6, -76]
+    },
+    {
+      "id": "spinner2",
+      "type": "spinnerHazard",
+      "position": [16, 6.5, -76],
+      "params": { "width": 7, "height": 0.4, "depth": 0.8, "speed": 2 }
+    },
+    {
+      "id": "bridge5",
+      "type": "narrowBridge",
+      "position": [22, 6, -76],
+      "rotation": [0, 90, 0],
+      "params": { "length": 8, "width": 1.2 }
+    },
+    {
+      "id": "gem7",
+      "type": "gem",
+      "position": [26, 7.5, -76]
+    },
+    {
+      "id": "platform7",
+      "type": "platform",
+      "position": [32, 6, -76],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "gem8",
+      "type": "gem",
+      "position": [32, 7.5, -76]
+    },
+    {
+      "id": "ramp2",
+      "type": "ramp",
+      "position": [32, 6, -82],
+      "params": { "length": 6, "height": 2 }
+    },
+    {
+      "id": "platform8",
+      "type": "platform",
+      "position": [32, 8, -90],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "gem9",
+      "type": "gem",
+      "position": [30, 9.5, -90]
+    },
+    {
+      "id": "gem10",
+      "type": "gem",
+      "position": [34, 9.5, -90]
+    },
+    {
+      "id": "goal",
+      "type": "goalGate",
+      "position": [32, 8, -94]
+    }
+  ]
+}

@@ -1,0 +1,374 @@
+{
+  "id": "level6",
+  "name": "Final Challenge",
+  "requireAllGems": true,
+  "spawnPoint": [0, 2, 0],
+  "pieces": [
+    {
+      "id": "start-platform",
+      "type": "platform",
+      "position": [0, 0, 0],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "gem1",
+      "type": "gem",
+      "position": [0, 1.5, 0]
+    },
+    {
+      "id": "track1",
+      "type": "trackStraight",
+      "position": [0, 0, -6],
+      "params": { "length": 6 }
+    },
+    {
+      "id": "speed-moving1",
+      "type": "movingPlatform",
+      "position": [0, 0, -14],
+      "params": {
+        "width": 3,
+        "depth": 3,
+        "waypoints": [[0, 0, -14], [10, 0, -14]],
+        "speed": 5,
+        "pauseDuration": 0.1
+      }
+    },
+    {
+      "id": "gem2",
+      "type": "gem",
+      "position": [5, 1.5, -14]
+    },
+    {
+      "id": "speed-moving2",
+      "type": "movingPlatform",
+      "position": [14, 0, -14],
+      "params": {
+        "width": 3,
+        "depth": 3,
+        "waypoints": [[14, 0, -14], [24, 0, -14]],
+        "speed": 5,
+        "pauseDuration": 0.1
+      }
+    },
+    {
+      "id": "platform2",
+      "type": "platform",
+      "position": [28, 0, -14],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "bridge1",
+      "type": "narrowBridge",
+      "position": [28, 0, -22],
+      "params": { "length": 10, "width": 1.2 }
+    },
+    {
+      "id": "gem3",
+      "type": "gem",
+      "position": [28, 1.5, -22]
+    },
+    {
+      "id": "spinner1",
+      "type": "spinnerHazard",
+      "position": [28, 0.5, -26],
+      "params": { "width": 5, "height": 0.4, "depth": 0.8, "speed": 2.5 }
+    },
+    {
+      "id": "platform3",
+      "type": "platform",
+      "position": [28, 0, -30],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint1",
+      "type": "checkpoint",
+      "position": [28, 0, -30]
+    },
+    {
+      "id": "elevator1",
+      "type": "movingPlatform",
+      "position": [28, 0, -38],
+      "params": {
+        "width": 4,
+        "depth": 4,
+        "waypoints": [[28, 0, -38], [28, 8, -38]],
+        "speed": 3,
+        "pauseDuration": 0.5
+      }
+    },
+    {
+      "id": "tower1",
+      "type": "platform",
+      "position": [20, 8, -38],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "gem4",
+      "type": "gem",
+      "position": [20, 9.5, -38]
+    },
+    {
+      "id": "elevator2",
+      "type": "movingPlatform",
+      "position": [20, 8, -46],
+      "params": {
+        "width": 4,
+        "depth": 4,
+        "waypoints": [[20, 8, -46], [20, 16, -46]],
+        "speed": 2.5,
+        "pauseDuration": 0.5
+      }
+    },
+    {
+      "id": "tower2",
+      "type": "platform",
+      "position": [28, 16, -46],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "gem5",
+      "type": "gem",
+      "position": [28, 17.5, -46]
+    },
+    {
+      "id": "elevator3",
+      "type": "movingPlatform",
+      "position": [28, 16, -54],
+      "params": {
+        "width": 4,
+        "depth": 4,
+        "waypoints": [[28, 16, -54], [28, 22, -54]],
+        "speed": 2,
+        "pauseDuration": 0.8
+      }
+    },
+    {
+      "id": "high-platform",
+      "type": "platform",
+      "position": [28, 22, -62],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint2",
+      "type": "checkpoint",
+      "position": [28, 22, -62]
+    },
+    {
+      "id": "gem6",
+      "type": "gem",
+      "position": [28, 23.5, -62]
+    },
+    {
+      "id": "high-bridge1",
+      "type": "narrowBridge",
+      "position": [22, 22, -62],
+      "rotation": [0, 90, 0],
+      "params": { "length": 8, "width": 1.1 }
+    },
+    {
+      "id": "gem7",
+      "type": "gem",
+      "position": [18, 23.5, -62]
+    },
+    {
+      "id": "high-platform2",
+      "type": "platform",
+      "position": [12, 22, -62],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "spinner2",
+      "type": "spinnerHazard",
+      "position": [12, 22.5, -62],
+      "params": { "width": 5, "height": 0.4, "depth": 0.8, "speed": 2 }
+    },
+    {
+      "id": "spinner3",
+      "type": "spinnerHazard",
+      "position": [12, 22.5, -62],
+      "params": { "width": 5, "height": 0.4, "depth": 0.8, "speed": -1.5 }
+    },
+    {
+      "id": "high-bridge2",
+      "type": "narrowBridge",
+      "position": [12, 22, -70],
+      "params": { "length": 10, "width": 1.0 }
+    },
+    {
+      "id": "gem8",
+      "type": "gem",
+      "position": [12, 23.5, -70]
+    },
+    {
+      "id": "high-platform3",
+      "type": "platform",
+      "position": [12, 22, -78],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint3",
+      "type": "checkpoint",
+      "position": [12, 22, -78]
+    },
+    {
+      "id": "ramp-down1",
+      "type": "ramp",
+      "position": [12, 18, -84],
+      "rotation": [0, 180, 0],
+      "params": { "length": 8, "height": 4 }
+    },
+    {
+      "id": "gem9",
+      "type": "gem",
+      "position": [12, 19, -84]
+    },
+    {
+      "id": "mid-platform",
+      "type": "platform",
+      "position": [12, 14, -94],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "gem10",
+      "type": "gem",
+      "position": [12, 15.5, -94]
+    },
+    {
+      "id": "ramp-down2",
+      "type": "ramp",
+      "position": [12, 10, -100],
+      "rotation": [0, 180, 0],
+      "params": { "length": 8, "height": 4 }
+    },
+    {
+      "id": "gem11",
+      "type": "gem",
+      "position": [12, 11, -100]
+    },
+    {
+      "id": "maze-center",
+      "type": "platform",
+      "position": [12, 6, -110],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "checkpoint4",
+      "type": "checkpoint",
+      "position": [12, 6, -110]
+    },
+    {
+      "id": "maze-moving1",
+      "type": "movingPlatform",
+      "position": [4, 6, -110],
+      "params": {
+        "width": 3,
+        "depth": 3,
+        "waypoints": [[4, 6, -110], [4, 6, -118]],
+        "speed": 3,
+        "pauseDuration": 0.3
+      }
+    },
+    {
+      "id": "maze-moving2",
+      "type": "movingPlatform",
+      "position": [4, 6, -122],
+      "params": {
+        "width": 3,
+        "depth": 3,
+        "waypoints": [[4, 6, -122], [12, 6, -122]],
+        "speed": 3,
+        "pauseDuration": 0.3
+      }
+    },
+    {
+      "id": "gem12",
+      "type": "gem",
+      "position": [8, 7.5, -122]
+    },
+    {
+      "id": "maze-moving3",
+      "type": "movingPlatform",
+      "position": [16, 6, -122],
+      "params": {
+        "width": 3,
+        "depth": 3,
+        "waypoints": [[16, 6, -122], [16, 6, -130]],
+        "speed": 3,
+        "pauseDuration": 0.3
+      }
+    },
+    {
+      "id": "maze-moving4",
+      "type": "movingPlatform",
+      "position": [16, 6, -134],
+      "params": {
+        "width": 3,
+        "depth": 3,
+        "waypoints": [[16, 6, -134], [8, 6, -134]],
+        "speed": 3,
+        "pauseDuration": 0.3
+      }
+    },
+    {
+      "id": "pre-final-platform",
+      "type": "platform",
+      "position": [4, 6, -134],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "checkpoint5",
+      "type": "checkpoint",
+      "position": [4, 6, -134]
+    },
+    {
+      "id": "gem13",
+      "type": "gem",
+      "position": [4, 7.5, -134]
+    },
+    {
+      "id": "final-bridge",
+      "type": "narrowBridge",
+      "position": [4, 6, -144],
+      "params": { "length": 14, "width": 0.8 }
+    },
+    {
+      "id": "gem14",
+      "type": "gem",
+      "position": [4, 7.5, -144]
+    },
+    {
+      "id": "final-platform",
+      "type": "platform",
+      "position": [4, 6, -156],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "final-spinner1",
+      "type": "spinnerHazard",
+      "position": [2, 6.5, -156],
+      "params": { "width": 4, "height": 0.4, "depth": 0.6, "speed": 2 }
+    },
+    {
+      "id": "final-spinner2",
+      "type": "spinnerHazard",
+      "position": [6, 6.5, -156],
+      "params": { "width": 4, "height": 0.4, "depth": 0.6, "speed": -2.5 }
+    },
+    {
+      "id": "final-spinner3",
+      "type": "spinnerHazard",
+      "position": [4, 6.5, -156],
+      "params": { "width": 4, "height": 0.4, "depth": 0.6, "speed": 1.5 }
+    },
+    {
+      "id": "gem15",
+      "type": "gem",
+      "position": [4, 8, -156]
+    },
+    {
+      "id": "goal",
+      "type": "goalGate",
+      "position": [4, 6, -162]
+    }
+  ]
+}
