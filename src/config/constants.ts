@@ -11,21 +11,21 @@ export const PHYSICS = {
   // Marble properties
   MARBLE_RADIUS: 0.5,
   MARBLE_DENSITY: 2.5,
-  MARBLE_FRICTION: 0.3,           // Low friction - we control velocity directly
-  MARBLE_RESTITUTION: 0.0,        // No bounce = no momentum from collisions
+  MARBLE_FRICTION: 0.3, // Low friction - we control velocity directly
+  MARBLE_RESTITUTION: 0.0, // No bounce = no momentum from collisions
 
   // Movement (velocity-based, no momentum)
   MAX_SPEED: 5,
   GROUND_SPEED: 5,
-  AIR_CONTROL: 1.0,          // Full air control (same as ground)
-  LINEAR_DAMPING: 0,         // No damping - we control velocity directly
-  ANGULAR_DAMPING: 2,        // Some spin damping for visual
+  AIR_CONTROL: 1.0, // Full air control (same as ground)
+  LINEAR_DAMPING: 0, // No damping - we control velocity directly
+  ANGULAR_DAMPING: 2, // Some spin damping for visual
   GRAVITY_SCALE: 1.5,
 
   // Jump
   JUMP_IMPULSE: 10,
   COYOTE_TIME: 0.15, // seconds - time after leaving ground you can still jump
-  JUMP_BUFFER_TIME: 0.2,     // seconds - time before landing that jump input is remembered
+  JUMP_BUFFER_TIME: 0.2, // seconds - time before landing that jump input is remembered
   GROUND_CHECK_DISTANCE: 0.15,
   MAX_SLOPE_ANGLE: 45, // degrees
 
@@ -81,6 +81,21 @@ export const VFX = {
   // Effects
   GEM_RING_DURATION: 300, // ms
   GOAL_FREEZE_DURATION: 800, // ms
+
+  // Starfield
+  STARFIELD_COUNT: 2000,
+  STARFIELD_MIN_RADIUS: 200,
+  STARFIELD_MAX_RADIUS: 500,
+
+  // Screen shake
+  SCREEN_SHAKE_INTENSITY: 0.3,
+  SCREEN_SHAKE_DURATION: 0.2,
+
+  // Neon edges
+  EDGE_COLOR: 0x00ffaa,
+  EDGE_COLOR_ICE: 0x66ffff, // Icy cyan for ice surfaces
+  EDGE_COLOR_BOUNCE: 0xff8844, // Orange for bounce pads (matches glow)
+  EDGE_OPACITY: 0.6,
 } as const;
 
 // ============================================
@@ -88,7 +103,7 @@ export const VFX = {
 // ============================================
 
 export const CAMERA = {
-  OFFSET: { x: 0, y: 12, z: 20 },  // Zoomed out for better visibility
+  OFFSET: { x: 0, y: 12, z: 20 }, // Zoomed out for better visibility
   LOOK_OFFSET_Y: 0,
   FOLLOW_SMOOTHNESS: 8,
   MIN_DISTANCE: 5,

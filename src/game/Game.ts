@@ -220,6 +220,14 @@ export class Game {
       // Player respawn - clear trail
       eventBus.on(GameEvents.PLAYER_RESPAWN, () => {
         this.vfx.clearTrail();
+      }),
+
+      // Player land - trigger screen shake
+      eventBus.on(GameEvents.PLAYER_LAND, () => {
+        if (this.cameraRig && this.player) {
+          // Small shake on landing, intensity based on fall speed would be ideal
+          this.cameraRig.shake(0.15, 0.1);
+        }
       })
     );
   }
@@ -509,8 +517,8 @@ export class Game {
       this.cameraRig.update(this.player.getPosition(), dt);
     }
 
-    // Update VFX
-    this.vfx.update(dt);
+    // Update VFX (pass camera position for starfield)
+    this.vfx.update(dt, this.renderer.camera.position);
     if (this.player) {
       this.vfx.updateTrail(
         this.player.getPosition(),

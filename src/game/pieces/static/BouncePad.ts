@@ -1,8 +1,13 @@
-import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance, BouncePadParams } from '../types';
-import { COLORS, PHYSICS } from '../../../config/constants';
-import { TriggerType } from '../../CollisionHandler';
-import { eventBus, GameEvents } from '../../../utils/EventBus';
+import * as THREE from "three";
+import {
+  PieceData,
+  PieceContext,
+  PieceInstance,
+  BouncePadParams,
+} from "../types";
+import { COLORS, PHYSICS, VFX } from "../../../config/constants";
+import { TriggerType } from "../../CollisionHandler";
+import { eventBus, GameEvents } from "../../../utils/EventBus";
 
 const DEFAULT_RADIUS = 1.5;
 const DEFAULT_HEIGHT = 0.15;
@@ -14,14 +19,19 @@ const PULSE_INTENSITY = 0.3;
  */
 export function createBouncePad(
   data: PieceData,
-  context: PieceContext
+  context: PieceContext,
 ): PieceInstance {
   const params = data.params as BouncePadParams | undefined;
   const radius = params?.radius ?? DEFAULT_RADIUS;
   const bounceForce = params?.bounceForce ?? PHYSICS.BOUNCE_PAD_FORCE;
 
   // Create cylinder mesh for the pad
-  const geometry = new THREE.CylinderGeometry(radius, radius * 0.9, DEFAULT_HEIGHT, 32);
+  const geometry = new THREE.CylinderGeometry(
+    radius,
+    radius * 0.9,
+    DEFAULT_HEIGHT,
+    32,
+  );
   const material = new THREE.MeshStandardMaterial({
     color: COLORS.BOUNCE_PAD,
     roughness: 0.4,
@@ -34,10 +44,20 @@ export function createBouncePad(
   mesh.position.set(
     data.position[0],
     data.position[1] + DEFAULT_HEIGHT / 2,
-    data.position[2]
+    data.position[2],
   );
   mesh.castShadow = true;
   mesh.receiveShadow = true;
+
+  // Add neon edge wireframe
+  const edgeGeometry = new THREE.EdgesGeometry(geometry, 15);
+  const neonEdgeMaterial = new THREE.LineBasicMaterial({
+    color: VFX.EDGE_COLOR_BOUNCE,
+    transparent: true,
+    opacity: VFX.EDGE_OPACITY,
+  });
+  const edges = new THREE.LineSegments(edgeGeometry, neonEdgeMaterial);
+  mesh.add(edges);
 
   // Add ring decoration
   const ringGeometry = new THREE.TorusGeometry(radius * 0.7, 0.05, 8, 32);
@@ -65,7 +85,7 @@ export function createBouncePad(
     rigidBody,
     DEFAULT_HEIGHT / 2,
     radius,
-    { friction: 0.8, restitution: PHYSICS.BOUNCE_PAD_RESTITUTION }
+    { friction: 0.8, restitution: PHYSICS.BOUNCE_PAD_RESTITUTION },
   );
 
   // Sensor collider for trigger detection (slightly larger)
@@ -73,7 +93,7 @@ export function createBouncePad(
     rigidBody,
     DEFAULT_HEIGHT,
     radius * 1.1,
-    { friction: 0, restitution: 0 }
+    { friction: 0, restitution: 0 },
   );
   // Make it a sensor - need to access the Rapier collider directly
   const world = context.physics.world;
@@ -104,7 +124,7 @@ export function createBouncePad(
     sensorCollider.handle,
     TriggerType.BOUNCE_PAD,
     data.id,
-    onBounce
+    onBounce,
   );
 
   // Pulsing animation
@@ -134,6 +154,8 @@ export function createBouncePad(
       context.scene.remove(mesh);
       geometry.dispose();
       material.dispose();
+      edgeGeometry.dispose();
+      neonEdgeMaterial.dispose();
       ringGeometry.dispose();
       ringMaterial.dispose();
     },

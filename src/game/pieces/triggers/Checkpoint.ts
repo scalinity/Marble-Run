@@ -1,7 +1,7 @@
-import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance } from '../types';
-import { COLORS } from '../../../config/constants';
-import { TriggerType } from '../../CollisionHandler';
+import * as THREE from "three";
+import { PieceData, PieceContext, PieceInstance } from "../types";
+import { COLORS } from "../../../config/constants";
+import { TriggerType } from "../../CollisionHandler";
 
 const CHECKPOINT_RADIUS = 1.5;
 const CHECKPOINT_HEIGHT = 0.1;
@@ -12,7 +12,7 @@ const RING_INNER_RADIUS = 1.2;
  */
 export function createCheckpoint(
   data: PieceData,
-  context: PieceContext
+  context: PieceContext,
 ): PieceInstance {
   const scale = data.scale ?? [1, 1, 1];
 
@@ -37,7 +37,11 @@ export function createCheckpoint(
   group.add(base);
 
   // Glowing ring
-  const ringGeo = new THREE.RingGeometry(RING_INNER_RADIUS * scale[0], radius, 32);
+  const ringGeo = new THREE.RingGeometry(
+    RING_INNER_RADIUS * scale[0],
+    radius,
+    32,
+  );
   const ringMat = new THREE.MeshBasicMaterial({
     color: COLORS.CHECKPOINT,
     transparent: true,
@@ -49,17 +53,34 @@ export function createCheckpoint(
   ring.position.y = height / 2 + 0.01;
   group.add(ring);
 
-  // Active indicator (hidden initially)
-  const activeGeo = new THREE.TorusGeometry(radius * 0.8, 0.05, 8, 32);
-  const activeMat = new THREE.MeshBasicMaterial({
+  // Dual counter-rotating rings (hidden initially)
+  // Outer ring (clockwise)
+  const outerRingGeo = new THREE.TorusGeometry(radius * 0.9, 0.04, 8, 32);
+  const outerRingMat = new THREE.MeshBasicMaterial({
     color: COLORS.CHECKPOINT_ACTIVE,
     transparent: true,
     opacity: 0,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
   });
-  const activeRing = new THREE.Mesh(activeGeo, activeMat);
-  activeRing.rotation.x = Math.PI / 2;
-  activeRing.position.y = 0.5;
-  group.add(activeRing);
+  const outerRing = new THREE.Mesh(outerRingGeo, outerRingMat);
+  outerRing.rotation.x = Math.PI / 2;
+  outerRing.position.y = 0.5;
+  group.add(outerRing);
+
+  // Inner ring (counter-clockwise)
+  const innerRingGeo = new THREE.TorusGeometry(radius * 0.7, 0.03, 8, 32);
+  const innerRingMat = new THREE.MeshBasicMaterial({
+    color: COLORS.CHECKPOINT_ACTIVE,
+    transparent: true,
+    opacity: 0,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+  const innerRing = new THREE.Mesh(innerRingGeo, innerRingMat);
+  innerRing.rotation.x = Math.PI / 2;
+  innerRing.position.y = 0.5;
+  group.add(innerRing);
 
   context.scene.add(group);
 
@@ -73,18 +94,21 @@ export function createCheckpoint(
   const collider = context.physics.createBoxCollider(
     rigidBody,
     { x: radius, y: 1, z: radius },
-    { isSensor: true }
+    { isSensor: true },
   );
 
   // Track activation state
   let activated = false;
   let activationTime = 0;
 
+  // Pre-create emissive color to avoid per-frame allocation
+  const activeEmissive = new THREE.Color(COLORS.CHECKPOINT_ACTIVE);
+
   // Checkpoint position for respawn
   const checkpointPos = new THREE.Vector3(
     data.position[0],
     data.position[1] + 1, // Spawn slightly above
-    data.position[2]
+    data.position[2],
   );
 
   // Activation callback
@@ -99,7 +123,7 @@ export function createCheckpoint(
     collider.handle,
     TriggerType.CHECKPOINT,
     data.id,
-    onActivate
+    onActivate,
   );
 
   // Update function
@@ -108,16 +132,23 @@ export function createCheckpoint(
       // Active state - bright pulsing
       activationTime += dt;
       baseMat.color.setHex(COLORS.CHECKPOINT_ACTIVE);
-      baseMat.emissive = new THREE.Color(COLORS.CHECKPOINT_ACTIVE);
+      baseMat.emissive = activeEmissive;
       baseMat.emissiveIntensity = 0.3 + Math.sin(elapsed * 4) * 0.1;
 
       ringMat.color.setHex(COLORS.CHECKPOINT_ACTIVE);
       ringMat.opacity = 0.6 + Math.sin(elapsed * 3) * 0.2;
 
-      // Animate active ring
-      activeMat.opacity = 0.8;
-      activeRing.position.y = 0.5 + Math.sin(elapsed * 2) * 0.2;
-      activeRing.rotation.z = elapsed;
+      // Animate dual counter-rotating rings
+      outerRingMat.opacity = 0.8;
+      innerRingMat.opacity = 0.6;
+
+      // Outer ring - clockwise rotation
+      outerRing.rotation.z = elapsed * 2;
+      outerRing.position.y = 0.5 + Math.sin(elapsed * 2) * 0.15;
+
+      // Inner ring - counter-clockwise rotation
+      innerRing.rotation.z = -elapsed * 1.5;
+      innerRing.position.y = 0.5 + Math.sin(elapsed * 2 + Math.PI) * 0.1;
     } else {
       // Inactive state - subtle pulsing
       ringMat.opacity = 0.3 + Math.sin(elapsed * 2) * 0.1;
@@ -138,8 +169,10 @@ export function createCheckpoint(
       baseMat.dispose();
       ringGeo.dispose();
       ringMat.dispose();
-      activeGeo.dispose();
-      activeMat.dispose();
+      outerRingGeo.dispose();
+      outerRingMat.dispose();
+      innerRingGeo.dispose();
+      innerRingMat.dispose();
     },
   };
 }

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { PieceData, PieceContext, PieceInstance, TrackTurnParams } from '../types';
-import { COLORS, MATERIALS } from '../../../config/constants';
+import { COLORS, MATERIALS, VFX } from '../../../config/constants';
 import { rapierRotationFromEulerDegrees } from '../../../utils/math';
 
 const DEFAULT_RADIUS = 2;
@@ -44,6 +44,13 @@ export function createTrackTurn(
 
   const meshes: THREE.Mesh[] = [];
 
+  const edgeGeometries: THREE.EdgesGeometry[] = [];
+  const edgeMaterial = new THREE.LineBasicMaterial({
+    color: VFX.EDGE_COLOR,
+    transparent: true,
+    opacity: VFX.EDGE_OPACITY,
+  });
+
   for (let i = 0; i < SEGMENTS; i++) {
     const angle = angleStep * (i + 0.5);
 
@@ -57,6 +64,12 @@ export function createTrackTurn(
 
     mesh.castShadow = true;
     mesh.receiveShadow = true;
+
+    // Add neon edge wireframe
+    const edgeGeometry = new THREE.EdgesGeometry(geometry, 15);
+    edgeGeometries.push(edgeGeometry);
+    const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+    mesh.add(edges);
 
     meshes.push(mesh);
     group.add(mesh);
@@ -111,6 +124,8 @@ export function createTrackTurn(
       context.physics.removeBody(rigidBody);
       context.scene.remove(group);
       meshes.forEach((m) => m.geometry.dispose());
+      edgeGeometries.forEach((g) => g.dispose());
+      edgeMaterial.dispose();
       material.dispose();
     },
   };
