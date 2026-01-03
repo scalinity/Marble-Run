@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance } from '../types';
-import { COLORS, POWERUPS } from '../../../config/constants';
-import { TriggerType } from '../../CollisionHandler';
-import { eventBus, GameEvents } from '../../../utils/EventBus';
+import * as THREE from "three";
+import { PieceData, PieceContext, PieceInstance } from "../types";
+import { COLORS, POWERUPS } from "../../../config/constants";
+import { TriggerType } from "../../CollisionHandler";
+import { eventBus, GameEvents } from "../../../utils/EventBus";
 
 const RADIUS = 0.35;
 const ROTATION_SPEED = 3;
@@ -18,7 +18,7 @@ export interface SpeedBoostParams {
  */
 export function createSpeedBoost(
   data: PieceData,
-  context: PieceContext
+  context: PieceContext,
 ): PieceInstance {
   const params = data.params as SpeedBoostParams | undefined;
   const duration = params?.duration ?? POWERUPS.SPEED_BOOST_DURATION;
@@ -71,18 +71,31 @@ export function createSpeedBoost(
   const collider = context.physics.createBoxCollider(
     rigidBody,
     { x: RADIUS * 1.5, y: RADIUS * 1.5, z: RADIUS * 1.5 },
-    { isSensor: true }
+    { isSensor: true },
   );
 
   // Track if collected
   let collected = false;
   let collectAnimation = 0;
 
+  const resetPowerUp = () => {
+    collected = false;
+    collectAnimation = 0;
+    group.visible = true;
+    group.scale.setScalar(1);
+  };
+
+  // Reset on player respawn
+  const unsubscribeRespawn = eventBus.on(
+    GameEvents.PLAYER_RESPAWN,
+    resetPowerUp,
+  );
+
   const onCollect = () => {
     if (collected) return;
     collected = true;
     eventBus.emit(GameEvents.POWERUP_COLLECTED, {
-      type: 'speedBoost',
+      type: "speedBoost",
       duration,
       id: data.id,
     });
@@ -92,7 +105,7 @@ export function createSpeedBoost(
     collider.handle,
     TriggerType.POWERUP,
     data.id,
-    onCollect
+    onCollect,
   );
 
   const update = (dt: number, elapsed: number): void => {
@@ -128,6 +141,7 @@ export function createSpeedBoost(
     collider,
     update,
     dispose: () => {
+      unsubscribeRespawn();
       context.physics.removeBody(rigidBody);
       context.scene.remove(group);
       bodyGeometry.dispose();
