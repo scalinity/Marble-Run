@@ -31,7 +31,7 @@
       "id": "bounce1",
       "type": "bouncePad",
       "position": [0, 0.1, -14],
-      "params": { "radius": 1.2, "bounceForce": 14 }
+      "params": { "radius": 1.2, "bounceForce": 20 }
     },
     {
       "id": "high-platform1",
@@ -47,201 +47,207 @@
     {
       "id": "track-section1",
       "type": "trackStraight",
-      "position": [0, 6, -30],
-      "params": { "length": 8 }
+      "position": [0, 6, -32],
+      "params": { "length": 12 }
     },
     {
-      "id": "bounce-platform2",
+      "id": "checkpoint1-platform",
       "type": "platform",
-      "position": [0, 6, -40],
-      "params": { "width": 4, "depth": 4 }
+      "position": [0, 6, -38],
+      "params": { "width": 4, "depth": 3 }
     },
     {
       "id": "checkpoint1",
       "type": "checkpoint",
-      "position": [0, 6, -40]
+      "position": [0, 6, -38]
+    },
+    {
+      "id": "bounce-platform2",
+      "type": "platform",
+      "position": [0, 6, -43],
+      "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "bounce2",
       "type": "bouncePad",
-      "position": [0, 6.1, -40],
-      "params": { "radius": 1.0, "bounceForce": 12 }
+      "position": [0, 6.1, -43],
+      "params": { "radius": 1.5, "bounceForce": 20 }
     },
     {
       "id": "chain-platform1",
       "type": "platform",
-      "position": [0, 10, -50],
-      "params": { "width": 4, "depth": 4 }
+      "position": [0, 7, -47],
+      "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "gem3",
       "type": "gem",
-      "position": [0, 11.5, -50]
+      "position": [0, 8.5, -47]
     },
     {
       "id": "bounce3",
       "type": "bouncePad",
-      "position": [0, 10.1, -50],
-      "params": { "radius": 1.0, "bounceForce": 12 }
+      "position": [0, 7.1, -47],
+      "params": { "radius": 1.5, "bounceForce": 20 }
     },
     {
       "id": "chain-platform2",
       "type": "platform",
-      "position": [6, 14, -58],
-      "params": { "width": 3.5, "depth": 3.5 }
+      "position": [2, 8, -51],
+      "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "gem4",
       "type": "gem",
-      "position": [6, 15.5, -58]
+      "position": [2, 9.5, -51]
     },
     {
       "id": "bounce4",
       "type": "bouncePad",
-      "position": [6, 14.1, -58],
-      "params": { "radius": 0.9, "bounceForce": 13 }
+      "position": [2, 8.1, -51],
+      "params": { "radius": 1.5, "bounceForce": 20 }
     },
     {
       "id": "chain-platform3",
       "type": "platform",
-      "position": [-2, 18, -66],
-      "params": { "width": 3, "depth": 3 }
+      "position": [0, 9, -55],
+      "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "gem5",
       "type": "gem",
-      "position": [-2, 19.5, -66]
+      "position": [0, 10.5, -55]
     },
     {
       "id": "bounce5",
       "type": "bouncePad",
-      "position": [-2, 18.1, -66],
-      "params": { "radius": 0.8, "bounceForce": 14 }
+      "position": [0, 9.1, -55],
+      "params": { "radius": 1.5, "bounceForce": 20 }
     },
     {
       "id": "rest-platform1",
       "type": "platform",
-      "position": [4, 22, -76],
-      "params": { "width": 4, "depth": 4 }
+      "position": [2, 10, -59],
+      "params": { "width": 6, "depth": 6 }
     },
     {
       "id": "checkpoint2",
       "type": "checkpoint",
-      "position": [4, 22, -76]
+      "position": [2, 10, -59]
     },
     {
       "id": "track-to-precision",
       "type": "trackStraight",
-      "position": [4, 22, -84],
+      "position": [2, 10, -65],
       "params": { "length": 8 }
     },
     {
       "id": "precision-platform1",
       "type": "platform",
-      "position": [4, 22, -94],
-      "params": { "width": 3, "depth": 3 }
+      "position": [2, 10, -73],
+      "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "gem6",
       "type": "gem",
-      "position": [4, 23.5, -94]
+      "position": [2, 11.5, -73]
     },
     {
       "id": "bounce6",
       "type": "bouncePad",
-      "position": [4, 22.1, -94],
-      "params": { "radius": 0.7, "bounceForce": 11 }
+      "position": [2, 10.1, -73],
+      "params": { "radius": 1.5, "bounceForce": 20 }
     },
     {
       "id": "narrow-platform1",
       "type": "platform",
-      "position": [4, 24, -102],
-      "params": { "width": 2.5, "depth": 2.5 }
+      "position": [2, 11, -77],
+      "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "gem7",
       "type": "gem",
-      "position": [4, 25.5, -102]
+      "position": [2, 12.5, -77]
     },
     {
       "id": "bounce7",
       "type": "bouncePad",
-      "position": [4, 24.1, -102],
-      "params": { "radius": 0.7, "bounceForce": 12 }
+      "position": [2, 11.1, -77],
+      "params": { "radius": 1.5, "bounceForce": 20 }
     },
     {
       "id": "spinner-platform",
       "type": "platform",
-      "position": [4, 26, -112],
-      "params": { "width": 5, "depth": 5 }
+      "position": [2, 12, -81],
+      "params": { "width": 6, "depth": 6 }
     },
     {
       "id": "spinner1",
       "type": "spinnerHazard",
-      "position": [4, 26.5, -112],
+      "position": [2, 12.5, -81],
       "params": { "width": 4.5, "height": 0.4, "depth": 0.7, "speed": 2.0 }
     },
     {
       "id": "gem8",
       "type": "gem",
-      "position": [4, 28, -112]
+      "position": [2, 14, -81]
     },
     {
       "id": "final-bounce-platform",
       "type": "platform",
-      "position": [4, 26, -124],
-      "params": { "width": 4, "depth": 4 }
+      "position": [2, 12, -89],
+      "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "final-bounce",
       "type": "bouncePad",
-      "position": [4, 26.1, -124],
-      "params": { "radius": 1.2, "bounceForce": 18 }
+      "position": [2, 12.1, -89],
+      "params": { "radius": 1.5, "bounceForce": 20 }
     },
     {
       "id": "elevated-final",
       "type": "platform",
-      "position": [4, 36, -136],
+      "position": [2, 14, -94],
       "params": { "width": 6, "depth": 6 }
     },
     {
       "id": "gem9",
       "type": "gem",
-      "position": [2, 37.5, -136]
+      "position": [0, 15.5, -94]
     },
     {
       "id": "gem10",
       "type": "gem",
-      "position": [6, 37.5, -136]
+      "position": [4, 15.5, -94]
     },
     {
       "id": "final-spinner1",
       "type": "spinnerHazard",
-      "position": [4, 36.5, -136],
+      "position": [2, 14.5, -94],
       "params": { "width": 5, "height": 0.4, "depth": 0.6, "speed": 1.8 }
     },
     {
       "id": "final-spinner2",
       "type": "spinnerHazard",
-      "position": [4, 36.5, -136],
+      "position": [2, 14.5, -94],
       "params": { "width": 5, "height": 0.4, "depth": 0.6, "speed": -2.2 }
     },
     {
       "id": "goal-bridge",
       "type": "narrowBridge",
-      "position": [4, 36, -146],
-      "params": { "length": 8, "width": 1.2 }
+      "position": [2, 14, -101],
+      "params": { "length": 6, "width": 1.5 }
     },
     {
       "id": "goal-platform",
       "type": "platform",
-      "position": [4, 36, -156],
+      "position": [2, 14, -108],
       "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "goal",
       "type": "goalGate",
-      "position": [4, 36, -156]
+      "position": [2, 14, -108]
     }
   ]
 }

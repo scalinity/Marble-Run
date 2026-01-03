@@ -1,7 +1,7 @@
-import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance, TrackParams } from '../types';
-import { COLORS, MATERIALS, VFX } from '../../../config/constants';
-import { rapierRotationFromEulerDegrees } from '../../../utils/math';
+import * as THREE from "three";
+import { PieceData, PieceContext, PieceInstance, TrackParams } from "../types";
+import { COLORS, MATERIALS } from "../../../config/constants";
+import { rapierRotationFromEulerDegrees } from "../../../utils/math";
 
 const DEFAULT_LENGTH = 4;
 const DEFAULT_WIDTH = 2;
@@ -12,7 +12,7 @@ const DEFAULT_THICKNESS = 0.2;
  */
 export function createTrackStraight(
   data: PieceData,
-  context: PieceContext
+  context: PieceContext,
 ): PieceInstance {
   const params = data.params as TrackParams | undefined;
   const scale = data.scale ?? [1, 1, 1];
@@ -35,20 +35,10 @@ export function createTrackStraight(
   mesh.rotation.set(
     THREE.MathUtils.degToRad(rotation[0]),
     THREE.MathUtils.degToRad(rotation[1]),
-    THREE.MathUtils.degToRad(rotation[2])
+    THREE.MathUtils.degToRad(rotation[2]),
   );
   mesh.castShadow = true;
   mesh.receiveShadow = true;
-
-  // Add neon edge wireframe
-  const edgeGeometry = new THREE.EdgesGeometry(geometry, 15);
-  const edgeMaterial = new THREE.LineBasicMaterial({
-    color: VFX.EDGE_COLOR,
-    transparent: true,
-    opacity: VFX.EDGE_OPACITY,
-  });
-  const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-  mesh.add(edges);
 
   context.scene.add(mesh);
 
@@ -56,18 +46,18 @@ export function createTrackStraight(
   const quatRotation = rapierRotationFromEulerDegrees(
     rotation[0],
     rotation[1],
-    rotation[2]
+    rotation[2],
   );
 
   const rigidBody = context.physics.createFixedBody(
     { x: data.position[0], y: data.position[1], z: data.position[2] },
-    quatRotation
+    quatRotation,
   );
 
   const collider = context.physics.createBoxCollider(
     rigidBody,
     { x: width / 2, y: thickness / 2, z: length / 2 },
-    { friction: 0.8, restitution: 0.2 }
+    { friction: 0.8, restitution: 0.2 },
   );
 
   return {
@@ -81,8 +71,6 @@ export function createTrackStraight(
       context.scene.remove(mesh);
       geometry.dispose();
       material.dispose();
-      edgeGeometry.dispose();
-      edgeMaterial.dispose();
     },
   };
 }

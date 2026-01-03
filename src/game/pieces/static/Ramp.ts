@@ -1,7 +1,7 @@
-import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance, RampParams } from '../types';
-import { COLORS, MATERIALS, VFX } from '../../../config/constants';
-import { rapierRotationFromEulerDegrees, degToRad } from '../../../utils/math';
+import * as THREE from "three";
+import { PieceData, PieceContext, PieceInstance, RampParams } from "../types";
+import { COLORS, MATERIALS } from "../../../config/constants";
+import { rapierRotationFromEulerDegrees, degToRad } from "../../../utils/math";
 
 const DEFAULT_LENGTH = 4;
 const DEFAULT_WIDTH = 2;
@@ -12,7 +12,7 @@ const DEFAULT_ANGLE = 20; // degrees
  */
 export function createRamp(
   data: PieceData,
-  context: PieceContext
+  context: PieceContext,
 ): PieceInstance {
   const params = data.params as RampParams | undefined;
   const scale = data.scale ?? [1, 1, 1];
@@ -45,21 +45,11 @@ export function createRamp(
   mesh.rotation.set(
     THREE.MathUtils.degToRad(rotation[0]) + rampAngleRad,
     THREE.MathUtils.degToRad(rotation[1]),
-    THREE.MathUtils.degToRad(rotation[2])
+    THREE.MathUtils.degToRad(rotation[2]),
   );
 
   mesh.castShadow = true;
   mesh.receiveShadow = true;
-
-  // Add neon edge wireframe
-  const edgeGeometry = new THREE.EdgesGeometry(geometry, 15);
-  const edgeMaterial = new THREE.LineBasicMaterial({
-    color: VFX.EDGE_COLOR,
-    transparent: true,
-    opacity: VFX.EDGE_OPACITY,
-  });
-  const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-  mesh.add(edges);
 
   context.scene.add(mesh);
 
@@ -67,19 +57,19 @@ export function createRamp(
   const euler = new THREE.Euler(
     degToRad(rotation[0]) + rampAngleRad,
     degToRad(rotation[1]),
-    degToRad(rotation[2])
+    degToRad(rotation[2]),
   );
   const quat = new THREE.Quaternion().setFromEuler(euler);
 
   const rigidBody = context.physics.createFixedBody(
     { x: data.position[0], y: data.position[1], z: data.position[2] },
-    { x: quat.x, y: quat.y, z: quat.z, w: quat.w }
+    { x: quat.x, y: quat.y, z: quat.z, w: quat.w },
   );
 
   const collider = context.physics.createBoxCollider(
     rigidBody,
     { x: width / 2, y: thickness / 2, z: length / 2 },
-    { friction: 0.8, restitution: 0.2 }
+    { friction: 0.8, restitution: 0.2 },
   );
 
   return {
@@ -93,8 +83,6 @@ export function createRamp(
       context.scene.remove(mesh);
       geometry.dispose();
       material.dispose();
-      edgeGeometry.dispose();
-      edgeMaterial.dispose();
     },
   };
 }

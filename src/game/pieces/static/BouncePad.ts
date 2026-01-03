@@ -5,7 +5,7 @@ import {
   PieceInstance,
   BouncePadParams,
 } from "../types";
-import { COLORS, PHYSICS, VFX } from "../../../config/constants";
+import { COLORS, PHYSICS } from "../../../config/constants";
 import { TriggerType } from "../../CollisionHandler";
 import { eventBus, GameEvents } from "../../../utils/EventBus";
 
@@ -49,16 +49,6 @@ export function createBouncePad(
   mesh.castShadow = true;
   mesh.receiveShadow = true;
 
-  // Add neon edge wireframe
-  const edgeGeometry = new THREE.EdgesGeometry(geometry, 15);
-  const neonEdgeMaterial = new THREE.LineBasicMaterial({
-    color: VFX.EDGE_COLOR_BOUNCE,
-    transparent: true,
-    opacity: VFX.EDGE_OPACITY,
-  });
-  const edges = new THREE.LineSegments(edgeGeometry, neonEdgeMaterial);
-  mesh.add(edges);
-
   // Add ring decoration
   const ringGeometry = new THREE.TorusGeometry(radius * 0.7, 0.05, 8, 32);
   const ringMaterial = new THREE.MeshStandardMaterial({
@@ -88,19 +78,13 @@ export function createBouncePad(
     { friction: 0.8, restitution: PHYSICS.BOUNCE_PAD_RESTITUTION },
   );
 
-  // Sensor collider for trigger detection (slightly larger)
+  // Sensor collider for trigger detection (larger and taller to reliably detect marble)
   const sensorCollider = context.physics.createCylinderCollider(
     rigidBody,
-    DEFAULT_HEIGHT,
-    radius * 1.1,
-    { friction: 0, restitution: 0 },
+    0.5, // Half-height of 0.5 = 1 unit tall sensor to catch the marble (radius 0.5)
+    radius * 1.2,
+    { friction: 0, restitution: 0, isSensor: true },
   );
-  // Make it a sensor - need to access the Rapier collider directly
-  const world = context.physics.world;
-  const sensor = world.getCollider(sensorCollider.handle);
-  if (sensor) {
-    sensor.setSensor(true);
-  }
 
   // Track last bounce time for cooldown
   let lastBounceTime = 0;
@@ -154,8 +138,6 @@ export function createBouncePad(
       context.scene.remove(mesh);
       geometry.dispose();
       material.dispose();
-      edgeGeometry.dispose();
-      neonEdgeMaterial.dispose();
       ringGeometry.dispose();
       ringMaterial.dispose();
     },

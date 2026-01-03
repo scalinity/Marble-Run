@@ -5,7 +5,7 @@ import {
   PieceInstance,
   IceSurfaceParams,
 } from "../types";
-import { COLORS, PHYSICS, VFX } from "../../../config/constants";
+import { COLORS, PHYSICS } from "../../../config/constants";
 import { rapierRotationFromEulerDegrees } from "../../../utils/math";
 
 const DEFAULT_WIDTH = 4;
@@ -49,16 +49,6 @@ export function createIceSurface(
   );
   mesh.castShadow = true;
   mesh.receiveShadow = true;
-
-  // Add neon edge wireframe (icy cyan color)
-  const edgeGeometry = new THREE.EdgesGeometry(geometry, 15);
-  const edgeMaterial = new THREE.LineBasicMaterial({
-    color: VFX.EDGE_COLOR_ICE,
-    transparent: true,
-    opacity: VFX.EDGE_OPACITY,
-  });
-  const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-  mesh.add(edges);
 
   // Add subtle surface detail
   const detailGeometry = new THREE.PlaneGeometry(width * 0.9, depth * 0.9);
@@ -116,8 +106,6 @@ export function createIceSurface(
       context.scene.remove(mesh);
       geometry.dispose();
       material.dispose();
-      edgeGeometry.dispose();
-      edgeMaterial.dispose();
       detailGeometry.dispose();
       detailMaterial.dispose();
     },

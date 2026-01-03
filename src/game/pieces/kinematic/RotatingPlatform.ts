@@ -1,6 +1,11 @@
-import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance, RotatingPlatformParams } from '../types';
-import { COLORS, PHYSICS } from '../../../config/constants';
+import * as THREE from "three";
+import {
+  PieceData,
+  PieceContext,
+  PieceInstance,
+  RotatingPlatformParams,
+} from "../types";
+import { COLORS, PHYSICS } from "../../../config/constants";
 
 const DEFAULT_SIZE = 4;
 const DEFAULT_THICKNESS = 0.25;
@@ -10,7 +15,7 @@ const DEFAULT_THICKNESS = 0.25;
  */
 export function createRotatingPlatform(
   data: PieceData,
-  context: PieceContext
+  context: PieceContext,
 ): PieceInstance {
   const params = data.params as RotatingPlatformParams | undefined;
   const scale = data.scale ?? [1, 1, 1];
@@ -21,17 +26,29 @@ export function createRotatingPlatform(
   const depth = (params?.depth ?? size) * scale[2];
   const thickness = DEFAULT_THICKNESS * scale[1];
   const speed = params?.speed ?? PHYSICS.ROTATING_SPEED;
-  const axis = params?.axis ?? 'y';
+  const axis = params?.axis ?? "y";
+  const isIce = params?.ice ?? false;
 
   // Create mesh
   const geometry = new THREE.BoxGeometry(width, thickness, depth);
-  const material = new THREE.MeshStandardMaterial({
-    color: COLORS.ROTATING,
-    roughness: 0.5,
-    metalness: 0.3,
-    emissive: new THREE.Color(0x1a2a3a),
-    emissiveIntensity: 0.2,
-  });
+  const material = isIce
+    ? new THREE.MeshPhysicalMaterial({
+        color: COLORS.ICE,
+        roughness: 0.05,
+        metalness: 0.1,
+        transmission: 0.3,
+        thickness: 0.5,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.1,
+        ior: 1.31,
+      })
+    : new THREE.MeshStandardMaterial({
+        color: COLORS.ROTATING,
+        roughness: 0.5,
+        metalness: 0.3,
+        emissive: new THREE.Color(0x1a2a3a),
+        emissiveIntensity: 0.2,
+      });
 
   const mesh = new THREE.Mesh(geometry, material);
   mesh.position.set(data.position[0], data.position[1], data.position[2]);
@@ -39,7 +56,7 @@ export function createRotatingPlatform(
   mesh.rotation.set(
     THREE.MathUtils.degToRad(rotation[0]),
     THREE.MathUtils.degToRad(rotation[1]),
-    THREE.MathUtils.degToRad(rotation[2])
+    THREE.MathUtils.degToRad(rotation[2]),
   );
   mesh.castShadow = true;
   mesh.receiveShadow = true;
@@ -92,7 +109,7 @@ export function createRotatingPlatform(
   const collider = context.physics.createBoxCollider(
     rigidBody,
     { x: width / 2, y: thickness / 2, z: depth / 2 },
-    { friction: 0.9, restitution: 0.1 }
+    { friction: isIce ? PHYSICS.ICE_FRICTION : 0.9, restitution: 0.1 },
   );
 
   // Track current rotation angle
@@ -101,8 +118,8 @@ export function createRotatingPlatform(
     new THREE.Euler(
       THREE.MathUtils.degToRad(rotation[0]),
       THREE.MathUtils.degToRad(rotation[1]),
-      THREE.MathUtils.degToRad(rotation[2])
-    )
+      THREE.MathUtils.degToRad(rotation[2]),
+    ),
   );
 
   const update = (dt: number, _elapsed: number): void => {
@@ -111,13 +128,13 @@ export function createRotatingPlatform(
     // Create rotation quaternion for the animated axis
     const animQuat = new THREE.Quaternion();
     switch (axis) {
-      case 'x':
+      case "x":
         animQuat.setFromAxisAngle(new THREE.Vector3(1, 0, 0), currentAngle);
         break;
-      case 'y':
+      case "y":
         animQuat.setFromAxisAngle(new THREE.Vector3(0, 1, 0), currentAngle);
         break;
-      case 'z':
+      case "z":
         animQuat.setFromAxisAngle(new THREE.Vector3(0, 0, 1), currentAngle);
         break;
     }
@@ -136,9 +153,12 @@ export function createRotatingPlatform(
       w: finalQuat.w,
     });
 
-    // Pulse pivot glow
-    const pulse = (Math.sin(currentAngle * 2) + 1) / 2;
-    material.emissiveIntensity = 0.15 + pulse * 0.1;
+    // Pulse pivot glow (only for non-ice platforms)
+    if (!isIce) {
+      const pulse = (Math.sin(currentAngle * 2) + 1) / 2;
+      (material as THREE.MeshStandardMaterial).emissiveIntensity =
+        0.15 + pulse * 0.1;
+    }
   };
 
   return {

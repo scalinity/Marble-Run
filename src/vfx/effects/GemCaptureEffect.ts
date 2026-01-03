@@ -1,26 +1,30 @@
-import * as THREE from 'three';
-import { ParticlePool } from '../ParticlePool';
-import { VFX } from '../../config/constants';
+import * as THREE from "three";
+import { ParticleSystem } from "../ParticleSystem";
+import { VFX } from "../../config/constants";
 
 /**
  * Gem capture effect - particle burst + expanding ring
  */
 export class GemCaptureEffect {
   private scene: THREE.Scene;
-  private particlePool: ParticlePool;
+  private particles: ParticleSystem;
 
   // Active rings for cleanup
   private activeRings: THREE.Mesh[] = [];
 
-  constructor(scene: THREE.Scene, particlePool: ParticlePool) {
+  constructor(scene: THREE.Scene, particles: ParticleSystem) {
     this.scene = scene;
-    this.particlePool = particlePool;
+    this.particles = particles;
   }
 
   /**
    * Trigger gem capture effect
+   * Reference: emit(position, 30, 0xffff00, 0.5, 4, 0.8)
    */
-  trigger(position: THREE.Vector3, color: THREE.Color = new THREE.Color(0x44ff88)): void {
+  trigger(
+    position: THREE.Vector3,
+    color: THREE.Color = new THREE.Color(0xffd700), // Gold
+  ): void {
     // Particle burst
     this.createParticleBurst(position, color);
 
@@ -28,19 +32,19 @@ export class GemCaptureEffect {
     this.createGlowRing(position, color);
   }
 
-  private createParticleBurst(position: THREE.Vector3, color: THREE.Color): void {
-    this.particlePool.burst(position, VFX.GEM_PARTICLE_COUNT, {
-      color,
-      speed: 2.5,
-      speedVariance: 1,
-      life: 0.4,
-      lifeVariance: 0.2,
-      gravity: 6,
-      scale: 0.08,
-      scaleVariance: 0.03,
-      direction: new THREE.Vector3(0, 1, 0),
-      spread: Math.PI * 0.4,
-    });
+  private createParticleBurst(
+    position: THREE.Vector3,
+    color: THREE.Color,
+  ): void {
+    // Reference: emit(position, 30, 0xffff00, 0.5, 4, 0.8)
+    this.particles.emit(
+      position,
+      VFX.GEM_PARTICLE_COUNT, // 30
+      color.getHex(),
+      0.5, // spread
+      4, // speed
+      0.8, // life
+    );
   }
 
   private createGlowRing(position: THREE.Vector3, color: THREE.Color): void {

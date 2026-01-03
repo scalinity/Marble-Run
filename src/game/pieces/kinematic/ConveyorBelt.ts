@@ -1,8 +1,13 @@
-import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance, ConveyorBeltParams } from '../types';
-import { COLORS, PHYSICS } from '../../../config/constants';
-import { platformVelocityRegistry } from '../../PlatformVelocityRegistry';
-import { rapierRotationFromEulerDegrees } from '../../../utils/math';
+import * as THREE from "three";
+import {
+  PieceData,
+  PieceContext,
+  PieceInstance,
+  ConveyorBeltParams,
+} from "../types";
+import { COLORS, PHYSICS } from "../../../config/constants";
+import { platformVelocityRegistry } from "../../PlatformVelocityRegistry";
+import { rapierRotationFromEulerDegrees } from "../../../utils/math";
 
 const DEFAULT_LENGTH = 4;
 const DEFAULT_WIDTH = 2;
@@ -13,7 +18,7 @@ const DEFAULT_THICKNESS = 0.15;
  */
 export function createConveyorBelt(
   data: PieceData,
-  context: PieceContext
+  context: PieceContext,
 ): PieceInstance {
   const params = data.params as ConveyorBeltParams | undefined;
   const scale = data.scale ?? [1, 1, 1];
@@ -23,7 +28,7 @@ export function createConveyorBelt(
   const width = (params?.width ?? DEFAULT_WIDTH) * scale[0];
   const thickness = DEFAULT_THICKNESS * scale[1];
   const speed = params?.speed ?? PHYSICS.CONVEYOR_SPEED;
-  const direction = params?.direction ?? 'forward';
+  const direction = params?.direction ?? "forward";
 
   // Calculate velocity vector based on direction and rotation
   const directionVectors: Record<string, THREE.Vector3> = {
@@ -38,7 +43,7 @@ export function createConveyorBelt(
   const euler = new THREE.Euler(
     THREE.MathUtils.degToRad(rotation[0]),
     THREE.MathUtils.degToRad(rotation[1]),
-    THREE.MathUtils.degToRad(rotation[2])
+    THREE.MathUtils.degToRad(rotation[2]),
   );
   velocityDir.applyEuler(euler);
   velocityDir.multiplyScalar(speed);
@@ -56,7 +61,7 @@ export function createConveyorBelt(
   mesh.rotation.set(
     THREE.MathUtils.degToRad(rotation[0]),
     THREE.MathUtils.degToRad(rotation[1]),
-    THREE.MathUtils.degToRad(rotation[2])
+    THREE.MathUtils.degToRad(rotation[2]),
   );
   mesh.castShadow = true;
   mesh.receiveShadow = true;
@@ -73,13 +78,15 @@ export function createConveyorBelt(
 
   for (let i = 0; i < arrowCount; i++) {
     const arrow = new THREE.Mesh(arrowGeometry, arrowMaterial);
-    arrow.rotation.x = Math.PI / 2;
-    if (direction === 'backward') arrow.rotation.x = -Math.PI / 2;
-    if (direction === 'left') {
+    // Arrow rotation should match velocity direction
+    // forward = -Z velocity, backward = +Z velocity
+    arrow.rotation.x = -Math.PI / 2; // Default: pointing -Z (forward)
+    if (direction === "backward") arrow.rotation.x = Math.PI / 2; // pointing +Z
+    if (direction === "left") {
       arrow.rotation.x = 0;
       arrow.rotation.z = Math.PI / 2;
     }
-    if (direction === 'right') {
+    if (direction === "right") {
       arrow.rotation.x = 0;
       arrow.rotation.z = -Math.PI / 2;
     }
@@ -97,18 +104,18 @@ export function createConveyorBelt(
   const quatRotation = rapierRotationFromEulerDegrees(
     rotation[0],
     rotation[1],
-    rotation[2]
+    rotation[2],
   );
 
   const rigidBody = context.physics.createFixedBody(
     { x: data.position[0], y: data.position[1], z: data.position[2] },
-    quatRotation
+    quatRotation,
   );
 
   const collider = context.physics.createBoxCollider(
     rigidBody,
     { x: width / 2, y: thickness / 2, z: length / 2 },
-    { friction: 0.9, restitution: 0.1 }
+    { friction: 0.9, restitution: 0.1 },
   );
 
   // Register constant velocity
@@ -128,13 +135,13 @@ export function createConveyorBelt(
     arrowPhase += dt * arrowAnimSpeed;
     arrowGroup.children.forEach((arrow, i) => {
       const baseOffset = (i / (arrowCount - 1 || 1) - 0.5) * (length * 0.8);
-      const animOffset = ((arrowPhase % 1.5) - 0.75);
+      const animOffset = (arrowPhase % 1.5) - 0.75;
 
-      if (direction === 'forward' || direction === 'backward') {
-        const dir = direction === 'forward' ? -1 : 1;
+      if (direction === "forward" || direction === "backward") {
+        const dir = direction === "forward" ? -1 : 1;
         arrow.position.z = baseOffset + animOffset * dir;
       } else {
-        const dir = direction === 'left' ? -1 : 1;
+        const dir = direction === "left" ? -1 : 1;
         arrow.position.x = animOffset * dir;
       }
     });

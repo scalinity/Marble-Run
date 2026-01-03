@@ -1,12 +1,12 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 import {
   PieceData,
   PieceContext,
   PieceInstance,
   NarrowBridgeParams,
-} from '../types';
-import { COLORS, MATERIALS, VFX } from '../../../config/constants';
-import { rapierRotationFromEulerDegrees } from '../../../utils/math';
+} from "../types";
+import { COLORS, MATERIALS } from "../../../config/constants";
+import { rapierRotationFromEulerDegrees } from "../../../utils/math";
 
 const DEFAULT_LENGTH = 6;
 const DEFAULT_WIDTH = 0.8; // Narrow!
@@ -17,7 +17,7 @@ const DEFAULT_THICKNESS = 0.15;
  */
 export function createNarrowBridge(
   data: PieceData,
-  context: PieceContext
+  context: PieceContext,
 ): PieceInstance {
   const params = data.params as NarrowBridgeParams | undefined;
   const scale = data.scale ?? [1, 1, 1];
@@ -40,20 +40,10 @@ export function createNarrowBridge(
   mesh.rotation.set(
     THREE.MathUtils.degToRad(rotation[0]),
     THREE.MathUtils.degToRad(rotation[1]),
-    THREE.MathUtils.degToRad(rotation[2])
+    THREE.MathUtils.degToRad(rotation[2]),
   );
   mesh.castShadow = true;
   mesh.receiveShadow = true;
-
-  // Add neon edge wireframe
-  const edgeGeometry = new THREE.EdgesGeometry(geometry, 15);
-  const edgeMaterial = new THREE.LineBasicMaterial({
-    color: VFX.EDGE_COLOR,
-    transparent: true,
-    opacity: VFX.EDGE_OPACITY,
-  });
-  const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-  mesh.add(edges);
 
   context.scene.add(mesh);
 
@@ -61,18 +51,18 @@ export function createNarrowBridge(
   const quatRotation = rapierRotationFromEulerDegrees(
     rotation[0],
     rotation[1],
-    rotation[2]
+    rotation[2],
   );
 
   const rigidBody = context.physics.createFixedBody(
     { x: data.position[0], y: data.position[1], z: data.position[2] },
-    quatRotation
+    quatRotation,
   );
 
   const collider = context.physics.createBoxCollider(
     rigidBody,
     { x: width / 2, y: thickness / 2, z: length / 2 },
-    { friction: 0.9, restitution: 0.1 } // Higher friction for better control
+    { friction: 0.9, restitution: 0.1 }, // Higher friction for better control
   );
 
   return {
@@ -86,8 +76,6 @@ export function createNarrowBridge(
       context.scene.remove(mesh);
       geometry.dispose();
       material.dispose();
-      edgeGeometry.dispose();
-      edgeMaterial.dispose();
     },
   };
 }
