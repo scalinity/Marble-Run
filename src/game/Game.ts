@@ -22,7 +22,7 @@ import {
   ReplayData,
 } from "../testing/ReplayRecorder";
 import { replayTestRunner } from "../testing/ReplayTestRunner";
-import { audioManager } from "../audio/AudioManager";
+import { audioDirector } from "../audio/AudioDirector";
 import { PowerUpManager } from "./PowerUpManager";
 import { teleporterRegistry } from "./TeleporterRegistry";
 
@@ -37,6 +37,12 @@ import level7 from "../levels/level7.json";
 import level8 from "../levels/level8.json";
 import level9 from "../levels/level9.json";
 import level10 from "../levels/level10.json";
+import level11 from "../levels/level11.json";
+import level12 from "../levels/level12.json";
+import level13 from "../levels/level13.json";
+import level14 from "../levels/level14.json";
+import level15 from "../levels/level15.json";
+import level16 from "../levels/level16.json";
 
 const LEVELS: LevelDefinition[] = [
   level1 as LevelDefinition,
@@ -49,6 +55,12 @@ const LEVELS: LevelDefinition[] = [
   level8 as LevelDefinition,
   level9 as LevelDefinition,
   level10 as LevelDefinition,
+  level11 as LevelDefinition,
+  level12 as LevelDefinition,
+  level13 as LevelDefinition,
+  level14 as LevelDefinition,
+  level15 as LevelDefinition,
+  level16 as LevelDefinition,
 ];
 
 /**
@@ -128,7 +140,8 @@ export class Game {
     await this.physics.init();
 
     // Initialize audio (requires user interaction to unlock)
-    await audioManager.init();
+    await audioDirector.init();
+    await audioDirector.resume();
 
     // Show main menu (call show() directly since state machine is already in MENU state)
     this.mainMenu.show();
@@ -264,6 +277,7 @@ export class Game {
         this.pauseMenu.hide();
         this.resultsScreen.hide();
         this.input.setEnabled(false);
+        audioDirector.playMenuMusic();
       },
       onExit: () => {
         this.mainMenu.hide();
@@ -295,6 +309,7 @@ export class Game {
         this.input.setEnabled(true);
         // Auto-focus canvas for keyboard input
         this.renderer.renderer.domElement.focus();
+        eventBus.emit(GameEvents.GAME_RESUME, {});
       },
       onExit: () => {
         this.hud.pauseTimer();
@@ -305,6 +320,7 @@ export class Game {
       onEnter: () => {
         this.pauseMenu.show();
         this.input.setEnabled(false);
+        eventBus.emit(GameEvents.GAME_PAUSE, {});
       },
       onExit: () => {
         this.pauseMenu.hide();
@@ -358,6 +374,15 @@ export class Game {
     this.hud.setTotalGems(this.levelLoader.getGemCount());
     this.hud.reset();
 
+    // Setup audio for level
+    const pieces = levelDef.pieces.map((p) => ({
+      id: p.id || `${p.type}_${p.position.join("_")}`,
+      type: p.type,
+      position: p.position as [number, number, number],
+    }));
+    audioDirector.setLevelAmbience(levelDef.id, pieces);
+    audioDirector.playGameMusic();
+
     // Start playing
     this.stateMachine.setState(GameState.PLAYING);
     this.hud.startTimer();
@@ -372,6 +397,7 @@ export class Game {
     this.hud.hide();
     this.powerUpManager.reset();
     teleporterRegistry.clear();
+    audioDirector.stopAll();
   }
 
   private restartLevel(): void {
@@ -579,6 +605,23 @@ export class Game {
 
     // Update HUD
     this.hud.update();
+
+    // Update audio system
+    if (this.player && this.cameraRig) {
+      const cameraForward = new THREE.Vector3();
+      this.renderer.camera.getWorldDirection(cameraForward);
+
+      audioDirector.update(
+        dt,
+        this.player.getPosition(),
+        this.player.getVelocity(),
+        this.renderer.camera.position,
+        cameraForward,
+        this.player.isOnGround(),
+        null, // Surface type - could be expanded later
+        [], // Hazard distances - could be expanded later
+      );
+    }
   }
 
   /**
@@ -748,7 +791,7 @@ export class Game {
     this.renderer.dispose();
     this.physics.dispose();
     this.input.dispose();
-    audioManager.dispose();
+    audioDirector.dispose();
 
     this.hud.dispose();
     this.mainMenu.dispose();

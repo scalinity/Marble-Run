@@ -1,0 +1,553 @@
+{
+  "id": "level13",
+  "name": "The Crucible",
+  "requireAllGems": true,
+  "spawnPoint": [0, 2, 0],
+  "pieces": [
+    {
+      "id": "start-platform",
+      "type": "platform",
+      "position": [0, 0, 0],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "gem1",
+      "type": "gem",
+      "position": [0, 1.5, 0]
+    },
+    {
+      "id": "rotating-intro",
+      "type": "rotatingPlatform",
+      "position": [0, 0, -10],
+      "params": { "width": 4, "depth": 4, "speed": 0.7, "axis": "y" }
+    },
+    {
+      "id": "gem2",
+      "type": "gem",
+      "position": [0, 1.5, -10]
+    },
+    {
+      "id": "narrow-bridge1",
+      "type": "narrowBridge",
+      "position": [0, 0, -20],
+      "params": { "length": 10, "width": 0.9 }
+    },
+    {
+      "id": "gem3",
+      "type": "gem",
+      "position": [0, 1.5, -20]
+    },
+    {
+      "id": "moving-intro",
+      "type": "movingPlatform",
+      "position": [0, 0, -32],
+      "params": {
+        "width": 3,
+        "depth": 3,
+        "moveAxis": "x",
+        "moveDistance": 4,
+        "speed": 2.5,
+        "pauseTime": 0.3
+      }
+    },
+    {
+      "id": "bounce-to-ice",
+      "type": "platform",
+      "position": [0, 0, -42],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "bounce1",
+      "type": "bouncePad",
+      "position": [0, 0.1, -42],
+      "params": { "radius": 1.0, "bounceForce": 18 }
+    },
+    {
+      "id": "ice-landing",
+      "type": "iceSurface",
+      "position": [0, 6, -52],
+      "params": { "width": 5, "depth": 8 }
+    },
+    {
+      "id": "gem4",
+      "type": "gem",
+      "position": [0, 7.5, -52]
+    },
+    {
+      "id": "spinner-ice-exit",
+      "type": "spinnerHazard",
+      "position": [0, 6.5, -58],
+      "params": { "width": 4, "height": 0.4, "depth": 0.6, "speed": 1.8 }
+    },
+    {
+      "id": "checkpoint1-platform",
+      "type": "platform",
+      "position": [0, 6, -68],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint1",
+      "type": "checkpoint",
+      "position": [0, 6, -68]
+    },
+    {
+      "id": "gem5",
+      "type": "gem",
+      "position": [0, 7.5, -68]
+    },
+    {
+      "id": "conveyor-ramp",
+      "type": "ramp",
+      "position": [0, 6, -78],
+      "params": { "length": 10, "width": 3, "height": 4, "direction": "up" }
+    },
+    {
+      "id": "conveyor-reverse",
+      "type": "conveyorBelt",
+      "position": [0, 8, -78],
+      "params": {
+        "length": 8,
+        "width": 2.5,
+        "speed": 3,
+        "direction": "backward"
+      }
+    },
+    {
+      "id": "gem6",
+      "type": "gem",
+      "position": [0, 9.5, -78]
+    },
+    {
+      "id": "bounce-sequence1",
+      "type": "platform",
+      "position": [0, 10, -92],
+      "params": { "width": 3, "depth": 3 }
+    },
+    {
+      "id": "bounce2",
+      "type": "bouncePad",
+      "position": [0, 10.1, -92],
+      "params": { "radius": 0.9, "bounceForce": 18 }
+    },
+    {
+      "id": "rotating-catch1",
+      "type": "rotatingPlatform",
+      "position": [0, 16, -102],
+      "params": { "width": 4, "depth": 4, "speed": 0.6, "axis": "y" }
+    },
+    {
+      "id": "gem7",
+      "type": "gem",
+      "position": [0, 17.5, -102]
+    },
+    {
+      "id": "bounce3",
+      "type": "bouncePad",
+      "position": [0, 16.1, -102],
+      "params": { "radius": 0.8, "bounceForce": 20 }
+    },
+    {
+      "id": "rotating-catch2",
+      "type": "rotatingPlatform",
+      "position": [0, 22, -112],
+      "params": { "width": 4, "depth": 4, "speed": -0.7, "axis": "y" }
+    },
+    {
+      "id": "gem8",
+      "type": "gem",
+      "position": [0, 23.5, -112]
+    },
+    {
+      "id": "doublejump-platform",
+      "type": "platform",
+      "position": [0, 22, -122],
+      "params": { "width": 3, "depth": 3 }
+    },
+    {
+      "id": "doublejump1",
+      "type": "doubleJump",
+      "position": [0, 22.5, -122],
+      "params": { "duration": 12 }
+    },
+    {
+      "id": "bounce4",
+      "type": "bouncePad",
+      "position": [0, 22.1, -122],
+      "params": { "radius": 0.8, "bounceForce": 22 }
+    },
+    {
+      "id": "rotating-catch3",
+      "type": "rotatingPlatform",
+      "position": [0, 30, -132],
+      "params": { "width": 4, "depth": 4, "speed": 0.8, "axis": "y" }
+    },
+    {
+      "id": "gem9",
+      "type": "gem",
+      "position": [0, 31.5, -132]
+    },
+    {
+      "id": "collapse-shortcut",
+      "type": "collapsingPlatform",
+      "position": [4, 30, -135],
+      "params": {
+        "width": 2.5,
+        "depth": 2.5,
+        "collapseDelay": 1.2,
+        "respawnTime": 5
+      }
+    },
+    {
+      "id": "gem10",
+      "type": "gem",
+      "position": [4, 31.5, -135]
+    },
+    {
+      "id": "checkpoint2-platform",
+      "type": "platform",
+      "position": [0, 30, -145],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint2",
+      "type": "checkpoint",
+      "position": [0, 30, -145]
+    },
+    {
+      "id": "gem11",
+      "type": "gem",
+      "position": [0, 31.5, -145]
+    },
+    {
+      "id": "tele-maze-start",
+      "type": "platform",
+      "position": [0, 30, -155],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "tele-maze-a1",
+      "type": "teleporter",
+      "position": [-1.5, 30.1, -155],
+      "params": { "linkedId": "tele-maze-a2", "color": 16711680 }
+    },
+    {
+      "id": "tele-maze-b1",
+      "type": "teleporter",
+      "position": [1.5, 30.1, -155],
+      "params": { "linkedId": "tele-maze-b2", "color": 65280 }
+    },
+    {
+      "id": "wrong-dest1",
+      "type": "platform",
+      "position": [-10, 25, -140],
+      "params": { "width": 3, "depth": 3 }
+    },
+    {
+      "id": "tele-maze-a2",
+      "type": "teleporter",
+      "position": [-10, 25.1, -140],
+      "params": { "linkedId": "tele-maze-a1", "color": 16711680 }
+    },
+    {
+      "id": "correct-dest1",
+      "type": "rotatingPlatform",
+      "position": [8, 32, -168],
+      "params": {
+        "width": 5,
+        "depth": 5,
+        "speed": 0.5,
+        "axis": "y",
+        "ice": true
+      }
+    },
+    {
+      "id": "tele-maze-b2",
+      "type": "teleporter",
+      "position": [8, 32.1, -168],
+      "params": { "linkedId": "tele-maze-b1", "color": 65280 }
+    },
+    {
+      "id": "gem12",
+      "type": "gem",
+      "position": [8, 33.5, -168]
+    },
+    {
+      "id": "maze-platform2",
+      "type": "platform",
+      "position": [8, 32, -180],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "tele-maze-c1",
+      "type": "teleporter",
+      "position": [6, 32.1, -180],
+      "params": { "linkedId": "tele-maze-c2", "color": 16711680 }
+    },
+    {
+      "id": "tele-maze-d1",
+      "type": "teleporter",
+      "position": [10, 32.1, -180],
+      "params": { "linkedId": "tele-maze-d2", "color": 65535 }
+    },
+    {
+      "id": "wrong-dest2",
+      "type": "platform",
+      "position": [-8, 28, -155],
+      "params": { "width": 3, "depth": 3 }
+    },
+    {
+      "id": "tele-maze-c2",
+      "type": "teleporter",
+      "position": [-8, 28.1, -155],
+      "params": { "linkedId": "tele-maze-c1", "color": 16711680 }
+    },
+    {
+      "id": "correct-dest2",
+      "type": "rotatingPlatform",
+      "position": [0, 34, -195],
+      "params": { "width": 5, "depth": 5, "speed": -0.6, "axis": "y" }
+    },
+    {
+      "id": "tele-maze-d2",
+      "type": "teleporter",
+      "position": [0, 34.1, -195],
+      "params": { "linkedId": "tele-maze-d1", "color": 65535 }
+    },
+    {
+      "id": "gem13",
+      "type": "gem",
+      "position": [0, 35.5, -195]
+    },
+    {
+      "id": "spinner-guard1",
+      "type": "spinnerHazard",
+      "position": [0, 34.5, -200],
+      "params": { "width": 5, "height": 0.4, "depth": 0.6, "speed": 2.0 }
+    },
+    {
+      "id": "spinner-guard2",
+      "type": "spinnerHazard",
+      "position": [0, 35.0, -200],
+      "params": { "width": 5, "height": 0.4, "depth": 0.6, "speed": -2.2 }
+    },
+    {
+      "id": "gem14",
+      "type": "gem",
+      "position": [-2, 35.5, -200]
+    },
+    {
+      "id": "gem15",
+      "type": "gem",
+      "position": [2, 35.5, -200]
+    },
+    {
+      "id": "speed-platform",
+      "type": "platform",
+      "position": [0, 34, -212],
+      "params": { "width": 3, "depth": 3 }
+    },
+    {
+      "id": "speed-boost1",
+      "type": "speedBoost",
+      "position": [0, 34.5, -212],
+      "params": { "duration": 8 }
+    },
+    {
+      "id": "checkpoint3-platform",
+      "type": "platform",
+      "position": [0, 34, -222],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint3",
+      "type": "checkpoint",
+      "position": [0, 34, -222]
+    },
+    {
+      "id": "gem16",
+      "type": "gem",
+      "position": [0, 35.5, -222]
+    },
+    {
+      "id": "ice-before-bridge",
+      "type": "iceSurface",
+      "position": [0, 34, -234],
+      "params": { "width": 4, "depth": 8 }
+    },
+    {
+      "id": "gem17",
+      "type": "gem",
+      "position": [0, 35.5, -234]
+    },
+    {
+      "id": "ultra-narrow-bridge",
+      "type": "narrowBridge",
+      "position": [0, 34, -252],
+      "params": { "length": 20, "width": 0.75 }
+    },
+    {
+      "id": "gem18",
+      "type": "gem",
+      "position": [0, 35.5, -248]
+    },
+    {
+      "id": "gem19",
+      "type": "gem",
+      "position": [0, 35.5, -256]
+    },
+    {
+      "id": "dual-conveyor-platform",
+      "type": "platform",
+      "position": [0, 34, -270],
+      "params": { "width": 8, "depth": 6 }
+    },
+    {
+      "id": "conveyor-left",
+      "type": "conveyorBelt",
+      "position": [-2, 34.05, -270],
+      "params": { "length": 5, "width": 2, "speed": 5, "direction": "forward" }
+    },
+    {
+      "id": "conveyor-right",
+      "type": "conveyorBelt",
+      "position": [2, 34.05, -270],
+      "params": { "length": 5, "width": 2, "speed": 5, "direction": "backward" }
+    },
+    {
+      "id": "gem20",
+      "type": "gem",
+      "position": [0, 35.5, -270]
+    },
+    {
+      "id": "moving-over-pit",
+      "type": "movingPlatform",
+      "position": [0, 34, -284],
+      "params": {
+        "width": 3,
+        "depth": 3,
+        "moveAxis": "x",
+        "moveDistance": 6,
+        "speed": 3.5,
+        "pauseTime": 0.2
+      }
+    },
+    {
+      "id": "shield-platform",
+      "type": "platform",
+      "position": [0, 34, -296],
+      "params": { "width": 3, "depth": 3 }
+    },
+    {
+      "id": "shield1",
+      "type": "shield",
+      "position": [0, 34.5, -296],
+      "params": { "duration": 15 }
+    },
+    {
+      "id": "checkpoint4-platform",
+      "type": "platform",
+      "position": [0, 34, -306],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint4",
+      "type": "checkpoint",
+      "position": [0, 34, -306]
+    },
+    {
+      "id": "gem21",
+      "type": "gem",
+      "position": [0, 35.5, -306]
+    },
+    {
+      "id": "final-arena",
+      "type": "rotatingPlatform",
+      "position": [0, 34, -325],
+      "params": { "width": 10, "depth": 10, "speed": 0.8, "axis": "y" }
+    },
+    {
+      "id": "spinner-corner1",
+      "type": "spinnerHazard",
+      "position": [-3, 34.5, -322],
+      "params": { "width": 4, "height": 0.4, "depth": 0.6, "speed": 2.5 }
+    },
+    {
+      "id": "spinner-corner2",
+      "type": "spinnerHazard",
+      "position": [3, 34.5, -322],
+      "params": { "width": 4, "height": 0.4, "depth": 0.6, "speed": -2.5 }
+    },
+    {
+      "id": "spinner-corner3",
+      "type": "spinnerHazard",
+      "position": [-3, 34.5, -328],
+      "params": { "width": 4, "height": 0.4, "depth": 0.6, "speed": 2.3 }
+    },
+    {
+      "id": "spinner-corner4",
+      "type": "spinnerHazard",
+      "position": [3, 34.5, -328],
+      "params": { "width": 4, "height": 0.4, "depth": 0.6, "speed": -2.3 }
+    },
+    {
+      "id": "gem22",
+      "type": "gem",
+      "position": [-3, 35.5, -325]
+    },
+    {
+      "id": "gem23",
+      "type": "gem",
+      "position": [3, 35.5, -325]
+    },
+    {
+      "id": "center-bounce",
+      "type": "bouncePad",
+      "position": [0, 34.1, -325],
+      "params": { "radius": 1.0, "bounceForce": 20 }
+    },
+    {
+      "id": "elevated-goal-platform",
+      "type": "rotatingPlatform",
+      "position": [0, 42, -340],
+      "params": { "width": 5, "depth": 5, "speed": 0.5, "axis": "y" }
+    },
+    {
+      "id": "gem24",
+      "type": "gem",
+      "position": [0, 43.5, -340]
+    },
+    {
+      "id": "final-approach",
+      "type": "narrowBridge",
+      "position": [0, 42, -352],
+      "params": { "length": 10, "width": 0.8 }
+    },
+    {
+      "id": "gem25",
+      "type": "gem",
+      "position": [0, 43.5, -352]
+    },
+    {
+      "id": "checkpoint5-platform",
+      "type": "platform",
+      "position": [0, 42, -362],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint5",
+      "type": "checkpoint",
+      "position": [0, 42, -362]
+    },
+    {
+      "id": "goal-platform",
+      "type": "platform",
+      "position": [0, 42, -375],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "goal",
+      "type": "goalGate",
+      "position": [0, 42, -375]
+    }
+  ]
+}

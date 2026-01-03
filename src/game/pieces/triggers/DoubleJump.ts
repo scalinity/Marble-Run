@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance } from '../types';
-import { COLORS, POWERUPS } from '../../../config/constants';
-import { TriggerType } from '../../CollisionHandler';
-import { eventBus, GameEvents } from '../../../utils/EventBus';
+import * as THREE from "three";
+import { PieceData, PieceContext, PieceInstance } from "../types";
+import { COLORS, POWERUPS } from "../../../config/constants";
+import { TriggerType } from "../../CollisionHandler";
+import { eventBus, GameEvents } from "../../../utils/EventBus";
 
 const RADIUS = 0.3;
 const ROTATION_SPEED = 2;
@@ -18,7 +18,7 @@ export interface DoubleJumpParams {
  */
 export function createDoubleJump(
   data: PieceData,
-  context: PieceContext
+  context: PieceContext,
 ): PieceInstance {
   const params = data.params as DoubleJumpParams | undefined;
   const duration = params?.duration ?? POWERUPS.DOUBLE_JUMP_DURATION;
@@ -103,17 +103,31 @@ export function createDoubleJump(
   const collider = context.physics.createBoxCollider(
     rigidBody,
     { x: RADIUS * 2, y: RADIUS * 2, z: RADIUS * 2 },
-    { isSensor: true }
+    { isSensor: true },
   );
 
   let collected = false;
   let collectAnimation = 0;
 
+  const resetPowerUp = () => {
+    collected = false;
+    collectAnimation = 0;
+    group.visible = true;
+    group.scale.setScalar(1);
+    group.position.y = baseY;
+  };
+
+  // Reset on player respawn
+  const unsubscribeRespawn = eventBus.on(
+    GameEvents.PLAYER_RESPAWN,
+    resetPowerUp,
+  );
+
   const onCollect = () => {
     if (collected) return;
     collected = true;
     eventBus.emit(GameEvents.POWERUP_COLLECTED, {
-      type: 'doubleJump',
+      type: "doubleJump",
       duration,
       id: data.id,
     });
@@ -123,7 +137,7 @@ export function createDoubleJump(
     collider.handle,
     TriggerType.POWERUP,
     data.id,
-    onCollect
+    onCollect,
   );
 
   const update = (dt: number, elapsed: number): void => {
@@ -169,6 +183,7 @@ export function createDoubleJump(
     collider,
     update,
     dispose: () => {
+      unsubscribeRespawn();
       context.physics.removeBody(rigidBody);
       context.scene.remove(group);
       orbGeometry.dispose();

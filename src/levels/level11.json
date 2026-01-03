@@ -1,0 +1,416 @@
+{
+  "id": "level11",
+  "name": "Conveyor Gauntlet",
+  "requireAllGems": true,
+  "spawnPoint": [0, 2, 0],
+  "pieces": [
+    {
+      "id": "start-platform",
+      "type": "platform",
+      "position": [0, 0, 0],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "gem1",
+      "type": "gem",
+      "position": [0, 1.5, 0]
+    },
+    {
+      "id": "intro-track",
+      "type": "trackStraight",
+      "position": [0, 0, -6],
+      "params": { "length": 6 }
+    },
+    {
+      "id": "gem2",
+      "type": "gem",
+      "position": [0, 1.5, -6]
+    },
+    {
+      "id": "conveyor-left",
+      "type": "conveyorBelt",
+      "position": [-2, 0, -16],
+      "params": {
+        "length": 8,
+        "width": 2.5,
+        "speed": 4,
+        "direction": "forward"
+      }
+    },
+    {
+      "id": "conveyor-right",
+      "type": "conveyorBelt",
+      "position": [2, 0, -16],
+      "params": {
+        "length": 8,
+        "width": 2.5,
+        "speed": 4,
+        "direction": "backward"
+      }
+    },
+    {
+      "id": "gem3",
+      "type": "gem",
+      "position": [-2, 1.5, -16]
+    },
+    {
+      "id": "gem4",
+      "type": "gem",
+      "position": [2, 1.5, -16]
+    },
+    {
+      "id": "gap-platform",
+      "type": "platform",
+      "position": [0, 0, -26],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "moving-x",
+      "type": "movingPlatform",
+      "position": [0, 0, -34],
+      "params": {
+        "waypoints": [[0, 0, -38]],
+        "speed": 2.5,
+        "pauseDuration": 0.3
+      }
+    },
+    {
+      "id": "gem5",
+      "type": "gem",
+      "position": [0, 1.5, -34]
+    },
+    {
+      "id": "checkpoint1-platform",
+      "type": "platform",
+      "position": [0, 0, -42],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint1",
+      "type": "checkpoint",
+      "position": [0, 0, -42]
+    },
+    {
+      "id": "gem6",
+      "type": "gem",
+      "position": [0, 1.5, -42]
+    },
+    {
+      "id": "ramp-up1",
+      "type": "ramp",
+      "position": [0, 0, -48.5],
+      "params": { "length": 8, "width": 3, "height": 3, "direction": "up" }
+    },
+    {
+      "id": "conveyor-elevated1",
+      "type": "conveyorBelt",
+      "position": [0, 3, -60.5],
+      "params": { "length": 8, "width": 3, "speed": 3, "direction": "forward" }
+    },
+    {
+      "id": "gem7",
+      "type": "gem",
+      "position": [0, 4.5, -60.5]
+    },
+    {
+      "id": "ramp-up2",
+      "type": "ramp",
+      "position": [0, 3, -70.5],
+      "params": { "length": 6, "width": 3, "height": 2, "direction": "up" }
+    },
+    {
+      "id": "conveyor-elevated2",
+      "type": "conveyorBelt",
+      "position": [0, 5, -80.5],
+      "params": {
+        "length": 6,
+        "width": 3,
+        "speed": 3.5,
+        "direction": "forward"
+      }
+    },
+    {
+      "id": "gem8",
+      "type": "gem",
+      "position": [0, 6.5, -80.5]
+    },
+    {
+      "id": "narrow-bridge1",
+      "type": "narrowBridge",
+      "position": [0, 5, -90.5],
+      "params": { "length": 10, "width": 0.85 }
+    },
+    {
+      "id": "gem9",
+      "type": "gem",
+      "position": [0, 6.5, -90.5]
+    },
+    {
+      "id": "bounce-platform",
+      "type": "platform",
+      "position": [0, 5, -100.5],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "bounce1",
+      "type": "bouncePad",
+      "position": [0, 5.1, -100.5],
+      "params": { "radius": 1.0, "bounceForce": 20 }
+    },
+    {
+      "id": "checkpoint2-platform",
+      "type": "platform",
+      "position": [0, 10, -110.5],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint2",
+      "type": "checkpoint",
+      "position": [0, 10, -110.5]
+    },
+    {
+      "id": "gem10",
+      "type": "gem",
+      "position": [0, 11.5, -110.5]
+    },
+    {
+      "id": "track-to-ice",
+      "type": "trackStraight",
+      "position": [0, 10, -118.5],
+      "params": { "length": 6 }
+    },
+    {
+      "id": "ice-conveyor-platform",
+      "type": "iceSurface",
+      "position": [0, 10, -128.5],
+      "params": { "width": 5, "depth": 10 }
+    },
+    {
+      "id": "conveyor-on-ice",
+      "type": "conveyorBelt",
+      "position": [0, 10.05, -128.5],
+      "params": { "length": 8, "width": 4, "speed": 3, "direction": "backward" }
+    },
+    {
+      "id": "gem11",
+      "type": "gem",
+      "position": [0, 11.5, -128.5]
+    },
+    {
+      "id": "wall-left",
+      "type": "wall",
+      "position": [-3, 10, -128.5],
+      "params": { "width": 10, "height": 2, "depth": 0.3 }
+    },
+    {
+      "id": "wall-right",
+      "type": "wall",
+      "position": [3, 10, -128.5],
+      "params": { "width": 10, "height": 2, "depth": 0.3 }
+    },
+    {
+      "id": "speed-platform",
+      "type": "platform",
+      "position": [0, 10, -140.5],
+      "params": { "width": 3, "depth": 3 }
+    },
+    {
+      "id": "speed-boost1",
+      "type": "speedBoost",
+      "position": [0, 10.5, -140.5],
+      "params": { "duration": 6 }
+    },
+    {
+      "id": "spinner-platform",
+      "type": "platform",
+      "position": [0, 10, -152.5],
+      "params": { "width": 8, "depth": 8 }
+    },
+    {
+      "id": "spinner1",
+      "type": "spinnerHazard",
+      "position": [-1.5, 10.5, -152.5],
+      "params": { "width": 4, "height": 0.4, "depth": 0.6, "speed": 2.2 }
+    },
+    {
+      "id": "spinner2",
+      "type": "spinnerHazard",
+      "position": [1.5, 10.5, -152.5],
+      "params": { "width": 4, "height": 0.4, "depth": 0.6, "speed": -2.0 }
+    },
+    {
+      "id": "gem12",
+      "type": "gem",
+      "position": [-2, 11.5, -152.5]
+    },
+    {
+      "id": "gem13",
+      "type": "gem",
+      "position": [2, 11.5, -152.5]
+    },
+    {
+      "id": "checkpoint3-platform",
+      "type": "platform",
+      "position": [0, 10, -165.5],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint3",
+      "type": "checkpoint",
+      "position": [0, 10, -165.5]
+    },
+    {
+      "id": "speed-boost2",
+      "type": "speedBoost",
+      "position": [0, 10.5, -165.5],
+      "params": { "duration": 8 }
+    },
+    {
+      "id": "gem14",
+      "type": "gem",
+      "position": [0, 11.5, -165.5]
+    },
+    {
+      "id": "moving-y",
+      "type": "movingPlatform",
+      "position": [0, 10, -175.5],
+      "params": {
+        "waypoints": [[0, 17, -175.5]],
+        "speed": 2.5,
+        "pauseDuration": 0.5
+      }
+    },
+    {
+      "id": "gem15",
+      "type": "gem",
+      "position": [0, 13, -175.5]
+    },
+    {
+      "id": "elevated-platform",
+      "type": "platform",
+      "position": [0, 15, -185.5],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "moving-z",
+      "type": "movingPlatform",
+      "position": [0, 15, -195.5],
+      "params": {
+        "waypoints": [[0, 15, -206]],
+        "speed": 3,
+        "pauseDuration": 0.5
+      }
+    },
+    {
+      "id": "gem16",
+      "type": "gem",
+      "position": [0, 16.5, -195.5]
+    },
+    {
+      "id": "tele-shortcut-a",
+      "type": "teleporter",
+      "position": [4, 15.1, -185.5],
+      "params": { "linkedId": "tele-shortcut-b", "color": 16744448 }
+    },
+    {
+      "id": "tele-shortcut-b",
+      "type": "teleporter",
+      "position": [0, 15.1, -208.5],
+      "params": { "linkedId": "tele-shortcut-a", "color": 16744448 }
+    },
+    {
+      "id": "landing-platform",
+      "type": "platform",
+      "position": [0, 15, -208.5],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "gem17",
+      "type": "gem",
+      "position": [0, 16.5, -208.5]
+    },
+    {
+      "id": "track-to-shield",
+      "type": "trackStraight",
+      "position": [0, 15, -214.5],
+      "params": { "length": 6 }
+    },
+    {
+      "id": "shield-platform",
+      "type": "platform",
+      "position": [0, 15, -220.5],
+      "params": { "width": 3, "depth": 3 }
+    },
+    {
+      "id": "shield1",
+      "type": "shield",
+      "position": [0, 15.5, -220.5],
+      "params": { "duration": 10 }
+    },
+    {
+      "id": "final-spinner-platform",
+      "type": "platform",
+      "position": [0, 15, -226],
+      "params": { "width": 7, "depth": 7 }
+    },
+    {
+      "id": "final-spinner",
+      "type": "spinnerHazard",
+      "position": [0, 15.5, -226],
+      "params": { "width": 6, "height": 0.4, "depth": 0.6, "speed": 2.5 }
+    },
+    {
+      "id": "gem18",
+      "type": "gem",
+      "position": [-2, 16.5, -226]
+    },
+    {
+      "id": "gem19",
+      "type": "gem",
+      "position": [2, 16.5, -226]
+    },
+    {
+      "id": "checkpoint4-platform",
+      "type": "platform",
+      "position": [0, 15, -234],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint4",
+      "type": "checkpoint",
+      "position": [0, 15, -234]
+    },
+    {
+      "id": "final-bridge",
+      "type": "narrowBridge",
+      "position": [0, 15, -247],
+      "params": { "length": 14, "width": 0.85 }
+    },
+    {
+      "id": "gem20",
+      "type": "gem",
+      "position": [0, 16.5, -247]
+    },
+    {
+      "id": "gem21",
+      "type": "gem",
+      "position": [0, 16.5, -242]
+    },
+    {
+      "id": "gem22",
+      "type": "gem",
+      "position": [0, 16.5, -252]
+    },
+    {
+      "id": "goal-platform",
+      "type": "platform",
+      "position": [0, 15, -260],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "goal",
+      "type": "goalGate",
+      "position": [0, 15, -260]
+    }
+  ]
+}

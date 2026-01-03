@@ -1,0 +1,602 @@
+{
+  "id": "level16",
+  "name": "Hazard Hexagon",
+  "requireAllGems": true,
+  "spawnPoint": [0, 2, 0],
+  "pieces": [
+    {
+      "id": "start-platform",
+      "type": "platform",
+      "position": [0, 0, 0],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "gem1",
+      "type": "gem",
+      "position": [0, 1.5, 0]
+    },
+    {
+      "id": "intro-track",
+      "type": "trackStraight",
+      "position": [0, 0, -8],
+      "params": { "length": 8 }
+    },
+    {
+      "id": "dual-spinner-platform",
+      "type": "platform",
+      "position": [0, 0, -20],
+      "params": { "width": 8, "depth": 6 }
+    },
+    {
+      "id": "spinner-intro-left",
+      "type": "spinnerHazard",
+      "position": [-2, 0.5, -20],
+      "params": { "width": 3, "height": 0.4, "depth": 0.5, "speed": 2.0 }
+    },
+    {
+      "id": "spinner-intro-right",
+      "type": "spinnerHazard",
+      "position": [2, 0.5, -20],
+      "params": { "width": 3, "height": 0.4, "depth": 0.5, "speed": -2.0 }
+    },
+    {
+      "id": "gem2",
+      "type": "gem",
+      "position": [0, 1.5, -20]
+    },
+    {
+      "id": "moving-gap-platform",
+      "type": "movingPlatform",
+      "position": [0, 0, -32],
+      "params": {
+        "width": 3,
+        "depth": 3,
+        "axis": "x",
+        "distance": 4,
+        "speed": 1.5
+      }
+    },
+    {
+      "id": "gem3",
+      "type": "gem",
+      "position": [0, 1.5, -32]
+    },
+    {
+      "id": "ice-spinner-platform",
+      "type": "platform",
+      "position": [0, 0, -44],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "ice-surface-intro",
+      "type": "iceSurface",
+      "position": [0, 0.05, -44],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "spinner-ice",
+      "type": "spinnerHazard",
+      "position": [0, 0.5, -44],
+      "params": { "width": 4, "height": 0.4, "depth": 0.5, "speed": 1.8 }
+    },
+    {
+      "id": "gem4",
+      "type": "gem",
+      "position": [0, 1.5, -44]
+    },
+    {
+      "id": "checkpoint1-platform",
+      "type": "platform",
+      "position": [0, 0, -55],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint1",
+      "type": "checkpoint",
+      "position": [0, 0, -55]
+    },
+    {
+      "id": "gem5",
+      "type": "gem",
+      "position": [0, 1.5, -55]
+    },
+    {
+      "id": "hex-approach-track",
+      "type": "trackStraight",
+      "position": [0, 0, -68],
+      "params": { "length": 12 }
+    },
+    {
+      "id": "hex-arena-platform",
+      "type": "platform",
+      "position": [0, 0, -95],
+      "params": { "width": 16, "depth": 16 }
+    },
+    {
+      "id": "hex-spinner-1",
+      "type": "spinnerHazard",
+      "position": [0, 0.5, -88],
+      "params": { "width": 4, "height": 0.4, "depth": 0.5, "speed": 1.8 }
+    },
+    {
+      "id": "hex-spinner-2",
+      "type": "spinnerHazard",
+      "position": [5, 0.5, -91],
+      "params": { "width": 4, "height": 0.4, "depth": 0.5, "speed": -2.0 }
+    },
+    {
+      "id": "hex-spinner-3",
+      "type": "spinnerHazard",
+      "position": [5, 0.5, -99],
+      "params": { "width": 4, "height": 0.4, "depth": 0.5, "speed": 2.2 }
+    },
+    {
+      "id": "hex-spinner-4",
+      "type": "spinnerHazard",
+      "position": [0, 0.5, -102],
+      "params": { "width": 4, "height": 0.4, "depth": 0.5, "speed": -2.2 }
+    },
+    {
+      "id": "hex-spinner-5",
+      "type": "spinnerHazard",
+      "position": [-5, 0.5, -99],
+      "params": { "width": 4, "height": 0.4, "depth": 0.5, "speed": 2.0 }
+    },
+    {
+      "id": "hex-spinner-6",
+      "type": "spinnerHazard",
+      "position": [-5, 0.5, -91],
+      "params": { "width": 4, "height": 0.4, "depth": 0.5, "speed": -1.8 }
+    },
+    {
+      "id": "gem6",
+      "type": "gem",
+      "position": [3, 1.5, -89]
+    },
+    {
+      "id": "gem7",
+      "type": "gem",
+      "position": [-3, 1.5, -89]
+    },
+    {
+      "id": "gem8",
+      "type": "gem",
+      "position": [6, 1.5, -95]
+    },
+    {
+      "id": "gem9",
+      "type": "gem",
+      "position": [-6, 1.5, -95]
+    },
+    {
+      "id": "gem10",
+      "type": "gem",
+      "position": [3, 1.5, -101]
+    },
+    {
+      "id": "gem11",
+      "type": "gem",
+      "position": [-3, 1.5, -101]
+    },
+    {
+      "id": "shield-hex-center",
+      "type": "shield",
+      "position": [0, 0.5, -95],
+      "params": { "duration": 10 }
+    },
+    {
+      "id": "checkpoint2-platform",
+      "type": "platform",
+      "position": [0, 0, -115],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint2",
+      "type": "checkpoint",
+      "position": [0, 0, -115]
+    },
+    {
+      "id": "gem12",
+      "type": "gem",
+      "position": [0, 1.5, -115]
+    },
+    {
+      "id": "portal-track",
+      "type": "trackStraight",
+      "position": [0, 0, -128],
+      "params": { "length": 10 }
+    },
+    {
+      "id": "portal-start-platform",
+      "type": "platform",
+      "position": [0, 0, -140],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "tele-web-a1",
+      "type": "teleporter",
+      "position": [0, 0.1, -140],
+      "params": { "linkedId": "tele-web-a2", "color": 16711680 }
+    },
+    {
+      "id": "portal-dest1-platform",
+      "type": "rotatingPlatform",
+      "position": [8, 2, -150],
+      "params": { "width": 5, "depth": 5, "speed": 0.6, "axis": "y" }
+    },
+    {
+      "id": "tele-web-a2",
+      "type": "teleporter",
+      "position": [8, 2.1, -150],
+      "params": { "linkedId": "tele-web-a1", "color": 16711680 }
+    },
+    {
+      "id": "spinner-portal1",
+      "type": "spinnerHazard",
+      "position": [8, 2.5, -148],
+      "params": { "width": 3, "height": 0.4, "depth": 0.5, "speed": 2.0 }
+    },
+    {
+      "id": "gem13",
+      "type": "gem",
+      "position": [8, 3.5, -150]
+    },
+    {
+      "id": "tele-web-b1",
+      "type": "teleporter",
+      "position": [8, 2.1, -152],
+      "params": { "linkedId": "tele-web-b2", "color": 65280 }
+    },
+    {
+      "id": "portal-dest2-platform",
+      "type": "rotatingPlatform",
+      "position": [-8, 4, -160],
+      "params": { "width": 5, "depth": 5, "speed": -0.7, "axis": "y" }
+    },
+    {
+      "id": "tele-web-b2",
+      "type": "teleporter",
+      "position": [-8, 4.1, -160],
+      "params": { "linkedId": "tele-web-b1", "color": 65280 }
+    },
+    {
+      "id": "spinner-portal2",
+      "type": "spinnerHazard",
+      "position": [-8, 4.5, -158],
+      "params": { "width": 3, "height": 0.4, "depth": 0.5, "speed": -2.2 }
+    },
+    {
+      "id": "gem14",
+      "type": "gem",
+      "position": [-8, 5.5, -160]
+    },
+    {
+      "id": "tele-web-c1",
+      "type": "teleporter",
+      "position": [-8, 4.1, -162],
+      "params": { "linkedId": "tele-web-c2", "color": 255 }
+    },
+    {
+      "id": "portal-dest3-platform",
+      "type": "rotatingPlatform",
+      "position": [6, 6, -172],
+      "params": { "width": 5, "depth": 5, "speed": 0.5, "axis": "y" }
+    },
+    {
+      "id": "tele-web-c2",
+      "type": "teleporter",
+      "position": [6, 6.1, -172],
+      "params": { "linkedId": "tele-web-c1", "color": 255 }
+    },
+    {
+      "id": "spinner-portal3",
+      "type": "spinnerHazard",
+      "position": [6, 6.5, -174],
+      "params": { "width": 3, "height": 0.4, "depth": 0.5, "speed": 2.3 }
+    },
+    {
+      "id": "gem15",
+      "type": "gem",
+      "position": [6, 7.5, -172]
+    },
+    {
+      "id": "doublejump-platform",
+      "type": "platform",
+      "position": [6, 6, -184],
+      "params": { "width": 3, "depth": 3 }
+    },
+    {
+      "id": "doublejump1",
+      "type": "doubleJump",
+      "position": [6, 6.5, -184],
+      "params": { "duration": 12 }
+    },
+    {
+      "id": "tele-web-d1",
+      "type": "teleporter",
+      "position": [6, 6.1, -186],
+      "params": { "linkedId": "tele-web-d2", "color": 16776960 }
+    },
+    {
+      "id": "portal-dest4-platform",
+      "type": "rotatingPlatform",
+      "position": [-6, 8, -195],
+      "params": { "width": 5, "depth": 5, "speed": -0.6, "axis": "y" }
+    },
+    {
+      "id": "tele-web-d2",
+      "type": "teleporter",
+      "position": [-6, 8.1, -195],
+      "params": { "linkedId": "tele-web-d1", "color": 16776960 }
+    },
+    {
+      "id": "spinner-portal4",
+      "type": "spinnerHazard",
+      "position": [-6, 8.5, -193],
+      "params": { "width": 3, "height": 0.4, "depth": 0.5, "speed": -2.0 }
+    },
+    {
+      "id": "gem16",
+      "type": "gem",
+      "position": [-6, 9.5, -195]
+    },
+    {
+      "id": "checkpoint3-platform",
+      "type": "platform",
+      "position": [-6, 8, -205],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint3",
+      "type": "checkpoint",
+      "position": [-6, 8, -205]
+    },
+    {
+      "id": "gem17",
+      "type": "gem",
+      "position": [-6, 9.5, -205]
+    },
+    {
+      "id": "tower-approach",
+      "type": "narrowBridge",
+      "position": [-6, 8, -218],
+      "params": { "length": 10, "width": 0.8 }
+    },
+    {
+      "id": "tower-level1",
+      "type": "rotatingPlatform",
+      "position": [-6, 8, -230],
+      "params": {
+        "width": 5,
+        "depth": 5,
+        "speed": 0.5,
+        "axis": "y",
+        "ice": true
+      }
+    },
+    {
+      "id": "tower-spinner1",
+      "type": "spinnerHazard",
+      "position": [-6, 8.5, -230],
+      "params": { "width": 3.5, "height": 0.4, "depth": 0.5, "speed": 1.8 }
+    },
+    {
+      "id": "gem18",
+      "type": "gem",
+      "position": [-6, 9.5, -230]
+    },
+    {
+      "id": "bounce-tower1",
+      "type": "bouncePad",
+      "position": [-6, 8, -233],
+      "params": { "force": 12 }
+    },
+    {
+      "id": "tower-level2",
+      "type": "rotatingPlatform",
+      "position": [-4, 15, -238],
+      "params": { "width": 5, "depth": 5, "speed": -0.6, "axis": "y" }
+    },
+    {
+      "id": "tower-spinner2",
+      "type": "spinnerHazard",
+      "position": [-4, 15.5, -238],
+      "params": { "width": 3.5, "height": 0.4, "depth": 0.5, "speed": -2.0 }
+    },
+    {
+      "id": "gem19",
+      "type": "gem",
+      "position": [-4, 16.5, -238]
+    },
+    {
+      "id": "bounce-tower2",
+      "type": "bouncePad",
+      "position": [-4, 15, -241],
+      "params": { "force": 14 }
+    },
+    {
+      "id": "tower-level3",
+      "type": "rotatingPlatform",
+      "position": [-2, 23, -248],
+      "params": {
+        "width": 5,
+        "depth": 5,
+        "speed": 0.7,
+        "axis": "y",
+        "ice": true
+      }
+    },
+    {
+      "id": "tower-spinner3",
+      "type": "spinnerHazard",
+      "position": [-2, 23.5, -248],
+      "params": { "width": 3.5, "height": 0.4, "depth": 0.5, "speed": 2.2 }
+    },
+    {
+      "id": "gem20",
+      "type": "gem",
+      "position": [-2, 24.5, -248]
+    },
+    {
+      "id": "bounce-tower3",
+      "type": "bouncePad",
+      "position": [-2, 23, -251],
+      "params": { "force": 14 }
+    },
+    {
+      "id": "tower-level4",
+      "type": "rotatingPlatform",
+      "position": [0, 30, -260],
+      "params": { "width": 5, "depth": 5, "speed": -0.5, "axis": "y" }
+    },
+    {
+      "id": "tower-spinner4",
+      "type": "spinnerHazard",
+      "position": [0, 30.5, -260],
+      "params": { "width": 3.5, "height": 0.4, "depth": 0.5, "speed": -2.3 }
+    },
+    {
+      "id": "gem21",
+      "type": "gem",
+      "position": [0, 31.5, -260]
+    },
+    {
+      "id": "checkpoint4-platform",
+      "type": "platform",
+      "position": [0, 30, -275],
+      "params": { "width": 5, "depth": 5 }
+    },
+    {
+      "id": "checkpoint4",
+      "type": "checkpoint",
+      "position": [0, 30, -275]
+    },
+    {
+      "id": "gem22",
+      "type": "gem",
+      "position": [0, 31.5, -275]
+    },
+    {
+      "id": "final-moving-platform",
+      "type": "movingPlatform",
+      "position": [0, 30, -290],
+      "params": {
+        "width": 4,
+        "depth": 4,
+        "axis": "x",
+        "distance": 6,
+        "speed": 2.0
+      }
+    },
+    {
+      "id": "final-spinner-field",
+      "type": "platform",
+      "position": [0, 30, -305],
+      "params": { "width": 10, "depth": 10 }
+    },
+    {
+      "id": "final-spinner1",
+      "type": "spinnerHazard",
+      "position": [-3, 30.5, -302],
+      "params": { "width": 4, "height": 0.4, "depth": 0.5, "speed": 2.0 }
+    },
+    {
+      "id": "final-spinner2",
+      "type": "spinnerHazard",
+      "position": [3, 30.5, -308],
+      "params": { "width": 4, "height": 0.4, "depth": 0.5, "speed": -2.0 }
+    },
+    {
+      "id": "gem23",
+      "type": "gem",
+      "position": [-3, 31.5, -305]
+    },
+    {
+      "id": "gem24",
+      "type": "gem",
+      "position": [3, 31.5, -305]
+    },
+    {
+      "id": "collapse-final1",
+      "type": "collapsingPlatform",
+      "position": [0, 30, -318],
+      "params": {
+        "width": 3,
+        "depth": 3,
+        "collapseDelay": 1.5,
+        "respawnTime": 4
+      }
+    },
+    {
+      "id": "collapse-final2",
+      "type": "collapsingPlatform",
+      "position": [0, 30, -325],
+      "params": {
+        "width": 3,
+        "depth": 3,
+        "collapseDelay": 1.2,
+        "respawnTime": 4
+      }
+    },
+    {
+      "id": "gem25",
+      "type": "gem",
+      "position": [0, 31.5, -321]
+    },
+    {
+      "id": "speed-final-platform",
+      "type": "platform",
+      "position": [0, 30, -335],
+      "params": { "width": 3, "depth": 3 }
+    },
+    {
+      "id": "speed-final",
+      "type": "speedBoost",
+      "position": [0, 30.5, -335],
+      "params": { "duration": 8 }
+    },
+    {
+      "id": "final-narrow-bridge",
+      "type": "narrowBridge",
+      "position": [0, 30, -353],
+      "params": { "length": 18, "width": 0.65 }
+    },
+    {
+      "id": "gem26",
+      "type": "gem",
+      "position": [0, 31.5, -345]
+    },
+    {
+      "id": "gem27",
+      "type": "gem",
+      "position": [0, 31.5, -353]
+    },
+    {
+      "id": "gem28",
+      "type": "gem",
+      "position": [0, 31.5, -361]
+    },
+    {
+      "id": "checkpoint5-platform",
+      "type": "platform",
+      "position": [0, 30, -368],
+      "params": { "width": 4, "depth": 4 }
+    },
+    {
+      "id": "checkpoint5",
+      "type": "checkpoint",
+      "position": [0, 30, -368]
+    },
+    {
+      "id": "goal-platform",
+      "type": "platform",
+      "position": [0, 30, -380],
+      "params": { "width": 6, "depth": 6 }
+    },
+    {
+      "id": "goal",
+      "type": "goalGate",
+      "position": [0, 30, -380]
+    }
+  ]
+}
