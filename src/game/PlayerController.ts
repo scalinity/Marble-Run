@@ -21,7 +21,6 @@ export class PlayerController {
   // Rendering
   private mesh!: THREE.Group;
   private mainSphere!: THREE.Mesh;
-  private equatorRing!: THREE.Mesh;
   private scene: THREE.Scene;
 
   // Ground detection
@@ -44,6 +43,9 @@ export class PlayerController {
 
   // Teleport cooldown
   private teleportCooldown = 0;
+
+  // Bounce immunity (prevents ground check from resetting hasJumped right after bounce)
+  private bounceImmunityTimer = 0;
 
   // Event unsubscribe functions to prevent memory leaks
   private unsubscribers: (() => void)[] = [];
@@ -103,7 +105,59 @@ export class PlayerController {
           this.teleportTo(data.toPosition);
         },
       ),
+
+      // Handle spinner hazard hits
+      eventBus.on(
+        GameEvents.SPINNER_HIT,
+        (data: { id: string; centerPosition: THREE.Vector3 }) => {
+          this.handleSpinnerHit(data.centerPosition);
+        },
+      ),
     );
+  }
+
+  /**
+   * Handle spinner hazard collision - shield protects with controlled bounce
+   */
+  private handleSpinnerHit(spinnerCenter: THREE.Vector3): void {
+    if (!this.powerUpManager?.hasShield()) {
+      // No shield - let physics handle it (player gets knocked around)
+      return;
+    }
+
+    // Has shield - use it and bounce safely away
+    this.powerUpManager.useShield();
+
+    // Calculate direction away from spinner
+    const pos = this.rigidBody.translation();
+    const awayDir = new THREE.Vector3(
+      pos.x - spinnerCenter.x,
+      0,
+      pos.z - spinnerCenter.z,
+    );
+
+    // If player is right at center, pick a random direction
+    if (awayDir.lengthSq() < 0.01) {
+      awayDir.set(Math.random() - 0.5, 0, Math.random() - 0.5);
+    }
+    awayDir.normalize();
+
+    // Apply controlled knockback - away from spinner + slight upward
+    const knockbackForce = 12;
+    const upwardForce = 8;
+    this.rigidBody.setLinvel(
+      {
+        x: awayDir.x * knockbackForce,
+        y: upwardForce,
+        z: awayDir.z * knockbackForce,
+      },
+      true,
+    );
+
+    // Treat as airborne
+    this.hasJumped = true;
+    this.isGrounded = false;
+    this.timeSinceGrounded = PHYSICS.COYOTE_TIME + 1;
   }
 
   /**
@@ -114,8 +168,14 @@ export class PlayerController {
     // Reset Y velocity and apply bounce
     this.rigidBody.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
     this.rigidBody.applyImpulse({ x: 0, y: force, z: 0 }, true);
-    this.hasJumped = false; // Allow jumping after bounce
+    // Set hasJumped = true so applyMovement doesn't reset Y velocity to 0
+    this.hasJumped = true;
     this.hasUsedDoubleJump = false;
+    // Reset grounded state so we're treated as airborne
+    this.isGrounded = false;
+    this.timeSinceGrounded = PHYSICS.COYOTE_TIME + 1;
+    // Prevent ground check from resetting hasJumped for a brief period
+    this.bounceImmunityTimer = 0.15;
   }
 
   /**
@@ -169,41 +229,42 @@ export class PlayerController {
     // Create group to hold all visual elements
     this.mesh = new THREE.Group();
 
-    // Main sphere (existing)
+    // Main sphere - exact copy from reference createPlayer()
+    // Reference: createSphere(0.4, COLORS.player, COLORS.player, 0.5)
     const sphereGeo = new THREE.SphereGeometry(RADIUS, 32, 32);
     const sphereMat = new THREE.MeshStandardMaterial({
       color: COLORS.MARBLE,
-      metalness: MATERIALS.MARBLE_METALNESS,
-      roughness: MATERIALS.MARBLE_ROUGHNESS,
+      emissive: new THREE.Color(COLORS.MARBLE),
+      emissiveIntensity: 0.5,
+      roughness: 0.2,
+      metalness: 0.8,
     });
     this.mainSphere = new THREE.Mesh(sphereGeo, sphereMat);
     this.mainSphere.castShadow = true;
     this.mainSphere.receiveShadow = true;
     this.mesh.add(this.mainSphere);
 
-    // Inner glow core
-    const coreGeo = new THREE.SphereGeometry(RADIUS * 0.6, 16, 16);
-    const coreMat = new THREE.MeshBasicMaterial({
-      color: 0x88ccff,
-      transparent: true,
-      opacity: 0.4,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-    });
-    this.mesh.add(new THREE.Mesh(coreGeo, coreMat));
+    // Inner core glow - exact from reference
+    const innerCore = new THREE.Mesh(
+      new THREE.SphereGeometry(RADIUS * 0.625, 16, 16), // 0.25/0.4 ratio
+      new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.3,
+      }),
+    );
+    this.mesh.add(innerCore);
 
-    // Equator ring
-    const ringGeo = new THREE.TorusGeometry(RADIUS * 1.1, 0.03, 8, 32);
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: 0x00ffaa,
-      transparent: true,
-      opacity: 0.7,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-    });
-    this.equatorRing = new THREE.Mesh(ringGeo, ringMat);
-    this.equatorRing.rotation.x = Math.PI / 2;
-    this.mesh.add(this.equatorRing);
+    // Equator ring - exact from reference
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(RADIUS * 0.95, RADIUS * 0.075, 8, 32), // 0.38/0.4 and 0.03/0.4 ratios
+      new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        emissive: new THREE.Color(0xffffff),
+        emissiveIntensity: 0.5,
+      }),
+    );
+    this.mesh.add(ring);
 
     this.scene.add(this.mesh);
   }
@@ -226,6 +287,10 @@ export class PlayerController {
     // Check for fall off map
     const pos = this.rigidBody.translation();
     if (pos.y < PHYSICS.FALL_THRESHOLD) {
+      // Emit hazard hit before respawn for VFX
+      eventBus.emit(GameEvents.HAZARD_HIT, {
+        position: new THREE.Vector3(pos.x, pos.y, pos.z),
+      });
       this.respawn();
       return;
     }
@@ -302,7 +367,9 @@ export class PlayerController {
     if (this.isGrounded) {
       this.timeSinceGrounded = 0;
 
-      if (!wasGrounded) {
+      // Only process landing if not immune from bounce (bounce immunity prevents
+      // the ground check from immediately resetting hasJumped after a bounce pad)
+      if (!wasGrounded && this.bounceImmunityTimer <= 0) {
         this.hasJumped = false; // Only reset on LANDING, not every substep
         this.hasUsedDoubleJump = false; // Reset double jump on landing
         this.powerUpManager?.resetDoubleJump();
@@ -321,6 +388,11 @@ export class PlayerController {
     // Update coyote time
     if (!this.isGrounded) {
       this.timeSinceGrounded += dt;
+    }
+
+    // Update bounce immunity timer
+    if (this.bounceImmunityTimer > 0) {
+      this.bounceImmunityTimer -= dt;
     }
 
     // Update jump buffer - keep alive while key is held
@@ -377,7 +449,9 @@ export class PlayerController {
 
     this.hasUsedDoubleJump = true;
 
-    eventBus.emit(GameEvents.PLAYER_JUMP);
+    eventBus.emit(GameEvents.PLAYER_JUMP, {
+      position: this.getPosition().clone(),
+    });
   }
 
   private executeJump(): void {
@@ -391,7 +465,9 @@ export class PlayerController {
     this.hasJumped = true;
     this.timeSinceGrounded = PHYSICS.COYOTE_TIME + 1;
 
-    eventBus.emit(GameEvents.PLAYER_JUMP);
+    eventBus.emit(GameEvents.PLAYER_JUMP, {
+      position: this.getPosition().clone(),
+    });
   }
 
   private applyMovement(dt: number, input: InputState): void {
@@ -443,19 +519,36 @@ export class PlayerController {
       // But skip Y sync if we just jumped (hasJumped prevents cancelling jump velocity)
       const targetVelY = this.hasJumped ? vel.y : platformVelY;
 
+      // Check if on ice surface (low friction = slippery)
+      const isOnIce = this.isOnIceSurface();
+      const iceControl = 0.15; // How much control player has on ice (0 = none, 1 = full)
+      const iceDecay = 0.995; // Very slow deceleration on ice
+
       if (hasInput) {
-        this.rigidBody.setLinvel(
-          {
-            x: this.moveDirection.x * speed + platformVelX,
-            y: targetVelY,
-            z: this.moveDirection.z * speed + platformVelZ,
-          },
-          true,
-        );
+        if (isOnIce) {
+          // ICE: Momentum-based - blend current velocity with desired direction
+          const targetVelX = this.moveDirection.x * speed + platformVelX;
+          const targetVelZ = this.moveDirection.z * speed + platformVelZ;
+          const newVelX = vel.x * (1 - iceControl) + targetVelX * iceControl;
+          const newVelZ = vel.z * (1 - iceControl) + targetVelZ * iceControl;
+          this.rigidBody.setLinvel(
+            { x: newVelX, y: targetVelY, z: newVelZ },
+            true,
+          );
+          this.setRollingAngularVelocity(newVelX, newVelZ);
+        } else {
+          // NORMAL GROUND: Direct velocity control
+          const newVelX = this.moveDirection.x * speed + platformVelX;
+          const newVelZ = this.moveDirection.z * speed + platformVelZ;
+          this.rigidBody.setLinvel(
+            { x: newVelX, y: targetVelY, z: newVelZ },
+            true,
+          );
+          this.setRollingAngularVelocity(newVelX, newVelZ);
+        }
       } else {
         // No input on ground = gradual deceleration towards platform velocity
-        // Decay factor: higher = faster stop (0.85 gives nice momentum feel)
-        const decay = 0.85;
+        const decay = isOnIce ? iceDecay : 0.85;
         const newVelX = vel.x * decay + platformVelX * (1 - decay);
         const newVelZ = vel.z * decay + platformVelZ * (1 - decay);
 
@@ -474,20 +567,18 @@ export class PlayerController {
             { x: newVelX, y: targetVelY, z: newVelZ },
             true,
           );
+          this.setRollingAngularVelocity(newVelX, newVelZ);
         }
       }
     } else {
       // AIR: Momentum preservation - only change velocity if input is pressed
       if (hasInput) {
         // Player pressed a direction key - change to that direction
-        this.rigidBody.setLinvel(
-          {
-            x: this.moveDirection.x * speed,
-            y: vel.y,
-            z: this.moveDirection.z * speed,
-          },
-          true,
-        );
+        const newVelX = this.moveDirection.x * speed;
+        const newVelZ = this.moveDirection.z * speed;
+        this.rigidBody.setLinvel({ x: newVelX, y: vel.y, z: newVelZ }, true);
+        // Set angular velocity for realistic rolling even in air
+        this.setRollingAngularVelocity(newVelX, newVelZ);
       }
       // NO INPUT IN AIR = keep current horizontal velocity (momentum preserved)
       // Don't touch vel.x or vel.z - let the marble drift
@@ -522,31 +613,57 @@ export class PlayerController {
         { x: vel.x * scale, y: vel.y, z: vel.z * scale },
         true,
       );
+      // Update angular velocity to match clamped linear velocity
+      this.setRollingAngularVelocity(vel.x * scale, vel.z * scale);
     }
   }
 
-  private syncMeshToBody(dt: number): void {
+  /**
+   * Check if the player is standing on an ice surface by checking ground collider friction
+   */
+  private isOnIceSurface(): boolean {
+    if (!this.isGrounded || this.groundColliderHandle === null) {
+      return false;
+    }
+    const collider = this.physics.getCollider(this.groundColliderHandle);
+    if (!collider) {
+      return false;
+    }
+    // Ice has very low friction (PHYSICS.ICE_FRICTION = 0.02)
+    // Treat anything with friction below 0.1 as ice
+    return collider.friction() < 0.1;
+  }
+
+  /**
+   * Set angular velocity to match linear velocity for realistic rolling.
+   * For a rolling ball: ω = v / r
+   * - Moving in +X → rotate around -Z axis
+   * - Moving in +Z → rotate around +X axis
+   */
+  private setRollingAngularVelocity(velX: number, velZ: number): void {
+    const r = PHYSICS.MARBLE_RADIUS;
+    // Rolling formula: angular velocity perpendicular to linear velocity
+    // vx causes rotation around Z, vz causes rotation around X
+    this.rigidBody.setAngvel({ x: velZ / r, y: 0, z: -velX / r }, true);
+  }
+
+  private syncMeshToBody(_dt: number): void {
     const position = this.rigidBody.translation();
     const rotation = this.rigidBody.rotation();
 
     this.mesh.position.set(position.x, position.y, position.z);
 
-    // Apply physics rotation to main sphere only
-    this.mainSphere.quaternion.set(
-      rotation.x,
-      rotation.y,
-      rotation.z,
-      rotation.w,
-    );
-
-    // Animate equator ring rotation (spins independently, frame-rate independent)
-    this.equatorRing.rotation.z += 3.0 * dt; // 3 radians per second
+    // Apply physics rotation to entire mesh group (sphere + ring rotate together)
+    this.mesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
   }
 
   /**
    * Respawn at last checkpoint
    */
   respawn(): void {
+    // Capture death position before reset for VFX
+    const deathPosition = this.getPosition().clone();
+
     // Reset position (spawn slightly higher to avoid collision resolution issues)
     this.rigidBody.setTranslation(
       {
@@ -579,7 +696,7 @@ export class PlayerController {
     // Sync mesh immediately (use 0 dt since we're just syncing position, not animating)
     this.syncMeshToBody(0);
 
-    eventBus.emit(GameEvents.PLAYER_RESPAWN);
+    eventBus.emit(GameEvents.PLAYER_RESPAWN, { position: deathPosition });
   }
 
   /**

@@ -138,7 +138,7 @@
       "id": "bounce-to-ice",
       "type": "bouncePad",
       "position": [0, 0.1, -104],
-      "params": { "radius": 1.0, "bounceForce": 12 }
+      "params": { "radius": 1.0, "bounceForce": 25 }
     },
     {
       "id": "ice-landing1",

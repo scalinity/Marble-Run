@@ -1,7 +1,12 @@
-import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance, TrackTurnParams } from '../types';
-import { COLORS, MATERIALS, VFX } from '../../../config/constants';
-import { rapierRotationFromEulerDegrees } from '../../../utils/math';
+import * as THREE from "three";
+import {
+  PieceData,
+  PieceContext,
+  PieceInstance,
+  TrackTurnParams,
+} from "../types";
+import { COLORS, MATERIALS } from "../../../config/constants";
+import { rapierRotationFromEulerDegrees } from "../../../utils/math";
 
 const DEFAULT_RADIUS = 2;
 const DEFAULT_WIDTH = 2;
@@ -13,7 +18,7 @@ const SEGMENTS = 8; // Number of segments to approximate curve
  */
 export function createTrackTurn(
   data: PieceData,
-  context: PieceContext
+  context: PieceContext,
 ): PieceInstance {
   const params = data.params as TrackTurnParams | undefined;
   const scale = data.scale ?? [1, 1, 1];
@@ -29,7 +34,7 @@ export function createTrackTurn(
   group.rotation.set(
     THREE.MathUtils.degToRad(rotation[0]),
     THREE.MathUtils.degToRad(rotation[1]),
-    THREE.MathUtils.degToRad(rotation[2])
+    THREE.MathUtils.degToRad(rotation[2]),
   );
 
   const material = new THREE.MeshStandardMaterial({
@@ -39,22 +44,19 @@ export function createTrackTurn(
   });
 
   // Create curved track using multiple box segments
-  const angleStep = (Math.PI / 2) / SEGMENTS;
+  const angleStep = Math.PI / 2 / SEGMENTS;
   const segmentLength = (2 * Math.PI * radius * 0.25) / SEGMENTS;
 
   const meshes: THREE.Mesh[] = [];
 
-  const edgeGeometries: THREE.EdgesGeometry[] = [];
-  const edgeMaterial = new THREE.LineBasicMaterial({
-    color: VFX.EDGE_COLOR,
-    transparent: true,
-    opacity: VFX.EDGE_OPACITY,
-  });
-
   for (let i = 0; i < SEGMENTS; i++) {
     const angle = angleStep * (i + 0.5);
 
-    const geometry = new THREE.BoxGeometry(width, thickness, segmentLength * 1.1);
+    const geometry = new THREE.BoxGeometry(
+      width,
+      thickness,
+      segmentLength * 1.1,
+    );
     const mesh = new THREE.Mesh(geometry, material);
 
     // Position on arc
@@ -64,12 +66,6 @@ export function createTrackTurn(
 
     mesh.castShadow = true;
     mesh.receiveShadow = true;
-
-    // Add neon edge wireframe
-    const edgeGeometry = new THREE.EdgesGeometry(geometry, 15);
-    edgeGeometries.push(edgeGeometry);
-    const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-    mesh.add(edges);
 
     meshes.push(mesh);
     group.add(mesh);
@@ -81,12 +77,12 @@ export function createTrackTurn(
   const quatRotation = rapierRotationFromEulerDegrees(
     rotation[0],
     rotation[1],
-    rotation[2]
+    rotation[2],
   );
 
   const rigidBody = context.physics.createFixedBody(
     { x: data.position[0], y: data.position[1], z: data.position[2] },
-    quatRotation
+    quatRotation,
   );
 
   // Create box colliders for each segment
@@ -99,7 +95,7 @@ export function createTrackTurn(
 
     // Create rotated collider
     const segmentQuat = new THREE.Quaternion().setFromEuler(
-      new THREE.Euler(0, -angle + Math.PI / 2, 0)
+      new THREE.Euler(0, -angle + Math.PI / 2, 0),
     );
 
     const collider = context.physics.createBoxCollider(
@@ -109,7 +105,7 @@ export function createTrackTurn(
         friction: 0.8,
         restitution: 0.2,
         translation: { x: localX, y: 0, z: localZ },
-      }
+      },
     );
     colliders.push(collider);
   }
@@ -124,8 +120,6 @@ export function createTrackTurn(
       context.physics.removeBody(rigidBody);
       context.scene.remove(group);
       meshes.forEach((m) => m.geometry.dispose());
-      edgeGeometries.forEach((g) => g.dispose());
-      edgeMaterial.dispose();
       material.dispose();
     },
   };

@@ -1,9 +1,14 @@
-import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance, TeleporterParams } from '../types';
-import { COLORS, PHYSICS } from '../../../config/constants';
-import { TriggerType } from '../../CollisionHandler';
-import { teleporterRegistry } from '../../TeleporterRegistry';
-import { eventBus, GameEvents } from '../../../utils/EventBus';
+import * as THREE from "three";
+import {
+  PieceData,
+  PieceContext,
+  PieceInstance,
+  TeleporterParams,
+} from "../types";
+import { COLORS, PHYSICS } from "../../../config/constants";
+import { TriggerType } from "../../CollisionHandler";
+import { teleporterRegistry } from "../../TeleporterRegistry";
+import { eventBus, GameEvents } from "../../../utils/EventBus";
 
 const DEFAULT_RADIUS = 0.8;
 const DEFAULT_HEIGHT = 0.1;
@@ -14,7 +19,7 @@ const PORTAL_HEIGHT = 2;
  */
 export function createTeleporter(
   data: PieceData,
-  context: PieceContext
+  context: PieceContext,
 ): PieceInstance {
   const params = data.params as TeleporterParams | undefined;
 
@@ -24,19 +29,24 @@ export function createTeleporter(
 
   const radius = params?.radius ?? DEFAULT_RADIUS;
   const color = params?.color ?? COLORS.TELEPORTER;
-  const linkedId = params?.linkedId ?? '';
+  const linkedId = params?.linkedId ?? "";
 
   const position = new THREE.Vector3(
     data.position[0],
     data.position[1],
-    data.position[2]
+    data.position[2],
   );
 
   // Register in teleporter registry
   teleporterRegistry.register(data.id, position, linkedId);
 
   // Create base pad
-  const padGeometry = new THREE.CylinderGeometry(radius, radius, DEFAULT_HEIGHT, 32);
+  const padGeometry = new THREE.CylinderGeometry(
+    radius,
+    radius,
+    DEFAULT_HEIGHT,
+    32,
+  );
   const padMaterial = new THREE.MeshStandardMaterial({
     color: 0x222233,
     roughness: 0.3,
@@ -69,7 +79,7 @@ export function createTeleporter(
     PORTAL_HEIGHT,
     16,
     1,
-    true
+    true,
   );
   const portalMaterial = new THREE.MeshBasicMaterial({
     color: color,
@@ -88,12 +98,15 @@ export function createTeleporter(
   for (let i = 0; i < particleCount; i++) {
     const angle = (i / particleCount) * Math.PI * 4;
     const height = (i / particleCount) * PORTAL_HEIGHT;
-    const r = radius * 0.4 * (1 - height / PORTAL_HEIGHT * 0.5);
+    const r = radius * 0.4 * (1 - (height / PORTAL_HEIGHT) * 0.5);
     positions[i * 3] = Math.cos(angle) * r;
     positions[i * 3 + 1] = DEFAULT_HEIGHT + height;
     positions[i * 3 + 2] = Math.sin(angle) * r;
   }
-  particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  particleGeometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(positions, 3),
+  );
 
   const particleMaterial = new THREE.PointsMaterial({
     color: color,
@@ -113,19 +126,13 @@ export function createTeleporter(
     z: position.z,
   });
 
+  // Create sensor collider - isSensor enables collision events
   const collider = context.physics.createCylinderCollider(
     rigidBody,
     PORTAL_HEIGHT / 2,
     radius,
-    { friction: 0, restitution: 0 }
+    { friction: 0, restitution: 0, isSensor: true },
   );
-
-  // Make it a sensor
-  const world = context.physics.world;
-  const sensor = world.getCollider(collider.handle);
-  if (sensor) {
-    sensor.setSensor(true);
-  }
 
   // Cooldown tracking
   let lastTeleportTime = 0;
@@ -153,7 +160,7 @@ export function createTeleporter(
     collider.handle,
     TriggerType.TELEPORTER,
     data.id,
-    onTeleport
+    onTeleport,
   );
 
   // Animation state
@@ -173,19 +180,21 @@ export function createTeleporter(
     ringMaterial.emissiveIntensity = 0.6 + pulse * 0.4;
 
     // Animate particles upward
-    const posAttr = particleGeometry.getAttribute('position') as THREE.BufferAttribute;
+    const posAttr = particleGeometry.getAttribute(
+      "position",
+    ) as THREE.BufferAttribute;
     for (let i = 0; i < particleCount; i++) {
       const baseAngle = (i / particleCount) * Math.PI * 4;
       const baseHeight = (i / particleCount) * PORTAL_HEIGHT;
       const animHeight = (baseHeight + particlePhase) % PORTAL_HEIGHT;
-      const r = radius * 0.4 * (1 - animHeight / PORTAL_HEIGHT * 0.5);
+      const r = radius * 0.4 * (1 - (animHeight / PORTAL_HEIGHT) * 0.5);
       const angle = baseAngle + particlePhase;
 
       posAttr.setXYZ(
         i,
         Math.cos(angle) * r,
         DEFAULT_HEIGHT + animHeight,
-        Math.sin(angle) * r
+        Math.sin(angle) * r,
       );
     }
     posAttr.needsUpdate = true;

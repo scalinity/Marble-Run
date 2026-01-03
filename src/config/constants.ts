@@ -65,18 +65,22 @@ export const PHYSICS = {
 // ============================================
 
 export const VFX = {
-  // Trail
-  TRAIL_MAX_SEGMENTS: 50,
-  TRAIL_DURATION: 0.8,
-  TRAIL_MIN_VELOCITY: 0.5,
-  TRAIL_WIDTH_START: 0.08,
-  TRAIL_WIDTH_END: 0.01,
-  TRAIL_SAMPLE_DISTANCE: 0.02,
+  // Trail - thick bright ribbon like reference
+  TRAIL_MAX_SEGMENTS: 60,
+  TRAIL_DURATION: 1.0,
+  TRAIL_MIN_VELOCITY: 0.3,
+  TRAIL_WIDTH_START: 0.25, // Much thicker at marble
+  TRAIL_WIDTH_END: 0.02, // Tapers to thin
+  TRAIL_SAMPLE_DISTANCE: 0.05,
 
   // Particles
-  PARTICLE_POOL_SIZE: 150,
-  GEM_PARTICLE_COUNT: 10,
-  GOAL_PARTICLE_COUNT: 25,
+  PARTICLE_POOL_SIZE: 250,
+  GEM_PARTICLE_COUNT: 30,
+  GOAL_PARTICLE_COUNT: 50,
+  JUMP_PARTICLE_COUNT: 20,
+  RESPAWN_PARTICLE_COUNT: 30,
+  HAZARD_PARTICLE_COUNT: 40,
+  CHECKPOINT_PARTICLE_COUNT: 35,
 
   // Effects
   GEM_RING_DURATION: 300, // ms
@@ -123,16 +127,16 @@ export const COLORS = {
   PLATFORM: 0x3d7a8c,
   WALL: 0x2d5a6a,
   NARROW_BRIDGE: 0x4a8090,
-  GEM: 0x44ff88,
+  GEM: 0xffd700, // Gold
   GOAL: 0xffdd44,
   HAZARD: 0xff4444,
-  MARBLE: 0x4488ff,
+  MARBLE: 0x00ffaa, // Exact reference COLORS.player
   CHECKPOINT: 0x88aaff,
   CHECKPOINT_ACTIVE: 0x44ff88,
   BACKGROUND: 0x1a1a2e,
   AMBIENT_LIGHT: 0x404060,
   DIRECTIONAL_LIGHT: 0xffffff,
-  TRAIL: 0x88ccff,
+  TRAIL: 0x00ff88, // Exact reference COLORS.playerTrail
 
   // New pieces
   BOUNCE_PAD: 0xff8844,
@@ -187,7 +191,7 @@ export const UI = {
 // ============================================
 
 export const DEBUG = {
-  SHOW_FPS: true,
+  SHOW_FPS: false,
   SHOW_PHYSICS_DEBUG: false,
   SHOW_COLLISION_SHAPES: false,
 } as const;

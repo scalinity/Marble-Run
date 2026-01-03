@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { PieceData, PieceContext, PieceInstance } from "../types";
 import { COLORS } from "../../../config/constants";
 import { TriggerType } from "../../CollisionHandler";
+import { eventBus, GameEvents } from "../../../utils/EventBus";
 
 const GATE_WIDTH = 2.5;
 const GATE_HEIGHT = 3;
@@ -116,15 +117,23 @@ export function createGoalGate(
     { isSensor: true },
   );
 
-  // Track if goal reached
+  // Track if goal reached (victory state)
   let reached = false;
   let pulseTime = 0;
   let victoryStartTime = 0;
 
-  // Goal reached callback
+  // Listen for level complete to trigger victory animation
+  // This ensures we only show victory when level actually completes (all gems collected)
+  const unsubscribeLevelComplete = eventBus.on(
+    GameEvents.LEVEL_COMPLETE,
+    () => {
+      reached = true;
+    },
+  );
+
+  // Goal reached callback - always fires, Game handles gem check
   const onReached = () => {
-    if (reached) return;
-    reached = true;
+    if (reached) return; // Only skip if level already completed
     context.onGoalReached?.();
   };
 
@@ -180,6 +189,7 @@ export function createGoalGate(
     collider,
     update,
     dispose: () => {
+      unsubscribeLevelComplete();
       context.physics.removeBody(rigidBody);
       context.scene.remove(group);
       leftPillarGeo.dispose();

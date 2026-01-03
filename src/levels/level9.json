@@ -143,31 +143,31 @@
     {
       "id": "safe-platform1",
       "type": "platform",
-      "position": [0, 10, -104],
+      "position": [0, 10, -101],
       "params": { "width": 4, "depth": 4 }
     },
     {
       "id": "maze-entry",
       "type": "platform",
-      "position": [0, 10, -116],
+      "position": [0, 10, -113],
       "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "track-entry",
       "type": "trackStraight",
-      "position": [0, 10, -110],
+      "position": [0, 10, -107],
       "params": { "length": 6 }
     },
     {
       "id": "teleporter-wrong",
       "type": "teleporter",
-      "position": [-3, 10.1, -116],
+      "position": [-3, 10.1, -113],
       "params": { "linkedId": "teleporter-wrong-dest", "color": 16711680 }
     },
     {
       "id": "teleporter-correct",
       "type": "teleporter",
-      "position": [3, 10.1, -116],
+      "position": [3, 10.1, -113],
       "params": { "linkedId": "teleporter-correct-dest", "color": 65280 }
     },
     {
@@ -318,41 +318,41 @@
     {
       "id": "speedboost-platform",
       "type": "platform",
-      "position": [0, 8, -198],
+      "position": [0, 8, -195],
       "params": { "width": 4, "depth": 4 }
     },
     {
       "id": "speedboost",
       "type": "speedBoost",
-      "position": [0, 8.5, -198],
+      "position": [0, 8.5, -195],
       "params": { "duration": 6 }
     },
     {
       "id": "gem14",
       "type": "gem",
-      "position": [0, 9.5, -198]
+      "position": [0, 9.5, -195]
     },
     {
       "id": "final-bridge",
       "type": "narrowBridge",
-      "position": [0, 8, -210],
+      "position": [0, 8, -207],
       "params": { "length": 16, "width": 1.0 }
     },
     {
       "id": "gem15",
       "type": "gem",
-      "position": [0, 9.5, -210]
+      "position": [0, 9.5, -207]
     },
     {
       "id": "goal-platform",
       "type": "platform",
-      "position": [0, 8, -224],
+      "position": [0, 8, -221],
       "params": { "width": 6, "depth": 6 }
     },
     {
       "id": "goal",
       "type": "goalGate",
-      "position": [0, 8, -224]
+      "position": [0, 8, -221]
     }
   ]
 }

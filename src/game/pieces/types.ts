@@ -1,33 +1,33 @@
-import * as THREE from 'three';
-import RAPIER from '@dimforge/rapier3d-compat';
+import * as THREE from "three";
+import RAPIER from "@dimforge/rapier3d-compat";
 
 /**
  * Piece types available in the game
  */
 export type PieceType =
   // Static pieces
-  | 'trackStraight'
-  | 'trackTurn'
-  | 'ramp'
-  | 'platform'
-  | 'wall'
-  | 'narrowBridge'
-  | 'bouncePad'
-  | 'iceSurface'
+  | "trackStraight"
+  | "trackTurn"
+  | "ramp"
+  | "platform"
+  | "wall"
+  | "narrowBridge"
+  | "bouncePad"
+  | "iceSurface"
   // Kinematic pieces
-  | 'movingPlatform'
-  | 'spinnerHazard'
-  | 'conveyorBelt'
-  | 'collapsingPlatform'
-  | 'rotatingPlatform'
+  | "movingPlatform"
+  | "spinnerHazard"
+  | "conveyorBelt"
+  | "collapsingPlatform"
+  | "rotatingPlatform"
   // Trigger pieces
-  | 'gem'
-  | 'goalGate'
-  | 'checkpoint'
-  | 'teleporter'
-  | 'speedBoost'
-  | 'doubleJump'
-  | 'shield';
+  | "gem"
+  | "goalGate"
+  | "checkpoint"
+  | "teleporter"
+  | "speedBoost"
+  | "doubleJump"
+  | "shield";
 
 /**
  * Piece data from level JSON
@@ -81,11 +81,13 @@ export interface PieceContext {
     world: RAPIER.World;
     createFixedBody: (
       position: { x: number; y: number; z: number },
-      rotation?: { x: number; y: number; z: number; w: number }
+      rotation?: { x: number; y: number; z: number; w: number },
     ) => RAPIER.RigidBody;
-    createKinematicBody: (
-      position: { x: number; y: number; z: number }
-    ) => RAPIER.RigidBody;
+    createKinematicBody: (position: {
+      x: number;
+      y: number;
+      z: number;
+    }) => RAPIER.RigidBody;
     createBoxCollider: (
       body: RAPIER.RigidBody,
       halfExtents: { x: number; y: number; z: number },
@@ -94,13 +96,13 @@ export interface PieceContext {
         restitution?: number;
         isSensor?: boolean;
         translation?: { x: number; y: number; z: number };
-      }
+      },
     ) => RAPIER.Collider;
     createCylinderCollider: (
       body: RAPIER.RigidBody,
       halfHeight: number,
       radius: number,
-      options?: { friction?: number; restitution?: number }
+      options?: { friction?: number; restitution?: number; isSensor?: boolean },
     ) => RAPIER.Collider;
     removeBody: (body: RAPIER.RigidBody) => void;
   };
@@ -108,7 +110,7 @@ export interface PieceContext {
     colliderHandle: number,
     type: string,
     id: string,
-    callback?: () => void
+    callback?: () => void,
   ) => void;
   onCheckpoint?: (position: THREE.Vector3) => void;
   onGoalReached?: () => void;
@@ -123,7 +125,7 @@ export interface MovingPlatformParams {
 }
 
 export interface SpinnerHazardParams {
-  axis?: 'x' | 'y' | 'z';
+  axis?: "x" | "y" | "z";
   speed?: number;
   width?: number;
   height?: number;
@@ -175,7 +177,7 @@ export interface ConveyorBeltParams {
   length?: number;
   width?: number;
   speed?: number;
-  direction?: 'forward' | 'backward' | 'left' | 'right';
+  direction?: "forward" | "backward" | "left" | "right";
 }
 
 export interface CollapsingPlatformParams {
@@ -190,7 +192,8 @@ export interface RotatingPlatformParams {
   width?: number;
   depth?: number;
   speed?: number;
-  axis?: 'x' | 'y' | 'z';
+  axis?: "x" | "y" | "z";
+  ice?: boolean; // Make this platform an ice surface with low friction
 }
 
 export interface TeleporterParams {

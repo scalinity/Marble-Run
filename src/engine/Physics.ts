@@ -1,5 +1,5 @@
-import RAPIER from '@dimforge/rapier3d-compat';
-import { PHYSICS } from '../config/constants';
+import RAPIER from "@dimforge/rapier3d-compat";
+import { PHYSICS } from "../config/constants";
 
 /**
  * Physics world manager using Rapier3D
@@ -8,6 +8,7 @@ import { PHYSICS } from '../config/constants';
 export class Physics {
   public world!: RAPIER.World;
   public eventQueue!: RAPIER.EventQueue;
+  public readonly RAPIER = RAPIER; // Expose RAPIER for direct access
 
   private accumulator = 0;
   private initialized = false;
@@ -23,7 +24,7 @@ export class Physics {
     this.eventQueue = new RAPIER.EventQueue(true);
 
     this.initialized = true;
-    console.log('Rapier physics initialized');
+    console.log("Rapier physics initialized");
   }
 
   /**
@@ -87,7 +88,7 @@ export class Physics {
       angularDamping?: number;
       gravityScale?: number;
       ccdEnabled?: boolean;
-    } = {}
+    } = {},
   ): RAPIER.RigidBody {
     const bodyDesc = RAPIER.RigidBodyDesc.dynamic()
       .setTranslation(position.x, position.y, position.z)
@@ -104,10 +105,13 @@ export class Physics {
    */
   createFixedBody(
     position: { x: number; y: number; z: number },
-    rotation?: { x: number; y: number; z: number; w: number }
+    rotation?: { x: number; y: number; z: number; w: number },
   ): RAPIER.RigidBody {
-    const bodyDesc = RAPIER.RigidBodyDesc.fixed()
-      .setTranslation(position.x, position.y, position.z);
+    const bodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(
+      position.x,
+      position.y,
+      position.z,
+    );
 
     if (rotation) {
       bodyDesc.setRotation(rotation);
@@ -119,11 +123,17 @@ export class Physics {
   /**
    * Create a kinematic position-based rigid body
    */
-  createKinematicBody(
-    position: { x: number; y: number; z: number }
-  ): RAPIER.RigidBody {
-    const bodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased()
-      .setTranslation(position.x, position.y, position.z);
+  createKinematicBody(position: {
+    x: number;
+    y: number;
+    z: number;
+  }): RAPIER.RigidBody {
+    const bodyDesc =
+      RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(
+        position.x,
+        position.y,
+        position.z,
+      );
 
     return this.world.createRigidBody(bodyDesc);
   }
@@ -139,7 +149,7 @@ export class Physics {
       restitution?: number;
       density?: number;
       isSensor?: boolean;
-    } = {}
+    } = {},
   ): RAPIER.Collider {
     const colliderDesc = RAPIER.ColliderDesc.ball(radius)
       .setFriction(options.friction ?? PHYSICS.MARBLE_FRICTION)
@@ -165,12 +175,12 @@ export class Physics {
       restitution?: number;
       isSensor?: boolean;
       translation?: { x: number; y: number; z: number };
-    } = {}
+    } = {},
   ): RAPIER.Collider {
     const colliderDesc = RAPIER.ColliderDesc.cuboid(
       halfExtents.x,
       halfExtents.y,
-      halfExtents.z
+      halfExtents.z,
     )
       .setFriction(options.friction ?? 0.5)
       .setRestitution(options.restitution ?? 0.2);
@@ -179,7 +189,7 @@ export class Physics {
       colliderDesc.setTranslation(
         options.translation.x,
         options.translation.y,
-        options.translation.z
+        options.translation.z,
       );
     }
 
@@ -201,11 +211,17 @@ export class Physics {
     options: {
       friction?: number;
       restitution?: number;
-    } = {}
+      isSensor?: boolean;
+    } = {},
   ): RAPIER.Collider {
     const colliderDesc = RAPIER.ColliderDesc.cylinder(halfHeight, radius)
       .setFriction(options.friction ?? 0.5)
       .setRestitution(options.restitution ?? 0.2);
+
+    if (options.isSensor) {
+      colliderDesc.setSensor(true);
+      colliderDesc.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS);
+    }
 
     return this.world.createCollider(colliderDesc, body);
   }
@@ -217,7 +233,7 @@ export class Physics {
     origin: { x: number; y: number; z: number },
     direction: { x: number; y: number; z: number },
     maxToi: number,
-    excludeCollider?: RAPIER.Collider
+    excludeCollider?: RAPIER.Collider,
   ): RAPIER.RayColliderHit | null {
     const ray = new RAPIER.Ray(origin, direction);
 
@@ -228,7 +244,7 @@ export class Physics {
       RAPIER.QueryFilterFlags.EXCLUDE_SENSORS, // Exclude sensor colliders
       undefined, // filter groups
       excludeCollider,
-      excludeCollider?.parent() ?? undefined
+      excludeCollider?.parent() ?? undefined,
     );
   }
 
@@ -239,7 +255,7 @@ export class Physics {
     origin: { x: number; y: number; z: number },
     direction: { x: number; y: number; z: number },
     maxToi: number,
-    excludeCollider?: RAPIER.Collider
+    excludeCollider?: RAPIER.Collider,
   ): RAPIER.RayColliderIntersection | null {
     const ray = new RAPIER.Ray(origin, direction);
 
@@ -250,7 +266,7 @@ export class Physics {
       RAPIER.QueryFilterFlags.EXCLUDE_SENSORS, // Exclude sensor colliders from raycast
       undefined,
       excludeCollider,
-      excludeCollider?.parent() ?? undefined
+      excludeCollider?.parent() ?? undefined,
     );
   }
 
@@ -258,11 +274,7 @@ export class Physics {
    * Process collision events
    */
   processEvents(
-    callback: (
-      handle1: number,
-      handle2: number,
-      started: boolean
-    ) => void
+    callback: (handle1: number, handle2: number, started: boolean) => void,
   ): void {
     this.eventQueue.drainCollisionEvents((handle1, handle2, started) => {
       callback(handle1, handle2, started);

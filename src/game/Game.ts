@@ -1,38 +1,42 @@
-import * as THREE from 'three';
-import { Renderer } from '../engine/Renderer';
-import { Physics } from '../engine/Physics';
-import { Input } from '../engine/Input';
-import { Time } from '../utils/Timer';
-import { StateMachine, GameState } from './StateMachine';
-import { PlayerController } from './PlayerController';
-import { CameraRig } from './CameraRig';
-import { LevelLoader } from './LevelLoader';
-import { CollisionHandler } from './CollisionHandler';
-import { VFXManager } from '../vfx/VFXManager';
-import { HUD } from '../ui/HUD';
-import { MainMenu } from '../ui/MainMenu';
-import { LevelSelect } from '../ui/LevelSelect';
-import { PauseMenu } from '../ui/PauseMenu';
-import { ResultsScreen } from '../ui/ResultsScreen';
-import { eventBus, GameEvents } from '../utils/EventBus';
-import { LevelDefinition } from './pieces/types';
-import { replayRecorder, ReplayRecorder, ReplayData } from '../testing/ReplayRecorder';
-import { replayTestRunner } from '../testing/ReplayTestRunner';
-import { audioManager } from '../audio/AudioManager';
-import { PowerUpManager } from './PowerUpManager';
-import { teleporterRegistry } from './TeleporterRegistry';
+import * as THREE from "three";
+import { Renderer } from "../engine/Renderer";
+import { Physics } from "../engine/Physics";
+import { Input } from "../engine/Input";
+import { Time } from "../utils/Timer";
+import { StateMachine, GameState } from "./StateMachine";
+import { PlayerController } from "./PlayerController";
+import { CameraRig } from "./CameraRig";
+import { LevelLoader } from "./LevelLoader";
+import { CollisionHandler } from "./CollisionHandler";
+import { VFXManager } from "../vfx/VFXManager";
+import { HUD } from "../ui/HUD";
+import { MainMenu } from "../ui/MainMenu";
+import { LevelSelect } from "../ui/LevelSelect";
+import { PauseMenu } from "../ui/PauseMenu";
+import { ResultsScreen } from "../ui/ResultsScreen";
+import { eventBus, GameEvents } from "../utils/EventBus";
+import { LevelDefinition } from "./pieces/types";
+import {
+  replayRecorder,
+  ReplayRecorder,
+  ReplayData,
+} from "../testing/ReplayRecorder";
+import { replayTestRunner } from "../testing/ReplayTestRunner";
+import { audioManager } from "../audio/AudioManager";
+import { PowerUpManager } from "./PowerUpManager";
+import { teleporterRegistry } from "./TeleporterRegistry";
 
 // Import levels
-import level1 from '../levels/level1.json';
-import level2 from '../levels/level2.json';
-import level3 from '../levels/level3.json';
-import level4 from '../levels/level4.json';
-import level5 from '../levels/level5.json';
-import level6 from '../levels/level6.json';
-import level7 from '../levels/level7.json';
-import level8 from '../levels/level8.json';
-import level9 from '../levels/level9.json';
-import level10 from '../levels/level10.json';
+import level1 from "../levels/level1.json";
+import level2 from "../levels/level2.json";
+import level3 from "../levels/level3.json";
+import level4 from "../levels/level4.json";
+import level5 from "../levels/level5.json";
+import level6 from "../levels/level6.json";
+import level7 from "../levels/level7.json";
+import level8 from "../levels/level8.json";
+import level9 from "../levels/level9.json";
+import level10 from "../levels/level10.json";
 
 const LEVELS: LevelDefinition[] = [
   level1 as LevelDefinition,
@@ -95,7 +99,7 @@ export class Game {
     this.levelLoader = new LevelLoader(
       this.renderer.scene,
       this.physics,
-      this.collisionHandler
+      this.collisionHandler,
     );
     this.vfx = new VFXManager(this.renderer.scene);
     this.powerUpManager = new PowerUpManager();
@@ -146,7 +150,7 @@ export class Game {
         id: level.id,
         name: level.name,
         bestTime: this.bestTimes.get(level.id),
-      }))
+      })),
     );
     this.levelSelect.setOnSelect((levelId) => {
       const index = LEVELS.findIndex((l) => l.id === levelId);
@@ -177,6 +181,8 @@ export class Game {
         this.currentLevelIndex++;
         this.loadLevel(LEVELS[this.currentLevelIndex]);
       } else {
+        // Last level - go back to level select
+        this.resultsScreen.hide();
         this.unloadLevel();
         this.stateMachine.setState(GameState.LEVEL_SELECT);
       }
@@ -211,11 +217,14 @@ export class Game {
       }),
 
       // Checkpoint activated - record
-      eventBus.on<{ position: THREE.Vector3 }>(GameEvents.CHECKPOINT_ACTIVATED, () => {
-        if (replayRecorder.isActive()) {
-          replayRecorder.addCheckpoint(LEVELS[this.currentLevelIndex].id);
-        }
-      }),
+      eventBus.on<{ position: THREE.Vector3 }>(
+        GameEvents.CHECKPOINT_ACTIVATED,
+        () => {
+          if (replayRecorder.isActive()) {
+            replayRecorder.addCheckpoint(LEVELS[this.currentLevelIndex].id);
+          }
+        },
+      ),
 
       // Player respawn - clear trail
       eventBus.on(GameEvents.PLAYER_RESPAWN, () => {
@@ -228,7 +237,21 @@ export class Game {
           // Small shake on landing, intensity based on fall speed would be ideal
           this.cameraRig.shake(0.15, 0.1);
         }
-      })
+      }),
+
+      // Power-up collected - activate in manager
+      eventBus.on<{ type: string; duration: number; id: string }>(
+        GameEvents.POWERUP_COLLECTED,
+        (data) => {
+          // Only activate if it's from a pickup (has an id), not from PowerUpManager.activate() itself
+          if (data.id) {
+            this.powerUpManager.activate(
+              data.type as "shield" | "doubleJump" | "speedBoost",
+              data.duration,
+            );
+          }
+        },
+      ),
     );
   }
 
@@ -312,7 +335,7 @@ export class Game {
       this.physics,
       this.renderer.scene,
       this.renderer.camera,
-      spawnPosition
+      spawnPosition,
     );
 
     // Register player collider
@@ -327,7 +350,7 @@ export class Game {
     // Create camera rig
     this.cameraRig = new CameraRig(
       this.renderer.camera as THREE.PerspectiveCamera,
-      this.physics
+      this.physics,
     );
     this.cameraRig.snapToTarget(spawnPosition);
 
@@ -366,9 +389,15 @@ export class Game {
 
     // Check if all gems are required
     if (levelInfo?.requireAllGems && !this.levelLoader.areAllGemsCollected()) {
-      // Show message that gems are required
+      const remaining =
+        this.levelLoader.getGemCount() -
+        this.collisionHandler.getCollectedGemCount();
+      this.hud.showMessage(`Collect all gems! (${remaining} remaining)`);
       return;
     }
+
+    // Emit level complete event (triggers goal gate victory animation)
+    eventBus.emit(GameEvents.LEVEL_COMPLETE, { levelId: level.id });
 
     // Stop timer and get time
     const time = this.hud.stopTimer();
@@ -381,7 +410,9 @@ export class Game {
       const replayData = replayRecorder.stop();
       this.lastReplay = replayData;
       ReplayRecorder.download(replayData);
-      console.log('[Game] Level completed - Recording auto-saved (F7 to replay)');
+      console.log(
+        "[Game] Level completed - Recording auto-saved (F7 to replay)",
+      );
     }
 
     // Notify replay test runner if active
@@ -432,7 +463,11 @@ export class Game {
     }
 
     // F7 replay works from any state (including completion screen)
-    if (this.input.isKeyJustPressed('f7') && !replayTestRunner.isActive() && !replayRecorder.isActive()) {
+    if (
+      this.input.isKeyJustPressed("f7") &&
+      !replayTestRunner.isActive() &&
+      !replayRecorder.isActive()
+    ) {
       if (this.lastReplay) {
         this.runStoredReplay();
       } else {
@@ -459,7 +494,11 @@ export class Game {
     let inputState = this.input.getState();
 
     // Handle replay recording controls (F5 to start, F6 to stop/save, F7 to load/test)
-    if (this.input.isKeyJustPressed('f5') && !replayRecorder.isActive() && !replayTestRunner.isActive()) {
+    if (
+      this.input.isKeyJustPressed("f5") &&
+      !replayRecorder.isActive() &&
+      !replayTestRunner.isActive()
+    ) {
       // Reset to clean state before recording (keep triggers registered!)
       this.physics.resetTick();
       this.player?.respawn();
@@ -467,29 +506,40 @@ export class Game {
       this.hud.startTimer();
       this.collisionHandler.resetState(); // Don't clear triggers, just collected state
       this.levelLoader.resetTriggers();
-      replayRecorder.start(LEVELS[this.currentLevelIndex].id, this.physics.getTick());
-      console.log('[Game] Recording started from spawn - Press F6 to stop and save');
+      replayRecorder.start(
+        LEVELS[this.currentLevelIndex].id,
+        this.physics.getTick(),
+      );
+      console.log(
+        "[Game] Recording started from spawn - Press F6 to stop and save",
+      );
     }
-    if (this.input.isKeyJustPressed('f6') && replayRecorder.isActive()) {
+    if (this.input.isKeyJustPressed("f6") && replayRecorder.isActive()) {
       const replayData = replayRecorder.stop();
       this.lastReplay = replayData;
       ReplayRecorder.download(replayData);
-      console.log('[Game] Recording saved (F7 to replay)');
+      console.log("[Game] Recording saved (F7 to replay)");
     }
     // Note: F7 is handled in gameLoop so it works from any state
 
     // Record frame if active
     if (replayRecorder.isActive()) {
-      replayRecorder.recordFrame(this.input.getRecordingState(), this.physics.getTick());
+      replayRecorder.recordFrame(
+        this.input.getRecordingState(),
+        this.physics.getTick(),
+      );
     }
 
     // Override input with replay if test is running
     if (replayTestRunner.isActive()) {
-      const replayInput = replayTestRunner.getReplayInput(this.physics.getTick());
+      const replayInput = replayTestRunner.getReplayInput(
+        this.physics.getTick(),
+      );
       if (replayInput) {
         inputState = {
           moveX: (replayInput.left ? -1 : 0) + (replayInput.right ? 1 : 0),
-          moveZ: (replayInput.forward ? -1 : 0) + (replayInput.backward ? 1 : 0),
+          moveZ:
+            (replayInput.forward ? -1 : 0) + (replayInput.backward ? 1 : 0),
           jump: false, // Handled by jumpHeld for replay
           jumpHeld: replayInput.jump,
           reset: false,
@@ -523,7 +573,7 @@ export class Game {
       this.vfx.updateTrail(
         this.player.getPosition(),
         this.player.getVelocity(),
-        dt
+        dt,
       );
     }
 
@@ -536,7 +586,7 @@ export class Game {
    */
   private runStoredReplay(): void {
     if (!this.lastReplay) {
-      console.log('[Game] No replay stored - press F5 to record first');
+      console.log("[Game] No replay stored - press F5 to record first");
       return;
     }
 
@@ -547,7 +597,7 @@ export class Game {
     const currentLevelId = LEVELS[this.currentLevelIndex].id;
     if (replayData.levelId !== currentLevelId) {
       // Find and load the correct level
-      const levelIndex = LEVELS.findIndex(l => l.id === replayData.levelId);
+      const levelIndex = LEVELS.findIndex((l) => l.id === replayData.levelId);
       if (levelIndex === -1) {
         console.error(`[Game] Level "${replayData.levelId}" not found`);
         return;
@@ -556,7 +606,7 @@ export class Game {
       this.currentLevelIndex = levelIndex;
       this.loadLevel(LEVELS[levelIndex]);
       setTimeout(() => {
-        this.startReplayTest(replayData, 'last-recording.json');
+        this.startReplayTest(replayData, "last-recording.json");
       }, 500);
       return;
     }
@@ -564,16 +614,16 @@ export class Game {
     // Reset and start (ignore the respawn event so test doesn't abort immediately)
     replayTestRunner.ignoreRespawn();
     this.player?.respawn();
-    this.startReplayTest(replayData, 'last-recording.json');
+    this.startReplayTest(replayData, "last-recording.json");
   }
 
   /**
    * Load a replay file and run it as a test
    */
   private loadAndRunReplay(): void {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
     input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
@@ -584,18 +634,22 @@ export class Game {
 
         // Validate replay
         if (!replayData.version || !replayData.levelId || !replayData.frames) {
-          console.error('[Game] Invalid replay file format');
+          console.error("[Game] Invalid replay file format");
           return;
         }
 
         // Check if replay matches current level
         const currentLevelId = LEVELS[this.currentLevelIndex].id;
         if (replayData.levelId !== currentLevelId) {
-          console.warn(`[Game] Replay is for level "${replayData.levelId}" but current level is "${currentLevelId}"`);
-          console.warn('[Game] Loading correct level...');
+          console.warn(
+            `[Game] Replay is for level "${replayData.levelId}" but current level is "${currentLevelId}"`,
+          );
+          console.warn("[Game] Loading correct level...");
 
           // Find and load the correct level
-          const levelIndex = LEVELS.findIndex(l => l.id === replayData.levelId);
+          const levelIndex = LEVELS.findIndex(
+            (l) => l.id === replayData.levelId,
+          );
           if (levelIndex === -1) {
             console.error(`[Game] Level "${replayData.levelId}" not found`);
             return;
@@ -614,9 +668,8 @@ export class Game {
         replayTestRunner.ignoreRespawn();
         this.player?.respawn();
         this.startReplayTest(replayData, file.name);
-
       } catch (err) {
-        console.error('[Game] Failed to load replay:', err);
+        console.error("[Game] Failed to load replay:", err);
       }
     };
     input.click();
@@ -632,26 +685,33 @@ export class Game {
 
     console.log(`[Game] Starting replay test: ${fileName}`);
 
-    replayTestRunner.startTest(replayData, fileName, this.physics.getTick(), (result) => {
-      console.log('[Game] ====== REPLAY TEST RESULT ======');
-      console.log(`Level: ${result.levelId}`);
-      console.log(`File: ${result.replayFile}`);
-      console.log(`Status: ${result.passed ? '✅ PASSED' : '❌ FAILED'}`);
-      console.log(`Completed: ${result.completed}`);
-      console.log(`Gems: ${result.actualGems}/${result.expectedGems}`);
-      if (result.completed) {
-        console.log(`Time: ${result.actualTime.toFixed(2)}s (expected: ${result.expectedTime.toFixed(2)}s)`);
-      }
-      if (result.error) {
-        console.log(`Error: ${result.error}`);
-      }
-      console.log('==================================');
-    });
+    replayTestRunner.startTest(
+      replayData,
+      fileName,
+      this.physics.getTick(),
+      (result) => {
+        console.log("[Game] ====== REPLAY TEST RESULT ======");
+        console.log(`Level: ${result.levelId}`);
+        console.log(`File: ${result.replayFile}`);
+        console.log(`Status: ${result.passed ? "✅ PASSED" : "❌ FAILED"}`);
+        console.log(`Completed: ${result.completed}`);
+        console.log(`Gems: ${result.actualGems}/${result.expectedGems}`);
+        if (result.completed) {
+          console.log(
+            `Time: ${result.actualTime.toFixed(2)}s (expected: ${result.expectedTime.toFixed(2)}s)`,
+          );
+        }
+        if (result.error) {
+          console.log(`Error: ${result.error}`);
+        }
+        console.log("==================================");
+      },
+    );
   }
 
   private loadBestTimes(): void {
     try {
-      const stored = localStorage.getItem('marbleRun_bestTimes');
+      const stored = localStorage.getItem("marbleRun_bestTimes");
       if (stored) {
         const times = JSON.parse(stored) as Record<string, number>;
         Object.entries(times).forEach(([id, time]) => {
@@ -659,7 +719,7 @@ export class Game {
         });
       }
     } catch (e) {
-      console.warn('Failed to load best times:', e);
+      console.warn("Failed to load best times:", e);
     }
   }
 
@@ -669,9 +729,9 @@ export class Game {
       this.bestTimes.forEach((time, id) => {
         times[id] = time;
       });
-      localStorage.setItem('marbleRun_bestTimes', JSON.stringify(times));
+      localStorage.setItem("marbleRun_bestTimes", JSON.stringify(times));
     } catch (e) {
-      console.warn('Failed to save best times:', e);
+      console.warn("Failed to save best times:", e);
     }
   }
 
@@ -679,7 +739,7 @@ export class Game {
     this.isRunning = false;
 
     // Unsubscribe from all events to prevent memory leaks
-    this.unsubscribers.forEach(unsub => unsub());
+    this.unsubscribers.forEach((unsub) => unsub());
     this.unsubscribers = [];
 
     this.player?.dispose();

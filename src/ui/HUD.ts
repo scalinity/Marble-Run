@@ -1,5 +1,5 @@
-import { Timer } from '../utils/Timer';
-import { eventBus, GameEvents } from '../utils/EventBus';
+import { Timer } from "../utils/Timer";
+import { eventBus, GameEvents } from "../utils/EventBus";
 
 /**
  * In-game HUD - timer, gems, control hints
@@ -9,12 +9,14 @@ export class HUD {
   private timerElement: HTMLElement;
   private gemsElement: HTMLElement;
   private hintsElement: HTMLElement;
+  private messageElement: HTMLElement;
 
   private timer: Timer;
   private gemsCollected = 0;
   private totalGems = 0;
 
   private visible = false;
+  private messageTimeout: number | null = null;
 
   constructor() {
     this.timer = new Timer();
@@ -23,19 +25,22 @@ export class HUD {
     this.gemsElement = this.createGemsElement();
     this.hintsElement = this.createHintsElement();
 
+    this.messageElement = this.createMessageElement();
+
     this.container.appendChild(this.timerElement);
     this.container.appendChild(this.gemsElement);
     this.container.appendChild(this.hintsElement);
 
     document.body.appendChild(this.container);
+    document.body.appendChild(this.messageElement);
 
     this.setupEventListeners();
     this.hide();
   }
 
   private createContainer(): HTMLElement {
-    const el = document.createElement('div');
-    el.id = 'hud';
+    const el = document.createElement("div");
+    el.id = "hud";
     el.style.cssText = `
       position: fixed;
       top: 0;
@@ -55,18 +60,18 @@ export class HUD {
   }
 
   private createTimerElement(): HTMLElement {
-    const el = document.createElement('div');
+    const el = document.createElement("div");
     el.style.cssText = `
       font-size: 32px;
       font-weight: bold;
       font-variant-numeric: tabular-nums;
     `;
-    el.textContent = '00:00.00';
+    el.textContent = "00:00.00";
     return el;
   }
 
   private createGemsElement(): HTMLElement {
-    const el = document.createElement('div');
+    const el = document.createElement("div");
     el.style.cssText = `
       font-size: 24px;
       display: flex;
@@ -81,7 +86,7 @@ export class HUD {
   }
 
   private createHintsElement(): HTMLElement {
-    const el = document.createElement('div');
+    const el = document.createElement("div");
     el.style.cssText = `
       position: fixed;
       bottom: 20px;
@@ -94,6 +99,31 @@ export class HUD {
       <div>Space - Jump</div>
       <div>R - Respawn</div>
       <div>Esc - Pause</div>
+    `;
+    return el;
+  }
+
+  private createMessageElement(): HTMLElement {
+    const el = document.createElement("div");
+    el.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 28px;
+      font-weight: bold;
+      color: #ff6644;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+      text-align: center;
+      padding: 20px 40px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 12px;
+      border: 2px solid #ff6644;
+      pointer-events: none;
+      z-index: 150;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     `;
     return el;
   }
@@ -118,8 +148,8 @@ export class HUD {
    */
   show(): void {
     this.visible = true;
-    this.container.style.display = 'flex';
-    this.hintsElement.style.display = 'block';
+    this.container.style.display = "flex";
+    this.hintsElement.style.display = "block";
   }
 
   /**
@@ -127,8 +157,8 @@ export class HUD {
    */
   hide(): void {
     this.visible = false;
-    this.container.style.display = 'none';
-    this.hintsElement.style.display = 'none';
+    this.container.style.display = "none";
+    this.hintsElement.style.display = "none";
   }
 
   /**
@@ -193,14 +223,36 @@ export class HUD {
   }
 
   private updateGems(): void {
-    const countEl = this.gemsElement.querySelector('#gem-count');
+    const countEl = this.gemsElement.querySelector("#gem-count");
     if (countEl) {
       countEl.textContent = `${this.gemsCollected} / ${this.totalGems}`;
     }
   }
 
+  /**
+   * Show a temporary message on screen
+   */
+  showMessage(text: string, duration: number = 2500): void {
+    // Clear any existing timeout
+    if (this.messageTimeout !== null) {
+      window.clearTimeout(this.messageTimeout);
+    }
+
+    this.messageElement.textContent = text;
+    this.messageElement.style.opacity = "1";
+
+    this.messageTimeout = window.setTimeout(() => {
+      this.messageElement.style.opacity = "0";
+      this.messageTimeout = null;
+    }, duration);
+  }
+
   dispose(): void {
+    if (this.messageTimeout !== null) {
+      window.clearTimeout(this.messageTimeout);
+    }
     this.container.remove();
     this.hintsElement.remove();
+    this.messageElement.remove();
   }
 }

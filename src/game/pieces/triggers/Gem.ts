@@ -1,7 +1,8 @@
-import * as THREE from 'three';
-import { PieceData, PieceContext, PieceInstance, GemParams } from '../types';
-import { COLORS, MATERIALS } from '../../../config/constants';
-import { TriggerType } from '../../CollisionHandler';
+import * as THREE from "three";
+import { PieceData, PieceContext, PieceInstance, GemParams } from "../types";
+import { COLORS, MATERIALS } from "../../../config/constants";
+import { TriggerType } from "../../CollisionHandler";
+import { eventBus, GameEvents } from "../../../utils/EventBus";
 
 const GEM_RADIUS = 0.25;
 const ROTATION_SPEED = 2; // radians per second
@@ -23,7 +24,7 @@ function easeOutElastic(t: number): number {
  */
 export function createGem(
   data: PieceData,
-  context: PieceContext
+  context: PieceContext,
 ): PieceInstance {
   const params = data.params as GemParams | undefined;
   const color = params?.color ?? COLORS.GEM;
@@ -73,7 +74,7 @@ export function createGem(
   const collider = context.physics.createBoxCollider(
     rigidBody,
     { x: GEM_RADIUS * 1.5, y: GEM_RADIUS * 1.5, z: GEM_RADIUS * 1.5 },
-    { isSensor: true }
+    { isSensor: true },
   );
 
   // Track if collected
@@ -84,15 +85,17 @@ export function createGem(
   const onCollect = () => {
     if (collected) return;
     collected = true;
+
+    // Emit event with position and color for VFX
+    eventBus.emit(GameEvents.GEM_COLLECTED, {
+      id: data.id,
+      position: group.position.clone(),
+      color: new THREE.Color(color),
+    });
   };
 
   // Register as trigger
-  context.registerTrigger(
-    collider.handle,
-    TriggerType.GEM,
-    data.id,
-    onCollect
-  );
+  context.registerTrigger(collider.handle, TriggerType.GEM, data.id, onCollect);
 
   // Update function - rotation and bobbing
   const update = (dt: number, elapsed: number): void => {

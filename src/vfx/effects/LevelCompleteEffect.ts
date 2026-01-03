@@ -1,30 +1,27 @@
-import * as THREE from 'three';
-import { ParticlePool } from '../ParticlePool';
-import { VFX, COLORS } from '../../config/constants';
+import * as THREE from "three";
+import { ParticleSystem } from "../ParticleSystem";
+import { VFX, COLORS } from "../../config/constants";
 
 /**
  * Level completion effect - large burst + staggered rings + screen flash
  */
 export class LevelCompleteEffect {
   private scene: THREE.Scene;
-  private particlePool: ParticlePool;
+  private particles: ParticleSystem;
 
   // Active effects for cleanup
   private activeRings: THREE.Mesh[] = [];
   private flashOverlay: THREE.Mesh | null = null;
 
-  constructor(scene: THREE.Scene, particlePool: ParticlePool) {
+  constructor(scene: THREE.Scene, particles: ParticleSystem) {
     this.scene = scene;
-    this.particlePool = particlePool;
+    this.particles = particles;
   }
 
   /**
    * Trigger level completion effect
    */
-  trigger(
-    position: THREE.Vector3,
-    onComplete?: () => void
-  ): void {
+  trigger(position: THREE.Vector3, onComplete?: () => void): void {
     // Celebration particle burst
     this.createCelebrationBurst(position);
 
@@ -34,7 +31,7 @@ export class LevelCompleteEffect {
         this.createGlowRing(
           position,
           new THREE.Color(COLORS.GOAL),
-          0.5 + i * 0.3
+          0.5 + i * 0.3,
         );
       }, i * 100);
     }
@@ -49,37 +46,22 @@ export class LevelCompleteEffect {
   }
 
   private createCelebrationBurst(position: THREE.Vector3): void {
-    const colors = [
-      new THREE.Color(0xffdd44),
-      new THREE.Color(0x44ff88),
-      new THREE.Color(0xff44aa),
-      new THREE.Color(0x44aaff),
-    ];
+    const colors = [0xffdd44, 0x44ff88, 0xff44aa, 0x44aaff];
 
     // Spawn particles in waves
     for (let wave = 0; wave < 3; wave++) {
       setTimeout(() => {
         const waveCount = Math.floor(VFX.GOAL_PARTICLE_COUNT / 3);
+        const color = colors[wave % colors.length];
 
-        for (let i = 0; i < waveCount; i++) {
-          const color = colors[Math.floor(Math.random() * colors.length)];
-
-          this.particlePool.burst(
-            position.clone().add(new THREE.Vector3(
-              (Math.random() - 0.5) * 0.5,
-              Math.random() * 0.5,
-              (Math.random() - 0.5) * 0.5
-            )),
-            1,
-            {
-              color,
-              speed: 4 + Math.random() * 3,
-              life: 0.8 + Math.random() * 0.5,
-              gravity: 4,
-              scale: 0.1 + Math.random() * 0.08,
-            }
-          );
-        }
+        this.particles.emit(
+          position,
+          waveCount,
+          color,
+          1, // spread
+          5, // speed
+          1.0, // life
+        );
       }, wave * 80);
     }
   }
@@ -87,7 +69,7 @@ export class LevelCompleteEffect {
   private createGlowRing(
     position: THREE.Vector3,
     color: THREE.Color,
-    delay: number
+    delay: number,
   ): void {
     const geometry = new THREE.RingGeometry(0.1, 0.5, 32);
     const material = new THREE.MeshBasicMaterial({
