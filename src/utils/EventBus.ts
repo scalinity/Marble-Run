@@ -89,6 +89,7 @@ export const GameEvents = {
   // New mechanics
   BOUNCE_PAD_HIT: "bounce:hit",
   TELEPORT: "teleport:activate",
+  TELEPORT_SUCCESS: "teleport:success",
   PLATFORM_COLLAPSING: "platform:collapsing",
   PLATFORM_FELL: "platform:fell",
   HAZARD_HIT: "hazard:hit",

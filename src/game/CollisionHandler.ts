@@ -1,18 +1,18 @@
-import { Physics } from '../engine/Physics';
-import { eventBus, GameEvents } from '../utils/EventBus';
+import { Physics } from "../engine/Physics";
+import { eventBus, GameEvents } from "../utils/EventBus";
 
 /**
  * Trigger type for collision handling
  */
 export enum TriggerType {
-  GEM = 'gem',
-  CHECKPOINT = 'checkpoint',
-  GOAL = 'goal',
-  BOUNCE_PAD = 'bouncePad',
-  TELEPORTER = 'teleporter',
-  POWERUP = 'powerup',
-  HAZARD = 'hazard',
-  COLLAPSING_PLATFORM = 'collapsingPlatform',
+  GEM = "gem",
+  CHECKPOINT = "checkpoint",
+  GOAL = "goal",
+  BOUNCE_PAD = "bouncePad",
+  TELEPORTER = "teleporter",
+  POWERUP = "powerup",
+  HAZARD = "hazard",
+  COLLAPSING_PLATFORM = "collapsingPlatform",
 }
 
 /**
@@ -22,6 +22,7 @@ export interface TriggerData {
   type: TriggerType;
   id: string;
   callback?: () => void;
+  onExit?: () => void; // Called when player exits the trigger area
 }
 
 /**
@@ -68,11 +69,14 @@ export class CollisionHandler {
 
   /**
    * Process collision events - call once per frame after physics step
+   * Powerups are processed before hazards to ensure shield protects on same-frame pickup
    */
   processEvents(): void {
-    this.physics.processEvents((handle1, handle2, started) => {
-      if (!started) return; // Only process collision start events
+    // Collect all pending triggers first, then process in priority order
+    const pendingTriggers: { data: TriggerData; handle: number }[] = [];
+    const exitTriggers: TriggerData[] = [];
 
+    this.physics.processEvents((handle1, handle2, started) => {
       // Check if player is involved
       const isPlayerHandle1 = handle1 === this.playerColliderHandle;
       const isPlayerHandle2 = handle2 === this.playerColliderHandle;
@@ -85,8 +89,34 @@ export class CollisionHandler {
 
       if (!triggerData) return;
 
-      this.handleTrigger(triggerData, otherHandle);
+      if (started) {
+        pendingTriggers.push({ data: triggerData, handle: otherHandle });
+      } else if (triggerData.onExit) {
+        // Handle collision exit for triggers that care about it
+        exitTriggers.push(triggerData);
+      }
     });
+
+    // Sort: powerups first, then everything else (hazards last)
+    // This ensures shield pickup protects against same-frame hazard collision
+    pendingTriggers.sort((a, b) => {
+      const priority = (type: TriggerType) => {
+        if (type === TriggerType.POWERUP) return 0;
+        if (type === TriggerType.HAZARD) return 2;
+        return 1;
+      };
+      return priority(a.data.type) - priority(b.data.type);
+    });
+
+    // Process entry triggers in priority order
+    for (const trigger of pendingTriggers) {
+      this.handleTrigger(trigger.data, trigger.handle);
+    }
+
+    // Process exit triggers
+    for (const trigger of exitTriggers) {
+      trigger.onExit?.();
+    }
   }
 
   private handleTrigger(data: TriggerData, colliderHandle: number): void {
@@ -117,11 +147,8 @@ export class CollisionHandler {
 
     this.collectedGems.add(data.id);
 
-    // Call gem's collection callback if provided
+    // Call gem's collection callback - it handles the GEM_COLLECTED event emission
     data.callback?.();
-
-    // Emit event
-    eventBus.emit(GameEvents.GEM_COLLECTED, { id: data.id });
   }
 
   private handleCheckpointCollision(data: TriggerData): void {

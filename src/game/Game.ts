@@ -472,7 +472,9 @@ export class Game {
   }
 
   private gameLoop = (currentTime: number): void => {
-    if (!this.isRunning) return;
+    if (!this.isRunning) {
+      return;
+    }
 
     // Update time
     this.time.update(currentTime);

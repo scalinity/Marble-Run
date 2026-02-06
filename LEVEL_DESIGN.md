@@ -477,6 +477,52 @@ Protects from one hazard hit (spinners).
 | Spinner speed           | 1.5-2.5 rad/s | Higher = harder              |
 | Rotating platform speed | 0.4-1.0 rad/s | Higher = harder              |
 
+### Platform Gap Constraints (Critical)
+
+**Maximum jumpable gap: ~6 units edge-to-edge** (normal jump)
+**Maximum gap with double jump: ~7 units edge-to-edge**
+
+Gaps larger than 7 units make platforms unreachable and break level progression.
+
+#### Calculating Edge-to-Edge Gap
+
+```
+Gap = |z2 - z1| - (depth1/2) - (depth2/2)
+```
+
+**Example:**
+
+- Platform A: position z=-20, depth=4 → far edge at z=-22
+- Platform B: position z=-30, depth=4 → near edge at z=-28
+- Gap = 28 - 22 = 6 units ✓ (jumpable)
+
+#### Gap Limits by Platform Type
+
+| Jump Method          | Max Gap   | Notes                                 |
+| -------------------- | --------- | ------------------------------------- |
+| Normal jump          | 6 units   | Standard marble physics               |
+| Double jump power-up | 7 units   | Borderline, requires good timing      |
+| Bounce pad           | 10+ units | Use for large gaps with height change |
+| Teleporter           | Unlimited | Use for path shortcuts                |
+
+#### Common Gap Issues to Avoid
+
+1. **Moving platforms**: Account for the platform being at the far end of its travel
+2. **Rotating platforms**: Ensure gap is jumpable regardless of rotation
+3. **Collapsing platforms**: Chain them 6-8 units apart for safe progression
+4. **Tracks/bridges**: Calculate gap to next piece from the track's endpoint
+
+#### Safe Spacing Guidelines
+
+| Piece Sequence             | Recommended Spacing      |
+| -------------------------- | ------------------------ |
+| Platform → Platform        | 6-8 unit center gap      |
+| Platform → Moving Platform | 6-8 unit center gap      |
+| Moving → Moving Platform   | 7-9 unit center gap      |
+| Collapsing chain           | 7-9 unit center gap      |
+| Track → Platform           | 4-6 units from track end |
+| After teleporter           | N/A (instant travel)     |
+
 ### Difficulty Progression
 
 **Early Levels (1-3):**

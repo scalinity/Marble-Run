@@ -1,4 +1,4 @@
-import { eventBus, GameEvents } from '../utils/EventBus';
+import { eventBus, GameEvents } from "../utils/EventBus";
 
 interface SoundConfig {
   url: string;
@@ -27,19 +27,19 @@ export class AudioManager {
 
   // Sound definitions
   private readonly soundConfigs: Record<string, SoundConfig> = {
-    jump: { url: '/audio/jump.webm', volume: 0.6 },
-    land: { url: '/audio/land.webm', volume: 0.4 },
-    gem: { url: '/audio/gem.webm', volume: 0.7 },
-    checkpoint: { url: '/audio/checkpoint.webm', volume: 0.6 },
-    goal: { url: '/audio/goal.webm', volume: 0.8 },
-    respawn: { url: '/audio/respawn.webm', volume: 0.5 },
-    bounce: { url: '/audio/bounce.webm', volume: 0.7 },
-    teleport: { url: '/audio/teleport.webm', volume: 0.6 },
-    powerup: { url: '/audio/powerup.webm', volume: 0.7 },
-    powerupExpire: { url: '/audio/powerup_expire.webm', volume: 0.4 },
-    collapse: { url: '/audio/collapse.webm', volume: 0.6 },
-    hazard: { url: '/audio/hazard.webm', volume: 0.7 },
-    levelStart: { url: '/audio/level_start.webm', volume: 0.5 },
+    jump: { url: "/audio/jump.webm", volume: 0.6 },
+    land: { url: "/audio/land.webm", volume: 0.4 },
+    gem: { url: "/audio/gem.webm", volume: 0.7 },
+    checkpoint: { url: "/audio/checkpoint.webm", volume: 0.6 },
+    goal: { url: "/audio/goal.webm", volume: 0.8 },
+    respawn: { url: "/audio/respawn.webm", volume: 0.5 },
+    bounce: { url: "/audio/bounce.webm", volume: 0.7 },
+    teleport: { url: "/audio/teleport.webm", volume: 0.6 },
+    powerup: { url: "/audio/powerup.webm", volume: 0.7 },
+    powerupExpire: { url: "/audio/powerup_expire.webm", volume: 0.4 },
+    collapse: { url: "/audio/collapse.webm", volume: 0.6 },
+    hazard: { url: "/audio/hazard.webm", volume: 0.7 },
+    levelStart: { url: "/audio/level_start.webm", volume: 0.5 },
   };
 
   constructor() {
@@ -53,11 +53,15 @@ export class AudioManager {
     if (this.initialized) return;
 
     try {
-      this.context = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+      this.context = new (
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext })
+          .webkitAudioContext
+      )();
       await this.loadAllSounds();
       this.initialized = true;
     } catch (error) {
-      console.warn('AudioManager: Failed to initialize audio context', error);
+      console.warn("AudioManager: Failed to initialize audio context", error);
     }
   }
 
@@ -65,7 +69,7 @@ export class AudioManager {
    * Resume audio context (required after user gesture on some browsers)
    */
   async resume(): Promise<void> {
-    if (this.context?.state === 'suspended') {
+    if (this.context?.state === "suspended") {
       await this.context.resume();
     }
   }
@@ -82,7 +86,7 @@ export class AudioManager {
           // Sound file doesn't exist yet - that's OK, we'll add them later
           console.debug(`AudioManager: Sound not found: ${config.url}`);
         }
-      }
+      },
     );
 
     await Promise.allSettled(loadPromises);
@@ -115,7 +119,7 @@ export class AudioManager {
 
     try {
       // Resume context if suspended
-      if (this.context.state === 'suspended') {
+      if (this.context.state === "suspended") {
         this.context.resume();
       }
 
@@ -223,27 +227,29 @@ export class AudioManager {
     // Store unsubscribe functions to prevent memory leaks
     this.unsubscribers.push(
       // Player events
-      eventBus.on(GameEvents.PLAYER_JUMP, () => this.play('jump')),
-      eventBus.on(GameEvents.PLAYER_LAND, () => this.play('land')),
-      eventBus.on(GameEvents.PLAYER_RESPAWN, () => this.play('respawn')),
+      eventBus.on(GameEvents.PLAYER_JUMP, () => this.play("jump")),
+      eventBus.on(GameEvents.PLAYER_LAND, () => this.play("land")),
+      eventBus.on(GameEvents.PLAYER_RESPAWN, () => this.play("respawn")),
 
       // Collectibles
-      eventBus.on(GameEvents.GEM_COLLECTED, () => this.play('gem')),
-      eventBus.on(GameEvents.CHECKPOINT_ACTIVATED, () => this.play('checkpoint')),
-      eventBus.on(GameEvents.GOAL_REACHED, () => this.play('goal')),
+      eventBus.on(GameEvents.GEM_COLLECTED, () => this.play("gem")),
+      eventBus.on(GameEvents.CHECKPOINT_ACTIVATED, () =>
+        this.play("checkpoint"),
+      ),
+      eventBus.on(GameEvents.GOAL_REACHED, () => this.play("goal")),
 
       // New mechanics
-      eventBus.on(GameEvents.BOUNCE_PAD_HIT, () => this.play('bounce')),
-      eventBus.on(GameEvents.TELEPORT, () => this.play('teleport')),
-      eventBus.on(GameEvents.PLATFORM_COLLAPSING, () => this.play('collapse')),
-      eventBus.on(GameEvents.HAZARD_HIT, () => this.play('hazard')),
+      eventBus.on(GameEvents.BOUNCE_PAD_HIT, () => this.play("bounce")),
+      eventBus.on(GameEvents.TELEPORT_SUCCESS, () => this.play("teleport")),
+      eventBus.on(GameEvents.PLATFORM_COLLAPSING, () => this.play("collapse")),
+      eventBus.on(GameEvents.HAZARD_HIT, () => this.play("hazard")),
 
       // Power-ups
-      eventBus.on(GameEvents.POWERUP_COLLECTED, () => this.play('powerup')),
-      eventBus.on(GameEvents.POWERUP_EXPIRED, () => this.play('powerupExpire')),
+      eventBus.on(GameEvents.POWERUP_COLLECTED, () => this.play("powerup")),
+      eventBus.on(GameEvents.POWERUP_EXPIRED, () => this.play("powerupExpire")),
 
       // Level
-      eventBus.on(GameEvents.LEVEL_LOAD, () => this.play('levelStart'))
+      eventBus.on(GameEvents.LEVEL_LOAD, () => this.play("levelStart")),
     );
   }
 
@@ -252,7 +258,7 @@ export class AudioManager {
    */
   dispose(): void {
     // Unsubscribe from all events to prevent memory leaks
-    this.unsubscribers.forEach(unsub => unsub());
+    this.unsubscribers.forEach((unsub) => unsub());
     this.unsubscribers = [];
 
     this.stopAll();

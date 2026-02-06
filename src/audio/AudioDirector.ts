@@ -187,7 +187,7 @@ export class AudioDirector {
       eventBus.on(GameEvents.BOUNCE_PAD_HIT, () => {
         this.sfxManager.play("bounce");
       }),
-      eventBus.on(GameEvents.TELEPORT, () => {
+      eventBus.on(GameEvents.TELEPORT_SUCCESS, () => {
         this.sfxManager.play("teleport");
       }),
       eventBus.on(GameEvents.PLATFORM_COLLAPSING, () => {
@@ -226,10 +226,15 @@ export class AudioDirector {
 
   /**
    * Resume audio context (required after user gesture on some browsers)
+   * Non-blocking - doesn't wait for the resume to complete since it may
+   * require a user gesture that hasn't happened yet
    */
   async resume(): Promise<void> {
     if (this.context?.state === "suspended") {
-      await this.context.resume();
+      // Don't await - context.resume() may hang without user gesture
+      this.context.resume().catch(() => {
+        // Silently ignore - will be resumed on user interaction
+      });
     }
   }
 

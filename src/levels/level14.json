@@ -58,7 +58,7 @@
     {
       "id": "moving-crossing",
       "type": "movingPlatform",
-      "position": [0, 16, -44],
+      "position": [0, 16, -40],
       "params": {
         "width": 3,
         "depth": 3,
@@ -71,40 +71,40 @@
     {
       "id": "gem4",
       "type": "gem",
-      "position": [0, 17.5, -44]
+      "position": [0, 17.5, -40]
     },
     {
       "id": "checkpoint1-platform",
       "type": "platform",
-      "position": [0, 16, -55],
+      "position": [0, 16, -48],
       "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "checkpoint1",
       "type": "checkpoint",
-      "position": [0, 16, -55]
+      "position": [0, 16, -48]
     },
     {
       "id": "gem5",
       "type": "gem",
-      "position": [0, 17.5, -55]
+      "position": [0, 17.5, -48]
     },
     {
       "id": "split-platform",
       "type": "platform",
-      "position": [0, 16, -68],
+      "position": [0, 16, -56],
       "params": { "width": 6, "depth": 4 }
     },
     {
       "id": "tele-left-a",
       "type": "teleporter",
-      "position": [-2, 16.1, -68],
+      "position": [-2, 16.1, -56],
       "params": { "linkedId": "tele-left-b", "color": 255 }
     },
     {
       "id": "tele-right-a",
       "type": "teleporter",
-      "position": [2, 16.1, -68],
+      "position": [2, 16.1, -56],
       "params": { "linkedId": "tele-right-b", "color": 16744448 }
     },
     {
@@ -257,134 +257,134 @@
     {
       "id": "tower-rot1",
       "type": "rotatingPlatform",
-      "position": [0, 22, -142],
+      "position": [0, 22, -138],
       "params": { "width": 4, "depth": 4, "speed": 0.5, "axis": "y" }
     },
     {
       "id": "gem12",
       "type": "gem",
-      "position": [0, 23.5, -142]
+      "position": [0, 23.5, -138]
     },
     {
       "id": "tower-bridge1",
       "type": "narrowBridge",
-      "position": [4, 22, -150],
+      "position": [4, 22, -144],
       "rotation": [0, 90, 0],
       "params": { "length": 8, "width": 0.7 }
     },
     {
       "id": "tower-rot2",
       "type": "rotatingPlatform",
-      "position": [8, 27, -150],
+      "position": [8, 27, -144],
       "params": { "width": 4, "depth": 4, "speed": -0.6, "axis": "y" }
     },
     {
       "id": "gem13",
       "type": "gem",
-      "position": [8, 28.5, -150]
+      "position": [8, 28.5, -144]
     },
     {
       "id": "tower-bridge2",
       "type": "narrowBridge",
-      "position": [4, 27, -158],
+      "position": [4, 27, -150],
       "rotation": [0, 90, 0],
       "params": { "length": 8, "width": 0.7 }
     },
     {
       "id": "tower-rot3",
       "type": "rotatingPlatform",
-      "position": [0, 32, -158],
+      "position": [0, 32, -150],
       "params": { "width": 4, "depth": 4, "speed": 0.7, "axis": "y" }
     },
     {
       "id": "gem14",
       "type": "gem",
-      "position": [0, 33.5, -158]
+      "position": [0, 33.5, -150]
     },
     {
       "id": "doublejump-platform",
       "type": "platform",
-      "position": [0, 32, -168],
+      "position": [0, 32, -158],
       "params": { "width": 3, "depth": 3 }
     },
     {
       "id": "doublejump1",
       "type": "doubleJump",
-      "position": [0, 32.5, -168],
+      "position": [0, 32.5, -158],
       "params": { "duration": 12 }
     },
     {
       "id": "tower-rot4",
       "type": "rotatingPlatform",
-      "position": [-6, 37, -176],
+      "position": [-6, 37, -166],
       "params": { "width": 4, "depth": 4, "speed": -0.8, "axis": "y" }
     },
     {
       "id": "gem15",
       "type": "gem",
-      "position": [-6, 38.5, -176]
+      "position": [-6, 38.5, -166]
     },
     {
       "id": "tower-bridge3",
       "type": "narrowBridge",
-      "position": [-3, 37, -184],
+      "position": [-3, 37, -172],
       "rotation": [0, 45, 0],
       "params": { "length": 8, "width": 0.7 }
     },
     {
       "id": "tower-rot5",
       "type": "rotatingPlatform",
-      "position": [0, 42, -190],
+      "position": [0, 42, -178],
       "params": { "width": 4, "depth": 4, "speed": 0.6, "axis": "y" }
     },
     {
       "id": "gem16",
       "type": "gem",
-      "position": [0, 43.5, -190]
+      "position": [0, 43.5, -178]
     },
     {
       "id": "checkpoint3-platform",
       "type": "platform",
-      "position": [0, 42, -200],
+      "position": [0, 42, -186],
       "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "checkpoint3",
       "type": "checkpoint",
-      "position": [0, 42, -200]
+      "position": [0, 42, -186]
     },
     {
       "id": "gem17",
       "type": "gem",
-      "position": [0, 43.5, -200]
+      "position": [0, 43.5, -186]
     },
     {
       "id": "sky-bridge1",
       "type": "narrowBridge",
-      "position": [0, 45, -215],
-      "params": { "length": 16, "width": 0.7 }
+      "position": [0, 45, -198],
+      "params": { "length": 14, "width": 0.7 }
     },
     {
       "id": "gem18",
       "type": "gem",
-      "position": [0, 46.5, -212]
+      "position": [0, 46.5, -196]
     },
     {
       "id": "sky-platform1",
       "type": "platform",
-      "position": [0, 45, -228],
+      "position": [0, 45, -210],
       "params": { "width": 4, "depth": 4 }
     },
     {
       "id": "conveyor-sky",
       "type": "conveyorBelt",
-      "position": [0, 45.05, -228],
+      "position": [0, 45.05, -210],
       "params": { "length": 3, "width": 3, "speed": 3, "direction": "backward" }
     },
     {
       "id": "moving-sky",
       "type": "movingPlatform",
-      "position": [0, 45, -240],
+      "position": [0, 45, -218],
       "params": {
         "width": 3,
         "depth": 3,
@@ -397,141 +397,141 @@
     {
       "id": "gem19",
       "type": "gem",
-      "position": [0, 46.5, -240]
+      "position": [0, 46.5, -218]
     },
     {
       "id": "spinner-sky-platform",
       "type": "platform",
-      "position": [0, 45, -252],
+      "position": [0, 45, -226],
       "params": { "width": 6, "depth": 6 }
     },
     {
       "id": "spinner-sky",
       "type": "spinnerHazard",
-      "position": [0, 45.5, -252],
+      "position": [0, 45.5, -226],
       "params": { "width": 5, "height": 0.4, "depth": 0.6, "speed": 2.2 }
     },
     {
       "id": "gem20",
       "type": "gem",
-      "position": [-2, 46.5, -252]
+      "position": [-2, 46.5, -226]
     },
     {
       "id": "gem21",
       "type": "gem",
-      "position": [2, 46.5, -252]
+      "position": [2, 46.5, -226]
     },
     {
       "id": "shield-platform",
       "type": "platform",
-      "position": [0, 45, -262],
+      "position": [0, 45, -234],
       "params": { "width": 3, "depth": 3 }
     },
     {
       "id": "shield1",
       "type": "shield",
-      "position": [0, 45.5, -262],
+      "position": [0, 45.5, -234],
       "params": { "duration": 12 }
     },
     {
       "id": "checkpoint4-platform",
       "type": "platform",
-      "position": [0, 45, -272],
+      "position": [0, 45, -242],
       "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "checkpoint4",
       "type": "checkpoint",
-      "position": [0, 45, -272]
+      "position": [0, 45, -242]
     },
     {
       "id": "gem22",
       "type": "gem",
-      "position": [0, 46.5, -272]
+      "position": [0, 46.5, -242]
     },
     {
       "id": "descent-rot1",
       "type": "rotatingPlatform",
-      "position": [0, 50, -285],
+      "position": [0, 50, -255],
       "params": { "width": 4, "depth": 4, "speed": 0.5, "axis": "y" }
     },
     {
       "id": "descent-bounce",
       "type": "bouncePad",
-      "position": [0, 45.1, -272],
+      "position": [0, 45.1, -242],
       "params": { "radius": 0.9, "bounceForce": 15 }
     },
     {
       "id": "descent-ice",
       "type": "iceSurface",
-      "position": [0, 50, -295],
+      "position": [0, 50, -263],
       "params": { "width": 4, "depth": 6 }
     },
     {
       "id": "gem23",
       "type": "gem",
-      "position": [0, 51.5, -295]
+      "position": [0, 51.5, -263]
     },
     {
       "id": "wall-bounce-left",
       "type": "wall",
-      "position": [-3, 50, -298],
+      "position": [-3, 50, -266],
       "params": { "width": 6, "height": 2, "depth": 0.3 }
     },
     {
       "id": "wall-bounce-right",
       "type": "wall",
-      "position": [3, 50, -298],
+      "position": [3, 50, -266],
       "params": { "width": 6, "height": 2, "depth": 0.3 }
     },
     {
       "id": "final-bridge",
       "type": "narrowBridge",
-      "position": [0, 50, -312],
-      "params": { "length": 18, "width": 0.7 }
+      "position": [0, 50, -278],
+      "params": { "length": 16, "width": 0.7 }
     },
     {
       "id": "gem24",
       "type": "gem",
-      "position": [0, 51.5, -308]
+      "position": [0, 51.5, -274]
     },
     {
       "id": "gem25",
       "type": "gem",
-      "position": [0, 51.5, -316]
+      "position": [0, 51.5, -282]
     },
     {
       "id": "checkpoint5-platform",
       "type": "platform",
-      "position": [0, 50, -328],
+      "position": [0, 50, -292],
       "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "checkpoint5",
       "type": "checkpoint",
-      "position": [0, 50, -328]
+      "position": [0, 50, -292]
     },
     {
       "id": "descent-bounce2",
       "type": "bouncePad",
-      "position": [0, 50.1, -328],
+      "position": [0, 50.1, -292],
       "params": { "radius": 1.0, "bounceForce": 12 }
     },
     {
       "id": "goal-platform",
       "type": "platform",
-      "position": [0, 30, -345],
+      "position": [0, 30, -306],
       "params": { "width": 6, "depth": 6 }
     },
     {
       "id": "gem26",
       "type": "gem",
-      "position": [0, 31.5, -345]
+      "position": [0, 31.5, -306]
     },
     {
       "id": "goal",
       "type": "goalGate",
-      "position": [0, 30, -345]
+      "position": [0, 30, -306]
     }
   ]
 }

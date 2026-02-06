@@ -1,9 +1,11 @@
 /**
  * Sound effects manager for one-shot sounds
  * Handles loading, caching, and playing sound effects
+ * Falls back to procedural audio when files are missing
  */
 
 import { AudioPool } from "./AudioPool";
+import { ProceduralAudio } from "./ProceduralAudio";
 
 export interface SFXConfig {
   url: string;
@@ -24,6 +26,7 @@ export class SFXManager {
   private configs: Map<string, SFXConfig> = new Map();
   private activeSources: Map<string, AudioBufferSourceNode> = new Map();
   private pool: AudioPool;
+  private proceduralAudio: ProceduralAudio | null = null;
 
   constructor() {
     this.pool = new AudioPool();
@@ -32,6 +35,9 @@ export class SFXManager {
   async init(context: AudioContext, output: GainNode): Promise<void> {
     this.context = context;
     this.output = output;
+
+    // Initialize procedural audio generator
+    this.proceduralAudio = new ProceduralAudio(context);
   }
 
   /**
@@ -52,19 +58,40 @@ export class SFXManager {
 
   /**
    * Load all registered sounds
+   * Falls back to procedural audio for missing files
    */
   async loadAll(): Promise<void> {
+    // First, try to load from files
     const loadPromises = Array.from(this.configs.entries()).map(
       async ([name, config]) => {
         try {
           await this.loadSound(name, config.url);
         } catch {
-          console.debug(`SFXManager: Sound not found: ${config.url}`);
+          // File not found - will use procedural fallback
         }
       },
     );
 
     await Promise.allSettled(loadPromises);
+
+    // Generate procedural audio for any missing sounds
+    if (this.proceduralAudio) {
+      const proceduralBuffers = this.proceduralAudio.generateAll();
+      let proceduralCount = 0;
+
+      for (const [name] of this.configs) {
+        if (!this.buffers.has(name) && proceduralBuffers.has(name)) {
+          this.buffers.set(name, proceduralBuffers.get(name)!);
+          proceduralCount++;
+        }
+      }
+
+      if (proceduralCount > 0) {
+        console.log(
+          `SFXManager: Generated ${proceduralCount} procedural sounds`,
+        );
+      }
+    }
 
     // Initialize pool with loaded buffers
     if (this.context && this.output) {

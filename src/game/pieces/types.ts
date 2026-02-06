@@ -111,6 +111,7 @@ export interface PieceContext {
     type: string,
     id: string,
     callback?: () => void,
+    onExit?: () => void,
   ) => void;
   onCheckpoint?: (position: THREE.Vector3) => void;
   onGoalReached?: () => void;
