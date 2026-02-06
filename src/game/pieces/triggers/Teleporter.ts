@@ -134,19 +134,34 @@ export function createTeleporter(
     { friction: 0, restitution: 0, isSensor: true },
   );
 
-  // Cooldown tracking
+  // Cooldown tracking - only set after confirmed successful teleport
   let lastTeleportTime = 0;
   const TELEPORT_COOLDOWN = PHYSICS.TELEPORT_COOLDOWN;
 
-  const onTeleport = () => {
+  // Track whether player is currently in the sensor area
+  let playerInSensor = false;
+
+  // Listen for successful teleport confirmation to set our cooldown
+  const teleporterId = data.id;
+  const unsubscribeTeleportSuccess = eventBus.on(
+    GameEvents.TELEPORT_SUCCESS,
+    (eventData: { fromId: string }) => {
+      if (eventData.fromId === teleporterId) {
+        lastTeleportTime = performance.now() / 1000;
+        // Player has teleported away, they're no longer in this sensor
+        playerInSensor = false;
+      }
+    },
+  );
+
+  const tryTeleport = () => {
     const now = performance.now() / 1000;
     if (now - lastTeleportTime < TELEPORT_COOLDOWN) return;
 
     const destination = teleporterRegistry.getDestination(data.id);
     if (!destination) return;
 
-    lastTeleportTime = now;
-
+    // Emit teleport request - PlayerController will confirm if successful
     eventBus.emit(GameEvents.TELEPORT, {
       fromId: data.id,
       toId: linkedId,
@@ -155,12 +170,22 @@ export function createTeleporter(
     });
   };
 
-  // Register as trigger
+  const onEnter = () => {
+    playerInSensor = true;
+    tryTeleport();
+  };
+
+  const onExit = () => {
+    playerInSensor = false;
+  };
+
+  // Register as trigger with both enter and exit callbacks
   context.registerTrigger(
     collider.handle,
     TriggerType.TELEPORTER,
     data.id,
-    onTeleport,
+    onEnter,
+    onExit,
   );
 
   // Animation state
@@ -168,6 +193,12 @@ export function createTeleporter(
   let particlePhase = 0;
 
   const update = (dt: number, _elapsed: number): void => {
+    // Continuously try to teleport while player is in sensor
+    // This handles the case where player entered while on cooldown
+    if (playerInSensor) {
+      tryTeleport();
+    }
+
     rotationPhase += dt * 2;
     particlePhase += dt * 3;
 
@@ -208,6 +239,7 @@ export function createTeleporter(
     collider,
     update,
     dispose: () => {
+      unsubscribeTeleportSuccess();
       teleporterRegistry.unregister(data.id);
       context.physics.removeBody(rigidBody);
       context.scene.remove(pad);

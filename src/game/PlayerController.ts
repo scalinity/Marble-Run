@@ -34,6 +34,7 @@ export class PlayerController {
   private hasJumped = false;
   private jumpQueued = false;
   private hasUsedDoubleJump = false;
+  private doubleJumpPendingFromPickup = false; // Allows held jump to trigger double jump after powerup pickup
 
   // Respawn cooldown (skip physics for a few frames after respawn)
   private respawnCooldown = 0;
@@ -101,8 +102,8 @@ export class PlayerController {
       // Handle teleporter activation
       eventBus.on(
         GameEvents.TELEPORT,
-        (data: { toPosition: THREE.Vector3 }) => {
-          this.teleportTo(data.toPosition);
+        (data: { fromId: string; toPosition: THREE.Vector3 }) => {
+          this.teleportTo(data.toPosition, data.fromId);
         },
       ),
 
@@ -113,6 +114,13 @@ export class PlayerController {
           this.handleSpinnerHit(data.centerPosition);
         },
       ),
+
+      // Handle double jump powerup collection - allow immediate use with held jump
+      eventBus.on(GameEvents.POWERUP_COLLECTED, (data: { type: string }) => {
+        if (data.type === "doubleJump") {
+          this.doubleJumpPendingFromPickup = true;
+        }
+      }),
     );
   }
 
@@ -181,7 +189,7 @@ export class PlayerController {
   /**
    * Teleport to position
    */
-  private teleportTo(position: THREE.Vector3): void {
+  private teleportTo(position: THREE.Vector3, fromId: string): void {
     if (this.teleportCooldown > 0) return;
 
     this.rigidBody.setTranslation(
@@ -193,6 +201,9 @@ export class PlayerController {
     this.rigidBody.setLinvel({ x: vel.x * 0.5, y: 0, z: vel.z * 0.5 }, true);
 
     this.teleportCooldown = PHYSICS.TELEPORT_COOLDOWN;
+
+    // Notify the source teleporter that the teleport succeeded
+    eventBus.emit(GameEvents.TELEPORT_SUCCESS, { fromId });
   }
 
   private createPhysicsBody(): void {
@@ -372,6 +383,7 @@ export class PlayerController {
       if (!wasGrounded && this.bounceImmunityTimer <= 0) {
         this.hasJumped = false; // Only reset on LANDING, not every substep
         this.hasUsedDoubleJump = false; // Reset double jump on landing
+        this.doubleJumpPendingFromPickup = false; // Clear pickup flag on landing
         this.powerUpManager?.resetDoubleJump();
         eventBus.emit(GameEvents.PLAYER_LAND);
 
@@ -424,14 +436,21 @@ export class PlayerController {
       !this.hasUsedDoubleJump &&
       this.powerUpManager?.canDoubleJump();
 
+    // Allow double jump with held button if powerup was just collected
+    // This prevents the "delay" where player must release and re-press after pickup
+    // The flag persists until double jump is used or player lands
+    const wantsDoubleJump =
+      input.jump || (this.doubleJumpPendingFromPickup && input.jumpHeld);
+
     // Jump if: can jump AND (key held OR buffered jump queued)
     if (canJump && (input.jumpHeld || this.jumpQueued)) {
       this.executeJump();
       this.jumpQueued = false;
-    } else if (canDoubleJump && input.jump) {
-      // Double jump on fresh press only
+    } else if (canDoubleJump && wantsDoubleJump) {
       this.executeDoubleJump();
       this.jumpQueued = false;
+      // Clear the pending flag only when double jump is used
+      this.doubleJumpPendingFromPickup = false;
     }
   }
 
@@ -686,6 +705,7 @@ export class PlayerController {
     this.hasJumped = false;
     this.jumpQueued = false;
     this.hasUsedDoubleJump = false;
+    this.doubleJumpPendingFromPickup = false;
     this.timeSinceGrounded = 0;
     this.isGrounded = false;
     this.teleportCooldown = 0;

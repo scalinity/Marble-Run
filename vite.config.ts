@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from "vite";
 
 export default defineConfig({
   server: {
@@ -8,7 +8,7 @@ export default defineConfig({
       usePolling: true,
       interval: 1000,
       // Ignore common directories that shouldn't trigger reloads
-      ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**'],
+      ignored: ["**/node_modules/**", "**/.git/**", "**/dist/**"],
     },
   },
-})
+});

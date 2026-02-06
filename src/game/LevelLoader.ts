@@ -1,13 +1,13 @@
-import * as THREE from 'three';
-import { Physics } from '../engine/Physics';
-import { CollisionHandler, TriggerType, TriggerData } from './CollisionHandler';
-import { pieceRegistry } from './pieces/PieceRegistry';
+import * as THREE from "three";
+import { Physics } from "../engine/Physics";
+import { CollisionHandler, TriggerType, TriggerData } from "./CollisionHandler";
+import { pieceRegistry } from "./pieces/PieceRegistry";
 import {
   LevelDefinition,
   PieceData,
   PieceInstance,
   PieceContext,
-} from './pieces/types';
+} from "./pieces/types";
 
 /**
  * Level loader - parses level JSON and instantiates pieces
@@ -33,7 +33,7 @@ export class LevelLoader {
   constructor(
     scene: THREE.Scene,
     physics: Physics,
-    collisionHandler: CollisionHandler
+    collisionHandler: CollisionHandler,
   ) {
     this.scene = scene;
     this.physics = physics;
@@ -77,8 +77,8 @@ export class LevelLoader {
         // Categorize for update loop
         if (piece.update) {
           if (
-            pieceData.type === 'movingPlatform' ||
-            pieceData.type === 'spinnerHazard'
+            pieceData.type === "movingPlatform" ||
+            pieceData.type === "spinnerHazard"
           ) {
             this.kinematicPieces.push(piece);
           } else {
@@ -87,21 +87,21 @@ export class LevelLoader {
         }
 
         // Count gems
-        if (pieceData.type === 'gem') {
+        if (pieceData.type === "gem") {
           this.gemCount++;
         }
       }
     }
 
     console.log(
-      `Level "${levelDef.name}" loaded: ${this.pieces.length} pieces, ${this.gemCount} gems`
+      `Level "${levelDef.name}" loaded: ${this.pieces.length} pieces, ${this.gemCount} gems`,
     );
 
     // Return spawn position
     return new THREE.Vector3(
       levelDef.spawnPoint[0],
       levelDef.spawnPoint[1],
-      levelDef.spawnPoint[2]
+      levelDef.spawnPoint[2],
     );
   }
 
@@ -159,7 +159,7 @@ export class LevelLoader {
   resetTriggers(): void {
     // Reset gem visibility - they have a reset method via their mesh visibility
     for (const piece of this.triggerPieces) {
-      if (piece.type === 'gem' && piece.mesh) {
+      if (piece.type === "gem" && piece.mesh) {
         piece.mesh.visible = true;
       }
     }
@@ -174,10 +174,12 @@ export class LevelLoader {
       physics: {
         world: this.physics.world,
         createFixedBody: this.physics.createFixedBody.bind(this.physics),
-        createKinematicBody: this.physics.createKinematicBody.bind(this.physics),
+        createKinematicBody: this.physics.createKinematicBody.bind(
+          this.physics,
+        ),
         createBoxCollider: this.physics.createBoxCollider.bind(this.physics),
         createCylinderCollider: this.physics.createCylinderCollider.bind(
-          this.physics
+          this.physics,
         ),
         removeBody: this.physics.removeBody.bind(this.physics),
       },
@@ -185,12 +187,14 @@ export class LevelLoader {
         colliderHandle: number,
         type: string,
         id: string,
-        callback?: () => void
+        callback?: () => void,
+        onExit?: () => void,
       ) => {
         this.collisionHandler.registerTrigger(colliderHandle, {
           type: type as TriggerType,
           id,
           callback,
+          onExit,
         });
       },
       onCheckpoint: this.onCheckpoint,
@@ -201,7 +205,11 @@ export class LevelLoader {
   /**
    * Get current level info
    */
-  getLevelInfo(): { name: string; gemCount: number; requireAllGems: boolean } | null {
+  getLevelInfo(): {
+    name: string;
+    gemCount: number;
+    requireAllGems: boolean;
+  } | null {
     if (!this.currentLevel) return null;
 
     return {

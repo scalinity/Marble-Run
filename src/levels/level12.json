@@ -105,35 +105,35 @@
     {
       "id": "checkpoint1-platform",
       "type": "platform",
-      "position": [0, 5, -62],
+      "position": [0, 5, -57],
       "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "checkpoint1",
       "type": "checkpoint",
-      "position": [0, 5, -62]
+      "position": [0, 5, -57]
     },
     {
       "id": "gem5",
       "type": "gem",
-      "position": [0, 6.5, -62]
+      "position": [0, 6.5, -57]
     },
     {
       "id": "doublejump-platform",
       "type": "platform",
-      "position": [0, 5, -72],
+      "position": [0, 5, -65],
       "params": { "width": 3, "depth": 3 }
     },
     {
       "id": "doublejump1",
       "type": "doubleJump",
-      "position": [0, 5.5, -72],
+      "position": [0, 5.5, -65],
       "params": { "duration": 15 }
     },
     {
       "id": "collapse1",
       "type": "collapsingPlatform",
-      "position": [0, 5, -82],
+      "position": [0, 5, -75],
       "params": {
         "width": 3.5,
         "depth": 3.5,
@@ -144,12 +144,12 @@
     {
       "id": "gem6",
       "type": "gem",
-      "position": [0, 6.5, -82]
+      "position": [0, 6.5, -75]
     },
     {
       "id": "collapse2",
       "type": "collapsingPlatform",
-      "position": [0, 5, -90],
+      "position": [0, 5, -83],
       "params": {
         "width": 3.0,
         "depth": 3.0,
@@ -160,12 +160,12 @@
     {
       "id": "gem7",
       "type": "gem",
-      "position": [0, 6.5, -90]
+      "position": [0, 6.5, -83]
     },
     {
       "id": "collapse3",
       "type": "collapsingPlatform",
-      "position": [0, 5, -98],
+      "position": [0, 5, -91],
       "params": {
         "width": 2.8,
         "depth": 2.8,
@@ -176,12 +176,12 @@
     {
       "id": "gem8",
       "type": "gem",
-      "position": [0, 6.5, -98]
+      "position": [0, 6.5, -91]
     },
     {
       "id": "collapse4",
       "type": "collapsingPlatform",
-      "position": [0, 5, -106],
+      "position": [0, 5, -99],
       "params": {
         "width": 2.5,
         "depth": 2.5,
@@ -192,12 +192,12 @@
     {
       "id": "gem9",
       "type": "gem",
-      "position": [0, 6.5, -106]
+      "position": [0, 6.5, -99]
     },
     {
       "id": "collapse5",
       "type": "collapsingPlatform",
-      "position": [0, 5, -114],
+      "position": [0, 5, -107],
       "params": {
         "width": 2.3,
         "depth": 2.3,
@@ -208,34 +208,34 @@
     {
       "id": "gem10",
       "type": "gem",
-      "position": [0, 6.5, -114]
+      "position": [0, 6.5, -107]
     },
     {
       "id": "checkpoint2-platform",
       "type": "platform",
-      "position": [0, 5, -125],
+      "position": [0, 5, -114],
       "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "checkpoint2",
       "type": "checkpoint",
-      "position": [0, 5, -125]
+      "position": [0, 5, -114]
     },
     {
       "id": "gem11",
       "type": "gem",
-      "position": [0, 6.5, -125]
+      "position": [0, 6.5, -114]
     },
     {
       "id": "rotating-tele-platform1",
       "type": "rotatingPlatform",
-      "position": [0, 5, -138],
+      "position": [0, 5, -122],
       "params": { "width": 5, "depth": 5, "speed": 0.6, "axis": "y" }
     },
     {
       "id": "tele-chain-a",
       "type": "teleporter",
-      "position": [0, 5.1, -138],
+      "position": [0, 5.1, -122],
       "params": { "linkedId": "tele-chain-b", "color": 16711935 }
     },
     {
@@ -281,86 +281,86 @@
     {
       "id": "spinner-dest-platform",
       "type": "platform",
-      "position": [-8, 10, -178],
+      "position": [-8, 10, -173],
       "params": { "width": 6, "depth": 6 }
     },
     {
       "id": "spinner-guard",
       "type": "spinnerHazard",
-      "position": [-8, 10.5, -178],
+      "position": [-8, 10.5, -173],
       "params": { "width": 5, "height": 0.4, "depth": 0.6, "speed": 2.0 }
     },
     {
       "id": "gem14",
       "type": "gem",
-      "position": [-8, 11.5, -178]
+      "position": [-8, 11.5, -173]
     },
     {
       "id": "narrow-bridge1",
       "type": "narrowBridge",
-      "position": [-8, 10, -190],
+      "position": [-8, 10, -185],
       "params": { "length": 10, "width": 0.8 }
     },
     {
       "id": "gem15",
       "type": "gem",
-      "position": [-8, 11.5, -190]
+      "position": [-8, 11.5, -185]
     },
     {
       "id": "checkpoint3-platform",
       "type": "platform",
-      "position": [-8, 10, -202],
+      "position": [-8, 10, -197],
       "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "checkpoint3",
       "type": "checkpoint",
-      "position": [-8, 10, -202]
+      "position": [-8, 10, -197]
     },
     {
       "id": "gem16",
       "type": "gem",
-      "position": [-8, 11.5, -202]
+      "position": [-8, 11.5, -197]
     },
     {
       "id": "speed-platform",
       "type": "platform",
-      "position": [-8, 10, -212],
+      "position": [-8, 10, -205],
       "params": { "width": 3, "depth": 3 }
     },
     {
       "id": "speed-boost1",
       "type": "speedBoost",
-      "position": [-8, 10.5, -212],
+      "position": [-8, 10.5, -205],
       "params": { "duration": 8 }
     },
     {
       "id": "high-speed-conveyor",
       "type": "conveyorBelt",
-      "position": [-8, 10, -224],
+      "position": [-8, 10, -215],
       "params": { "length": 10, "width": 3, "speed": 5, "direction": "forward" }
     },
     {
       "id": "gem17",
       "type": "gem",
-      "position": [-8, 11.5, -224]
+      "position": [-8, 11.5, -215]
     },
     {
       "id": "tele-conveyor-platform",
       "type": "platform",
-      "position": [-8, 10, -236],
+      "position": [-8, 10, -227],
       "params": { "width": 3, "depth": 3 }
     },
     {
       "id": "tele-conveyor-a",
       "type": "teleporter",
-      "position": [-8, 10.1, -236],
+      "position": [-8, 10.1, -227],
       "params": { "linkedId": "tele-conveyor-b", "color": 8388863 }
     },
     {
       "id": "ice-rotating-dest",
       "type": "rotatingPlatform",
-      "position": [5, 15, -250],
+      "position": [5, 15, -240],
       "params": {
         "width": 6,
         "depth": 6,
@@ -372,107 +372,107 @@
     {
       "id": "tele-conveyor-b",
       "type": "teleporter",
-      "position": [5, 15.1, -250],
+      "position": [5, 15.1, -240],
       "params": { "linkedId": "tele-conveyor-a", "color": 8388863 }
     },
     {
       "id": "gem18",
       "type": "gem",
-      "position": [5, 16.5, -250]
+      "position": [5, 16.5, -240]
     },
     {
       "id": "shield-platform",
       "type": "platform",
-      "position": [5, 15, -262],
+      "position": [5, 15, -250],
       "params": { "width": 3, "depth": 3 }
     },
     {
       "id": "shield1",
       "type": "shield",
-      "position": [5, 15.5, -262],
+      "position": [5, 15.5, -250],
       "params": { "duration": 12 }
     },
     {
       "id": "triple-spinner-platform",
       "type": "platform",
-      "position": [5, 15, -275],
+      "position": [5, 15, -260],
       "params": { "width": 8, "depth": 8 }
     },
     {
       "id": "spinner-low",
       "type": "spinnerHazard",
-      "position": [3, 15.5, -275],
+      "position": [3, 15.5, -260],
       "params": { "width": 4, "height": 0.4, "depth": 0.6, "speed": 2.2 }
     },
     {
       "id": "spinner-mid",
       "type": "spinnerHazard",
-      "position": [5, 16.0, -275],
+      "position": [5, 16.0, -260],
       "params": { "width": 4, "height": 0.4, "depth": 0.6, "speed": -2.0 }
     },
     {
       "id": "spinner-high",
       "type": "spinnerHazard",
-      "position": [7, 16.5, -275],
+      "position": [7, 16.5, -260],
       "params": { "width": 4, "height": 0.4, "depth": 0.6, "speed": 2.3 }
     },
     {
       "id": "gem19",
       "type": "gem",
-      "position": [3, 17, -275]
+      "position": [3, 17, -260]
     },
     {
       "id": "gem20",
       "type": "gem",
-      "position": [7, 17, -275]
+      "position": [7, 17, -260]
     },
     {
       "id": "checkpoint4-platform",
       "type": "platform",
-      "position": [5, 15, -290],
+      "position": [5, 15, -272],
       "params": { "width": 5, "depth": 5 }
     },
     {
       "id": "checkpoint4",
       "type": "checkpoint",
-      "position": [5, 15, -290]
+      "position": [5, 15, -272]
     },
     {
       "id": "gem21",
       "type": "gem",
-      "position": [5, 16.5, -290]
+      "position": [5, 16.5, -272]
     },
     {
       "id": "final-bridge",
       "type": "narrowBridge",
-      "position": [5, 15, -306],
+      "position": [5, 15, -285],
       "params": { "length": 16, "width": 0.8 }
     },
     {
       "id": "gem22",
       "type": "gem",
-      "position": [5, 16.5, -302]
+      "position": [5, 16.5, -281]
     },
     {
       "id": "gem23",
       "type": "gem",
-      "position": [5, 16.5, -310]
+      "position": [5, 16.5, -289]
     },
     {
       "id": "gem24",
       "type": "gem",
-      "position": [5, 16.5, -306]
+      "position": [5, 16.5, -285]
     },
     {
       "id": "goal-platform",
       "type": "platform",
-      "position": [5, 15, -322],
+      "position": [5, 15, -300],
       "params": { "width": 6, "depth": 6 }
     },
     {
       "id": "goal",
       "type": "goalGate",
-      "position": [5, 15, -322]
+      "position": [5, 15, -300]
     }
   ]
 }
